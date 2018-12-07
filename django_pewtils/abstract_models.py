@@ -1,10 +1,9 @@
 from django.db import models
 from django.db.models.deletion import Collector
 
-from pewtils import is_not_null
-from pewtils.django import get_model
-from pewtils.nlp import decode_text
-from pewtils.django.managers import BasicExtendedManager
+from pewtils import is_not_null, decode_text
+from django_pewtils import get_model
+from django_pewtils.managers import BasicExtendedManager
 
 
 class BasicExtendedModel(models.Model):

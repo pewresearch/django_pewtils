@@ -1,6 +1,6 @@
 import pandas, numpy, random
 
-from pewtils import group_percentages
+from pewtils.internal import group_percentages
 
 
 # TODO: does SampleExtractor have any actual django dependencies or can this be moved to pewtils/sampling.py?
