@@ -11,7 +11,7 @@ from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from pewtils import is_null, is_not_null
 from pewtils.io import FileHandler
 from pewtils import chunker
-from pewtils.django import field_exists, filter_field_dict, get_model
+from django_pewtils import field_exists, filter_field_dict, get_model
 from pewtils.nlp import decode_text, get_fuzzy_ratio, get_fuzzy_partial_ratio, vector_concat, TextHelper
 
 
