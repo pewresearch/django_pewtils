@@ -24,7 +24,6 @@ stopit>=1.1.1
 tensorflow
 tld>=0.7.9
 tqdm>=4.11.2
-tweepy>=3.5.0
 Unidecode>=0.4.20
-git+ssh://labsdeploy/mobolic/facebook-sdk#egg=facebook-sdk>=3.0.0-alpha
 git+ssh://labsdeploy/pewresearch/scikit-learn#egg=sklearn
+git+ssh://labsdeploy/pewresearch/pewtils#egg=pewtils
