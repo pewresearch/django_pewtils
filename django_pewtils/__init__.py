@@ -327,6 +327,14 @@ def get_app_settings_folders(settings_dir_list_var):
 
 def run_partial_postgres_search(model, text, fields, max_results=250):
 
+    """
+    Example usage: run_partial_postgres_search(ATPQuestion, text, ("description", "name", "response_options__label"), max_results=250)
+    :param model: the model you want to search
+    :param text: the search query
+    :param fields: tuple of fields to search
+    :param max_results: top N results you want to return
+    :return:
+    """
     text = re.sub(r'[!\'()|&]', ' ', text).strip()
     if text:
         text = re.sub(r'\s+', ' & ', text)
