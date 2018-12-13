@@ -9,6 +9,8 @@ from django.apps import apps
 from django.db import IntegrityError
 from django.core.cache import cache
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Case, When
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 
 
 def load_app(app_name, path=None):
@@ -321,6 +323,25 @@ def get_app_settings_folders(settings_dir_list_var):
             dirs = []
         command_dirs.extend(dirs)
     return list(set(command_dirs))
+
+
+def run_partial_postgres_search(model, text, fields, max_results=250):
+
+    text = re.sub(r'[!\'()|&]', ' ', text).strip()
+    if text:
+        text = re.sub(r'\s+', ' & ', text)
+        text += ':*'
+    query = SearchQuery(text)
+    vector = SearchVector(*fields)
+    queryset = model.objects.annotate(rank=SearchRank(vector, query)).distinct().filter(rank__gt=0.0).order_by("-rank").distinct()[:max_results]
+    sql, sql_params = queryset.query.get_compiler(using=queryset.db).as_sql()
+    sql = re.sub("plainto_tsquery", "to_tsquery", sql)
+    sql_params = tuple(["''" if p == '' else p for p in list(sql_params)])
+    results = model.objects.raw(sql, sql_params)
+    pk_list = [r.pk for r in results]
+    preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pk_list)])
+    queryset = model.objects.filter(pk__in=pk_list).order_by(preserved)
+    return queryset
 
 # def extract_site_module_attributes(path, site_name, attribute_name):
 #
