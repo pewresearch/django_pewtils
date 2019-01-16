@@ -1,3 +1,4 @@
+from builtins import object
 from django.db import models
 from django.db.models.deletion import Collector
 
@@ -7,7 +8,7 @@ from django_pewtils.managers import BasicExtendedManager
 
 
 class BasicExtendedModel(models.Model):
-    class Meta:
+    class Meta(object):
         abstract = True
 
     objects = BasicExtendedManager().as_manager()
@@ -32,7 +33,7 @@ class BasicExtendedModel(models.Model):
                     objs[f.name] = getattr(self, f.name).count()
 
         if nonzero_only:
-            return {k: v for k, v in objs.iteritems() if v > 0}
+            return {k: v for k, v in objs.items() if v > 0}
         else:
             return objs
 
@@ -50,7 +51,7 @@ class BasicExtendedModel(models.Model):
                     objs[f.name] = getattr(self, f.name).all()
 
         if nonzero_only:
-            return {k: v for k, v in objs.iteritems() if v.count() > 0}
+            return {k: v for k, v in objs.items() if v.count() > 0}
         else:
             return objs
 

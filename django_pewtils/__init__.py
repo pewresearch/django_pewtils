@@ -1,4 +1,5 @@
 from __future__ import print_function
+from builtins import object
 import shutil, re, importlib, pkgutil, os, imp
 
 from itertools import chain
@@ -108,12 +109,12 @@ def filter_field_dict(dict, drop_nulls=True, empty_lists_are_null=False, drop_un
     """
 
     if dict:
-        for k in dict.keys():
+        for k in list(dict.keys()):
             if (drop_underscore_joins and "__" in k) or \
                     (drop_nulls and is_null(dict[k], empty_lists_are_null=empty_lists_are_null)):
                 del dict[k]
 
-        if "content_object" in dict.keys():
+        if "content_object" in list(dict.keys()):
             dict["content_type"] = ContentType.objects.get_for_model(dict["content_object"])
             dict["object_id"] = dict["content_object"].pk
             del dict["content_object"]

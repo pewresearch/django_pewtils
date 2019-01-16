@@ -1,4 +1,7 @@
 from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 import traceback, sys, pandas, os, hashlib, random, psycopg2
 
 from fuzzywuzzy import fuzz
@@ -49,8 +52,8 @@ def _create_object(
             update_data = filter_field_dict(update_data, drop_nulls=(not save_nulls), empty_lists_are_null=empty_lists_are_null)
         original_unique_data = unique_data
         if update_data:
-            for field in update_data.keys():
-                if field_exists(model, field) and field not in unique_data.keys():
+            for field in list(update_data.keys()):
+                if field_exists(model, field) and field not in list(unique_data.keys()):
                     unique_data[field] = update_data[field]
         try:
             existing = model.objects.create(**unique_data)
@@ -67,7 +70,7 @@ def _create_object(
                 existing = get_model(model._meta.model_name).objects.filter(**original_unique_data)
                 if existing.count() == 1:
                     existing = existing[0]
-                    for key, value in update_data.iteritems():
+                    for key, value in update_data.items():
                         setattr(existing, key, value)
                     existing.save()
                 else:
@@ -134,7 +137,7 @@ def _update_object(
     if update_data:
         try:
             update_data = filter_field_dict(update_data, drop_nulls=(not save_nulls), empty_lists_are_null=empty_lists_are_null)
-            for field in update_data.keys():
+            for field in list(update_data.keys()):
                 if field_exists(model, field) and (not only_update_existing_nulls or is_null(getattr(existing, field), empty_lists_are_null=empty_lists_are_null)):
                     setattr(existing, field, update_data[field])
             # try:
@@ -233,12 +236,12 @@ class BasicExtendedManager(models.QuerySet):
         """
 
         search_data = filter_field_dict(unique_data, drop_nulls=(not search_nulls), empty_lists_are_null=empty_lists_are_null, drop_underscore_joins=False)
-        if len(search_data.keys()) > 0:
+        if len(list(search_data.keys())) > 0:
             existing = None
             try:
                 if match_any:
                     query = Q()
-                    for field in search_data.keys():
+                    for field in list(search_data.keys()):
                         query |= Q(**{field: search_data[field]})
                     existing = self.filter(query).distinct()
                     if existing.count() > 1:
@@ -257,7 +260,7 @@ class BasicExtendedManager(models.QuerySet):
                 print("Data passed: %s" % str(unique_data))
                 print("Data searched: %s" % str(search_data))
                 if existing: print("Objects matched: {}".format(existing))
-                else: print("Objects matched: %s" % str(self.filter(**search_data).values()))
+                else: print("Objects matched: %s" % str(list(self.filter(**search_data).values())))
                 raise
         else:
             existing = None
