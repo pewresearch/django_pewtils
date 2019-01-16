@@ -8,13 +8,10 @@ from django.db import connection, models
 from django.db.models.deletion import Collector
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 
-from pewtils import is_null, is_not_null, decode_text
+from pewtils import chunker, is_null, is_not_null, decode_text, vector_concat
 from pewtils.io import FileHandler
-from pewtils import chunker
 from django_pewtils import field_exists, filter_field_dict, get_model
-from pewtils.nlp import decode_text, vector_concat
-from pewanalytics.text import TextDataFrame
-from pewanalytics.text.compare import get_fuzzy_ratio, get_fuzzy_partial_ratio
+from pewanalytics.text import TextDataFrame, get_fuzzy_partial_ratio, get_fuzzy_ratio
 
 
 def _create_object(
