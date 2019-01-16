@@ -12,8 +12,7 @@ from pewtils import is_null, is_not_null
 from pewtils.io import FileHandler
 from pewtils import chunker
 from django_pewtils import field_exists, filter_field_dict, get_model
-from pewanalytics.text import TextDataFrame
-from pewanalytics.text.compare import get_fuzzy_partial_ratio, get_fuzzy_ratio
+from pewanalytics.text import TextDataFrame, get_fuzzy_partial_ratio, get_fuzzy_ratio
 from pewtils import decode_text, vector_concat
 
 
