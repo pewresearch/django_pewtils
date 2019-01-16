@@ -328,7 +328,7 @@ def get_app_settings_folders(settings_dir_list_var):
     return list(set(command_dirs))
 
 
-def run_partial_postgres_search(model, text, fields, max_results=250):
+def run_partial_postgres_search(model, text, fields, max_results=250, min_rank=0.0):
 
     """
     Example usage: run_partial_postgres_search(ATPQuestion, text, ("description", "name", "response_options__label"), max_results=250)
@@ -344,7 +344,7 @@ def run_partial_postgres_search(model, text, fields, max_results=250):
         text += ':*'
     query = SearchQuery(text)
     vector = SearchVector(*fields)
-    queryset = model.objects.annotate(rank=SearchRank(vector, query)).distinct().filter(rank__gt=0.0).order_by("-rank").distinct()[:max_results]
+    queryset = model.objects.annotate(rank=SearchRank(vector, query)).distinct().filter(rank__gt=min_rank).order_by("-rank").distinct()[:max_results]
     sql, sql_params = queryset.query.get_compiler(using=queryset.db).as_sql()
     sql = re.sub("plainto_tsquery", "to_tsquery", sql)
     sql_params = tuple(["''" if p == '' else p for p in list(sql_params)])
