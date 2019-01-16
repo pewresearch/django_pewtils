@@ -2,7 +2,8 @@ import shutil, re, importlib, pkgutil, os, imp
 
 from itertools import chain
 
-from pewtils import is_null, try_once_again
+from pewtils import is_null
+from pewtils.internal import try_once_again
 from pewtils.io import FileHandler
 
 from django.apps import apps

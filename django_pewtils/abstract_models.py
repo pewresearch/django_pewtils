@@ -1,9 +1,8 @@
 from django.db import models
 from django.db.models.deletion import Collector
 
-from pewtils import is_not_null
+from pewtils import is_not_null, decode_text
 from django_pewtils import get_model
-from pewtils.nlp import decode_text
 from django_pewtils.managers import BasicExtendedManager
 
 
