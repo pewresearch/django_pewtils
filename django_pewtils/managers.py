@@ -12,7 +12,9 @@ from pewtils import is_null, is_not_null
 from pewtils.io import FileHandler
 from pewtils import chunker
 from django_pewtils import field_exists, filter_field_dict, get_model
-from pewtils.nlp import decode_text, get_fuzzy_ratio, get_fuzzy_partial_ratio, vector_concat, TextHelper
+from pewanalytics.text import TextDataFrame
+from pewanalytics.text.compare import get_fuzzy_partial_ratio, get_fuzzy_ratio
+from pewtils import decode_text, vector_concat
 
 
 def _create_object(
@@ -446,7 +448,7 @@ class BasicExtendedManager(models.QuerySet):
 
         df = pandas.DataFrame(list(self.values("pk", *field_names)))
         df['search_text'] = vector_concat(*[df[f] for f in field_names])
-        h = TextHelper(df, 'search_text')
+        h = TextDataFrame(df, 'search_text')
         similarities = h.search_corpus(text)
         results = []
         for index, row in similarities.iterrows():
