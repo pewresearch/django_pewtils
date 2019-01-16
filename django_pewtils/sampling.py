@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pandas, numpy, random
 
 from pewanalytics.stats.sampling import SampleExtractor
@@ -14,7 +15,7 @@ class DatabaseSampleExtractor(SampleExtractor):
 
     def extract(self, df, sample_size):
 
-        print "Extracting {}s".format(self.model._meta.model_name)
+        print("Extracting {}s".format(self.model._meta.model_name))
         if self.stratify_by:
             if type(self.stratify_by) is not list:
                 stratify_by=[self.stratify_by]

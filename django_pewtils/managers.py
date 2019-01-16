@@ -1,3 +1,4 @@
+from __future__ import print_function
 import traceback, sys, pandas, os, hashlib, random, psycopg2
 
 from fuzzywuzzy import fuzz
@@ -253,10 +254,10 @@ class BasicExtendedManager(models.QuerySet):
             except self.model.MultipleObjectsReturned:
                 if logger:
                     logger.error("%s get_if_exists query on %s returned multiple rows" % (str(search_data), str(self.model)))
-                print "Data passed: %s" % str(unique_data)
-                print "Data searched: %s" % str(search_data)
-                if existing: print "Objects matched: {}".format(existing)
-                else: print "Objects matched: %s" % str(self.filter(**search_data).values())
+                print("Data passed: %s" % str(unique_data))
+                print("Data searched: %s" % str(search_data))
+                if existing: print("Objects matched: {}".format(existing))
+                else: print("Objects matched: %s" % str(self.filter(**search_data).values()))
                 raise
         else:
             existing = None

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import shutil, re, importlib, pkgutil, os, imp
 
 from itertools import chain
@@ -53,7 +54,7 @@ def get_model(name, app_name=None):
 
     if model: return model.model_class()
     else:
-        print "Couldn't find model '{}'".format(name)
+        print("Couldn't find model '{}'".format(name))
         return None
 
     # name = name.replace("_", "")
@@ -301,7 +302,7 @@ class CacheHandler(object):
     def clear(self):
 
         if self.use_database:
-            print "Warning: only keys that have been set by this CacheHandler instance will be cleared"
+            print("Warning: only keys that have been set by this CacheHandler instance will be cleared")
             for k in self.cached_keys:
                 cache.set("/".join([self.path, k]), None)
         else:
