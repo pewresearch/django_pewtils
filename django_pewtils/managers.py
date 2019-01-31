@@ -12,7 +12,7 @@ from django.db import connection, models
 from django.db.models.deletion import Collector
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 
-from pewtils import chunker, is_null, is_not_null, decode_text, vector_concat
+from pewtils import chunk_list, is_null, is_not_null, decode_text, vector_concat
 from pewtils.io import FileHandler
 from django_pewtils import field_exists, filter_field_dict, get_model
 from pewanalytics.text import TextDataFrame, get_fuzzy_partial_ratio, get_fuzzy_ratio
@@ -182,8 +182,8 @@ class BasicExtendedManager(models.QuerySet):
         if randomize:
             ids = list(ids)
             random.shuffle(ids)
-        if tqdm_desc: iterator = tqdm(chunker(ids, size), desc=tqdm_desc)
-        else: iterator = chunker(ids, size)
+        if tqdm_desc: iterator = tqdm(chunk_list(ids, size), desc=tqdm_desc)
+        else: iterator = chunk_list(ids, size)
         for chunk in iterator:
             for obj in self.model.objects.filter(pk__in=chunk):
                 yield obj
@@ -200,8 +200,8 @@ class BasicExtendedManager(models.QuerySet):
     def chunk_delete(self, size=100, tqdm_desc="Deleting"):
 
         ids = self.values_list("pk", flat=True)
-        if tqdm_desc:  iterator = tqdm(chunker(ids, size), desc=tqdm_desc)
-        else: iterator = chunker(ids, size)
+        if tqdm_desc:  iterator = tqdm(chunk_list(ids, size), desc=tqdm_desc)
+        else: iterator = chunk_list(ids, size)
         for chunk in iterator:
             self.model.objects.filter(pk__in=chunk).delete()
 
