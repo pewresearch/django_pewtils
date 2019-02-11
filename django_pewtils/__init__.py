@@ -58,17 +58,6 @@ def get_model(name, app_name=None):
         print("Couldn't find model '{}'".format(name))
         return None
 
-    # name = name.replace("_", "")
-    # if app_name:
-    #     return apps.get_model(app_label=app_name, model_name=name)
-    # else:
-    #     # for model in apps.all_models():
-    #     for app, model_list in apps.all_models.iteritems():
-    #         for model_name, model in model_list.iteritems():
-    #             if model_name == name:
-    #                 return model
-    #     return None
-
 
 def django_multiprocessor(app_name):
     def _django_multiprocessor(func, *args):
@@ -88,7 +77,6 @@ def reset_django_connection_wrapper(app_name):
 
 def reset_django_connection(app_name=None):
 
-    # print "Resetting Django connection"
     if not app_name:
         from django.conf import settings
         app_name = settings.SITE_NAME
@@ -131,7 +119,6 @@ def field_exists(model, field):
     :return: True if the field exists on the model, else False
     """
 
-    # return field in model._meta.get_all_field_names()
     return field in get_all_field_names(model)
 
 
@@ -159,7 +146,6 @@ def get_all_field_names(model):
 
 def consolidate_objects(source=None, target=None, overwrite=False, merge_one_to_ones=False):
 
-    # print "Consolidating {} with {}".format(source, target)
     if source and target and source._meta.model == target._meta.model:
 
         fields = source._meta.get_fields()
@@ -271,7 +257,6 @@ class CacheHandler(object):
 
     def __init__(self, path, use_database=False, hash=True, **options):
 
-        # self.path = "/".join(["cache", path])
         self.path = path
         self.file_handler = FileHandler(self.path, **options)
         self.use_database = use_database
@@ -321,7 +306,6 @@ def get_app_settings_folders(settings_dir_list_var):
         try:
             settings_module = imp.load_source("{}.settings".format(appconf.name), os.path.join(appconf.path, "settings.py"))
             dirs = getattr(settings_module, settings_dir_list_var)
-            # dirs = getattr(appconf.module.settings, settings_dir_list_var)
         except (AttributeError, IOError):
             dirs = []
         command_dirs.extend(dirs)

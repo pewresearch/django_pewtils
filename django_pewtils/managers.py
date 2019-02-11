@@ -74,7 +74,6 @@ def _create_object(
                         setattr(existing, key, value)
                     existing.save()
                 else:
-                    # raise Exception("Multiple existing objects found for: {}".format(original_unique_data))
                     raise e
             # for some reason, django can have issues when using a custom manager and a custom save function
             # so, for example, saving Document objects can raise an IntegrityError (it thinks there's a duplicate primary key)
@@ -354,8 +353,6 @@ class BasicExtendedManager(models.QuerySet):
                 else:
                     # raise Exception("Couldn't create new object, couldn't find existing one: {}".format(e))
                     raise e
-                    import pdb
-                    pdb.set_trace()
         elif update_data:
             existing = _update_object(
                 self.model,
