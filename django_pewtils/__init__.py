@@ -3,11 +3,14 @@ from builtins import object
 import shutil, re, importlib, pkgutil, os, imp
 
 from itertools import chain
+from collections import defaultdict
 
 from pewtils import is_null
 from pewtils.internal import try_once_again
 from pewtils.io import FileHandler
 
+from django.contrib.admin.utils import NestedObjects
+from django.db import DEFAULT_DB_ALIAS
 from django.apps import apps
 from django.db import IntegrityError
 from django.core.cache import cache
@@ -16,18 +19,20 @@ from django.db.models import Case, When
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 
 
-def load_app(app_name, path=None):
-
+def load_app(app_name, path=None, env=None):
+    if not env:
+        env = {}
     import os, django
+    for k, v in env.items():
+        os.environ[k] = v
     if path:
         import sys
-        sys.path.append(path)
+        sys.path.insert(0, path)
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "{}.settings".format(app_name))
     django.setup()
 
 
 def get_model(name, app_name=None):
-
     """
     Returns a Django model class via a string lookup
     :param name: Name of the model
@@ -39,21 +44,26 @@ def get_model(name, app_name=None):
     if app_name:
         query = query.filter(app_label=app_name)
     error = False
-    try: model = query.get(model=name)
+    try:
+        model = query.get(model=name)
     except:
         try:
             reset_django_connection()
             model = query.get(model=name)
-        except: error = True
+        except:
+            error = True
     if error:
-        try: model = query.get(model=name.replace("_", "").replace(" ", ""))
+        try:
+            model = query.get(model=name.replace("_", "").replace(" ", ""))
         except:
             try:
                 reset_django_connection()
                 model = query.get(model=name.replace("_", "").replace(" ", ""))
-            except: model = None
+            except:
+                model = None
 
-    if model: return model.model_class()
+    if model:
+        return model.model_class()
     else:
         print("Couldn't find model '{}'".format(name))
         return None
@@ -63,6 +73,7 @@ def django_multiprocessor(app_name):
     def _django_multiprocessor(func, *args):
         reset_django_connection(app_name)
         return func(*args)
+
     return _django_multiprocessor
 
 
@@ -71,12 +82,13 @@ def reset_django_connection_wrapper(app_name):
         def wrapper(self, *args, **options):
             reset_django_connection(app_name)
             return handle(self, *args, **options)
+
         return wrapper
+
     return _reset_django_connection_wrapper
 
 
 def reset_django_connection(app_name=None):
-
     if not app_name:
         from django.conf import settings
         app_name = settings.SITE_NAME
@@ -85,8 +97,28 @@ def reset_django_connection(app_name=None):
     connection.close()
 
 
-def filter_field_dict(dict, drop_nulls=True, empty_lists_are_null=False, drop_underscore_joins=True):
+def inspect_delete(items, counts=False):
+    collector = NestedObjects(using=DEFAULT_DB_ALIAS)
+    collector.collect(items)
 
+    def _collapse_results(result, to_delete):
+        if isinstance(result, list):
+            for obj in result:
+                to_delete = _collapse_results(obj, to_delete)
+        else:
+            to_delete[result._meta.model].append(result.pk)
+        return to_delete
+
+    to_delete = _collapse_results(collector.nested(), defaultdict(list))
+    for model, ids in to_delete.items():
+        if counts:
+            to_delete[model] = model.objects.filter(pk__in=ids).count()
+        else:
+            to_delete[model] = model.objects.filter(pk__in=ids)
+    return to_delete
+
+
+def filter_field_dict(dict, drop_nulls=True, empty_lists_are_null=False, drop_underscore_joins=True):
     """
     A utility function that clears out the contents of a dictionary based on boolean toggles.
     :param dict: Dictionary of values to prune
@@ -111,7 +143,6 @@ def filter_field_dict(dict, drop_nulls=True, empty_lists_are_null=False, drop_un
 
 
 def field_exists(model, field):
-
     """
     Checks whether a field exists on a model
     :param model: The model class to check
@@ -123,18 +154,16 @@ def field_exists(model, field):
 
 
 def get_fields_with_model(model):
-
     return [
         (f, f.model if f.model != model else None)
         for f in model._meta.get_fields()
         if not f.is_relation
-            or f.one_to_one
-            or (f.many_to_one and f.related_model)
+           or f.one_to_one
+           or (f.many_to_one and f.related_model)
     ]
 
 
 def get_all_field_names(model):
-
     return list(set(chain.from_iterable(
         (field.name, field.attname) if hasattr(field, 'attname') else (field.name,)
         for field in model._meta.get_fields()
@@ -145,7 +174,6 @@ def get_all_field_names(model):
 
 
 def consolidate_objects(source=None, target=None, overwrite=False, merge_one_to_ones=False):
-
     if source and target and source._meta.model == target._meta.model:
 
         fields = source._meta.get_fields()
@@ -169,7 +197,8 @@ def consolidate_objects(source=None, target=None, overwrite=False, merge_one_to_
                     )
             elif f.one_to_one or f.many_to_one:
 
-                if hasattr(target, f.name) and (is_null(getattr(target, f.name), empty_lists_are_null=True) or overwrite):
+                if hasattr(target, f.name) and (
+                        is_null(getattr(target, f.name), empty_lists_are_null=True) or overwrite):
 
                     if f.concrete:
                         setattr(
@@ -206,8 +235,8 @@ def consolidate_objects(source=None, target=None, overwrite=False, merge_one_to_
                         if other.name != 'id' and \
                                 other.name != f.remote_field.name and \
                                 (
-                                    (hasattr(other, "unique") and other.unique and not other.one_to_one) or \
-                                    other.name in unique_togethers
+                                        (hasattr(other, "unique") and other.unique and not other.one_to_one) or \
+                                        other.name in unique_togethers
                                 ):
                             other_unique_fields.append(other.name)
                     target_objs = getattr(target, f.name).all()
@@ -218,7 +247,7 @@ def consolidate_objects(source=None, target=None, overwrite=False, merge_one_to_
                         for s in source_objs:
                             t = consolidate_objects(s, t)
 
-                if hasattr(f, "object_id_field_name"): # it's a generic relation
+                if hasattr(f, "object_id_field_name"):  # it's a generic relation
                     pk_field = f.object_id_field_name
                     for related_object in getattr(source, f.name).all():
                         setattr(related_object, pk_field, target.pk)
@@ -240,8 +269,8 @@ def consolidate_objects(source=None, target=None, overwrite=False, merge_one_to_
             for h in source.history.all():
                 h.id = target.pk
                 h.save()
-        
-        try: 
+
+        try:
             # attempt to save the target before deleting the source, just to be safe
             # but if there's a unique constraint collision, the source needs to go before the target is saved
             target.save()
@@ -264,7 +293,7 @@ class CacheHandler(object):
         if self.use_database:
             self.cached_keys = []
 
-    def write(self, key, value, timeout=5*60):
+    def write(self, key, value, timeout=5 * 60):
 
         if self.use_database:
             k = "/".join([self.path, key])
@@ -293,18 +322,21 @@ class CacheHandler(object):
                 cache.set("/".join([self.path, k]), None)
         else:
             if not self.file_handler.use_s3:
-                try: shutil.rmtree(self.file_handler.path)
-                except OSError: pass
+                try:
+                    shutil.rmtree(self.file_handler.path)
+                except OSError:
+                    pass
             else:
                 bucket_list = self.file_handler.s3.list(prefix=self.path)
                 result = self.file_handler.s3.delete_keys([key.name for key in bucket_list])
 
-def get_app_settings_folders(settings_dir_list_var):
 
+def get_app_settings_folders(settings_dir_list_var):
     command_dirs = []
     for appconf in apps.get_app_configs():
         try:
-            settings_module = imp.load_source("{}.settings".format(appconf.name), os.path.join(appconf.path, "settings.py"))
+            settings_module = imp.load_source("{}.settings".format(appconf.name),
+                                              os.path.join(appconf.path, "settings.py"))
             dirs = getattr(settings_module, settings_dir_list_var)
         except (AttributeError, IOError):
             dirs = []
@@ -313,7 +345,6 @@ def get_app_settings_folders(settings_dir_list_var):
 
 
 def run_partial_postgres_search(model, text, fields, max_results=250, min_rank=0.0):
-
     """
     Example usage: run_partial_postgres_search(ATPQuestion, text, ("description", "name", "response_options__label"), max_results=250)
     :param model: the model you want to search
@@ -328,7 +359,8 @@ def run_partial_postgres_search(model, text, fields, max_results=250, min_rank=0
         text += ':*'
     query = SearchQuery(text)
     vector = SearchVector(*fields)
-    queryset = model.objects.annotate(rank=SearchRank(vector, query)).distinct().filter(rank__gt=min_rank).order_by("-rank").distinct()[:max_results]
+    queryset = model.objects.annotate(rank=SearchRank(vector, query)).distinct().filter(rank__gt=min_rank).order_by(
+        "-rank").distinct()[:max_results]
     sql, sql_params = queryset.query.get_compiler(using=queryset.db).as_sql()
     sql = re.sub("plainto_tsquery", "to_tsquery", sql)
     sql_params = tuple(["''" if p == '' else p for p in list(sql_params)])

@@ -9,12 +9,11 @@ from tqdm import tqdm
 
 from django.db.models import Q, Count
 from django.db import connection, models
-from django.db.models.deletion import Collector
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 
 from pewtils import chunk_list, is_null, is_not_null, decode_text, vector_concat
 from pewtils.io import FileHandler
-from django_pewtils import field_exists, filter_field_dict, get_model
+from django_pewtils import field_exists, filter_field_dict, get_model, inspect_delete
 from pewanalytics.text import TextDataFrame, get_fuzzy_partial_ratio, get_fuzzy_ratio
 
 
@@ -204,11 +203,9 @@ class BasicExtendedManager(models.QuerySet):
         for chunk in iterator:
             self.model.objects.filter(pk__in=chunk).delete()
 
-    def inspect_delete(self):
+    def inspect_delete(self, counts=False):
 
-        collector = Collector(using='default')
-        collector.collect(self.all())
-        return collector.dependencies
+        return inspect_delete(self.all(), counts=counts)
 
     def get_if_exists(
             self,
@@ -450,16 +447,16 @@ class BasicExtendedManager(models.QuerySet):
         similarities = h.search_corpus(text)
         results = []
         for index, row in similarities.iterrows():
-            if not min_similarity or row['cosine_similarity'] >= min_similarity:
+            if not min_similarity or row['search_cosine_similarity'] >= min_similarity:
                 result = self.model.objects.filter(pk=row['pk']).values("pk", *field_names)[0]
-                result['similarity'] = row['cosine_similarity']
+                result['similarity'] = row['search_cosine_similarity']
                 results.append(result)
         return results
 
     def tfidf_similarity_best_match(self, field_names, text, min_similarity=None):
 
         results = self.tfidf_similarities(field_names, text, min_similarity=min_similarity)
-        if results.count() == 0:
+        if len(results) == 0:
             return None
         else:
             return results[0]
