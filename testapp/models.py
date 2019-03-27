@@ -10,4 +10,4 @@ class TestModel(BasicExtendedModel):
 
 class SecondTestModel(BasicExtendedModel):
 
-    text_field = models.TextField()
+    text_field = models.TextField(null=True)
