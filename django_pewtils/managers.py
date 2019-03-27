@@ -165,13 +165,13 @@ class BasicExtendedManager(models.QuerySet):
         self.default_function = None
 
     def to_df(self):
+
         try:
             query, params = self.query.sql_with_params()
-
         except EmptyResultSet:
             return pandas.DataFrame()
 
-        return pandas.io.sql.read_sql_query(query, connection, params = params)
+        return pandas.io.sql.read_sql_query(query, connection, params=params)
 
     def chunk(self, size=100, tqdm_desc=None, randomize=False):
 
