@@ -108,13 +108,6 @@ class BaseTests(DjangoTestCase):
         self.assertTrue(TestModel.objects.filter(pk=2).count() == 0)
         # TODO: this should be much more extensive
 
-    # def test_run_partial_postgres_search(self):
-    #
-    #     from django_pewtils import run_partial_postgres_search
-    #     results = run_partial_postgres_search(TestModel, "film*", ["text_field"])
-    #     print(results)
-    #     # TODO: this can't be done on sqlite
-
     def test_inspect_delete(self):
 
         to_delete = SecondTestModel.objects.all().inspect_delete(counts=True)
@@ -134,6 +127,7 @@ class BaseTests(DjangoTestCase):
         self.assertTrue(len(to_delete.keys()) == 1)
 
     def test_related_objects(self):
+
         results = TestModel.objects.all()[0].related_objects(counts=True)
         self.assertTrue(results['second_related_object']==1)
         self.assertTrue(len(results.keys())==1)
@@ -142,6 +136,7 @@ class BaseTests(DjangoTestCase):
         self.assertTrue(len(results.keys()) == 1)
 
     def test_get_if_exists(self):
+
         obj = TestModel.objects.get_if_exists({"pk": 1})
         self.assertIsNotNone(obj)
         obj = TestModel.objects.get_if_exists({"pk": 123456, "text_field": obj.text_field}, match_any=True)
@@ -291,23 +286,12 @@ class BaseTests(DjangoTestCase):
     #     )
     #     print(result)
 
+    # def test_run_partial_postgres_search(self):
+    #
+    #     from django_pewtils import run_partial_postgres_search
+    #     results = run_partial_postgres_search(TestModel, "film*", ["text_field"])
+    #     print(results)
+    #     # TODO: this can't be done on sqlite
+
     def tearDown(self):
         pass
-
-
-# class DjangoBaseTests(DjangoTestCase):
-#     """
-#     To test, navigate to pewtils root folder and run `python -m unittest tests`
-#     """
-#
-#     def setUp(self):
-#         pass
-#
-#     def test_get_model(self):
-#         from django_pewtils import get_model
-#
-#         get_model("Document", app_name="django_learning")
-#         self.assertTrue(True)
-#
-#     def tearDown(self):
-#         pass
