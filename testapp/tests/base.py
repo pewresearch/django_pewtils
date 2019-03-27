@@ -21,8 +21,8 @@ class BaseTests(DjangoTestCase):
         nltk.download("movie_reviews")
 
         for fileid in nltk.corpus.movie_reviews.fileids()[:50]:
-            obj2 = SecondTestModel.objects.create(text_field=nltk.corpus.movie_reviews.raw(fileid))
-            obj = TestModel.objects.create(text_field=nltk.corpus.movie_reviews.raw(fileid), second_related_object=obj2)
+            obj2 = SecondTestModel.objects.create(text_field=nltk.corpus.movie_reviews.raw(fileid)[:200])
+            obj = TestModel.objects.create(text_field=nltk.corpus.movie_reviews.raw(fileid)[:200], second_related_object=obj2)
 
     def test_get_model(self):
 
@@ -141,28 +141,155 @@ class BaseTests(DjangoTestCase):
         self.assertTrue(results['first_related_object'] == 1)
         self.assertTrue(len(results.keys()) == 1)
 
+    def test_get_if_exists(self):
+        obj = TestModel.objects.get_if_exists({"pk": 1})
+        self.assertIsNotNone(obj)
+        obj = TestModel.objects.get_if_exists({"pk": 123456, "text_field": obj.text_field}, match_any=True)
+        self.assertIsNotNone(obj)
+        obj = TestModel.objects.get_if_exists({"pk": 1, "text_field": []}, match_any=True, empty_lists_are_null=True)
+        self.assertIsNotNone(obj)
+        obj = TestModel.objects.get_if_exists({"text_field": None}, search_nulls=True)
+        self.assertIsNone(obj)
+        SecondTestModel.objects.filter(pk=1).update(text_field=None)
+        obj = SecondTestModel.objects.get_if_exists({"text_field": None}, search_nulls=True)
+        self.assertIsNotNone(obj)
+
+    def test_create_or_update(self):
+
+        new_text = "testing one two three"
+        unique_data = {"pk": 1}
+        update_data = {"text_field": new_text}
+
+        obj = TestModel.objects.create_or_update(
+            unique_data,
+            update_data=update_data,
+            only_update_existing_nulls=True
+        )
+        self.assertFalse(obj.text_field==new_text)
+
+        obj = TestModel.objects.create_or_update(
+            unique_data,
+            update_data=update_data
+        )
+        self.assertTrue(obj.text_field==new_text)
+
+        obj = SecondTestModel.objects.create_or_update(
+            unique_data,
+            update_data={"text_field": None}
+        )
+        self.assertIsNotNone(obj.text_field)
+
+        obj = SecondTestModel.objects.create_or_update(
+            unique_data,
+            update_data={"text_field": None},
+            save_nulls=True
+        )
+        self.assertIsNone(obj.text_field)
+
+        obj = SecondTestModel.objects.create_or_update(
+            {"text_field": None},
+            update_data={"text_field": "woot"},
+            only_update_existing_nulls=True,
+            search_nulls=True
+        )
+        self.assertTrue(obj.text_field=="woot")
+
+    def test_to_df(self):
+
+        import pandas as pd
+        df = TestModel.objects.all().to_df()
+        self.assertTrue(isinstance(df, pd.DataFrame))
+
+    def test_chunk(self):
+
+        items = []
+        for item in TestModel.objects.all().chunk(randomize=True):
+            items.append(item)
+        self.assertTrue(len(items)==TestModel.objects.count())
+
+    def test_sample(self):
+
+        sample = TestModel.objects.sample(10)
+        self.assertTrue(sample.count()==10)
+
+    def test_chunk_delete(self):
+
+        TestModel.objects.chunk_delete()
+        self.assertTrue(TestModel.objects.count()==0)
+
+    def test_inspect_delete(self):
+
+        result = TestModel.objects.inspect_delete(counts=True)
+        self.assertTrue(result[TestModel]==50)
+
     def test_fuzzy_ratio(self):
+
         review = TestModel.objects.all()[0]
+
         result = review.fuzzy_ratio(["text_field"], review.text_field[:100], allow_partial=True)
         self.assertTrue(result == 100)
 
-    def test_similar_by_tfidf_similarity(self):
+        result = review.similar_by_fuzzy_ratios(
+            ["text_field"],
+            min_ratio=10,
+            allow_partial=True,
+            max_partial_difference=80
+        )
+        self.assertTrue(result[0]['pk']==9)
+        self.assertTrue(result[0]['fuzzy_ratio']==33)
+
+        result = TestModel.objects.all().fuzzy_ratios(["text_field"], "quick movie review", allow_partial=True)
+        self.assertTrue(result[0]['pk']==2)
+        self.assertTrue(result[0]['fuzzy_ratio']==100)
+
+        result = TestModel.objects.all().fuzzy_ratio_best_match(["text_field"], "quick movie review", allow_partial=True)
+        self.assertTrue(result['pk'] == 2)
+        self.assertTrue(result['fuzzy_ratio'] == 100)
+
+    def test_tfidf_similarity(self):
+
         review = TestModel.objects.all()[0]
+        result = review.tfidf_similarity(["text_field"], review.text_field[:100])
+        self.assertTrue(round(result, 2) == .74)
+
         result = review.similar_by_tfidf_similarity(
             ["text_field"],
-            review.text_field,
-            min_similarity=.5
+            min_similarity=.1
         )
-        self.assertTrue(len(result)==2)
+        self.assertTrue(result[0]['pk']==20)
+        self.assertTrue(round(result[0]['similarity'], 2)==.21)
 
-    def test_tfidf_similarity_best_match(self):
-        review = TestModel.objects.all()[0]
-        result = TestModel.objects.all().tfidf_similarity_best_match(
-            ["text_field"],
-            review.text_field,
-            min_similarity=.5
-        )
-        self.assertTrue(result['pk']==1)
+        result = TestModel.objects.all().tfidf_similarities(["text_field"], "quick movie review")
+        self.assertTrue(result[0]['pk'] == 2)
+        self.assertTrue(round(result[0]['similarity'], 2) == .35)
+
+        result = TestModel.objects.all().tfidf_similarity_best_match(["text_field"], "quick movie review")
+        self.assertTrue(result['pk'] == 2)
+        self.assertTrue(round(result['similarity'], 2) == .35)
+
+    # def test_levenshtein_difference(self):
+    #     # NOTE: this won't work on SQLite
+    #     review = TestModel.objects.all()[0]
+    #     result = review.levenshtein_difference(["text_field"], review.text_field[:100])
+    #     print(result)
+    #
+    #     result = review.similar_by_levenshtein_difference(
+    #         ["text_field"],
+    #         max_difference=.9
+    #     )
+    #     print(result)
+
+    # def test_trigram_similarity(self):
+    #     # NOTE: this won't work on SQLite
+    #     review = TestModel.objects.all()[0]
+    #     result = review.trigram_similarity(["text_field"], review.text_field[:100])
+    #     print(result)
+    #
+    #     result = review.similar_by_trigram_similarity(
+    #         ["text_field"],
+    #         min_similarity=.1
+    #     )
+    #     print(result)
 
     def tearDown(self):
         pass
