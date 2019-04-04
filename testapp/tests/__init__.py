@@ -11,7 +11,7 @@ from testapp.models import TestModel, SecondTestModel
 class BaseTests(DjangoTestCase):
 
     """
-    To test, navigate to pewtils root folder and run `python -m unittest tests`
+    To test, navigate to django_pewtils root folder and run `python manage.py test testapp.tests`
     """
 
     def setUp(self):
