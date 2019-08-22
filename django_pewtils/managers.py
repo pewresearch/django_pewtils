@@ -195,6 +195,14 @@ class BasicExtendedManager(models.QuerySet):
 
         return self.model.objects.filter(pk__in=sample)
 
+    def chunk_update(self, size=100, tqdm_desc="Updating", **to_update):
+
+        ids = self.values_list("pk", flat=True)
+        if tqdm_desc:  iterator = tqdm(chunk_list(ids, size), desc=tqdm_desc)
+        else: iterator = chunk_list(ids, size)
+        for chunk in iterator:
+            self.model.objects.filter(pk__in=chunk).update(**to_update)
+
     def chunk_delete(self, size=100, tqdm_desc="Deleting"):
 
         ids = self.values_list("pk", flat=True)
