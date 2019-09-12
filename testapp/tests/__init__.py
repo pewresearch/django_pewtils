@@ -230,8 +230,8 @@ class BaseTests(DjangoTestCase):
             allow_partial=True,
             max_partial_difference=80
         )
-        self.assertTrue(result[0]['pk']==9)
-        self.assertTrue(result[0]['fuzzy_ratio']==33)
+        self.assertTrue(result[0]['pk']==6)
+        self.assertTrue(result[0]['fuzzy_ratio']==46)
 
         result = TestModel.objects.all().fuzzy_ratios(["text_field"], "quick movie review", allow_partial=True)
         self.assertTrue(result[0]['pk']==2)
