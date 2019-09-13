@@ -9,14 +9,18 @@ from pewtils import is_null
 from pewtils.internal import try_once_again
 from pewtils.io import FileHandler
 
-from django.contrib.admin.utils import NestedObjects
-from django.db import DEFAULT_DB_ALIAS
-from django.apps import apps
-from django.db import IntegrityError
-from django.core.cache import cache
-from django.contrib.contenttypes.models import ContentType
-from django.db.models import Case, When
-from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+from django.core.exceptions import ImproperlyConfigured
+try:
+    from django.contrib.admin.utils import NestedObjects
+    from django.db import DEFAULT_DB_ALIAS
+    from django.apps import apps
+    from django.db import IntegrityError
+    from django.core.cache import cache
+    from django.contrib.contenttypes.models import ContentType
+    from django.db.models import Case, When
+    from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+except ImproperlyConfigured:
+    pass
 
 
 def load_app(app_name, path=None, env=None):

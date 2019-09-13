@@ -32,6 +32,7 @@ class BaseTests(DjangoTestCase):
         get_model("TestModel", app_name="testapp")
         self.assertTrue(True)
 
+    # TODO: find a way to test this; problem is, Django unit tests are transactional so this kills them
     # def test_reset_django_connection(self):
     #
     #     from django_pewtils import reset_django_connection
@@ -281,11 +282,11 @@ class BaseTests(DjangoTestCase):
 
         review = TestModel.objects.all()[0]
         result = review.trigram_similarity(["text_field"], review.text_field[:100])
-        import pdb; pdb.set_trace()
+        self.assertAlmostEqual(result, .51, 2)
         result = review.similar_by_trigram_similarity(
             ["text_field"],
             min_similarity=.1
-        )
+        )[0]
         self.assertEqual(result['pk'], 49)
         self.assertAlmostEqual(result['similarity'], .10, 2)
 
