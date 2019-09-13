@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+from django.contrib.postgres.operations import CreateExtension, TrigramExtension
 import django.db.models.deletion
 
 
@@ -14,6 +15,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        CreateExtension(name="fuzzystrmatch"),
+        TrigramExtension(),
         migrations.CreateModel(
             name='SecondTestModel',
             fields=[
