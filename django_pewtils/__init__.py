@@ -345,6 +345,9 @@ def get_app_settings_folders(settings_dir_list_var):
         except (AttributeError, IOError):
             dirs = []
         command_dirs.extend(dirs)
+    from django.conf import settings
+    if hasattr(settings, settings_dir_list_var):
+        command_dirs.extend(getattr(settings, settings_dir_list_var))
     return list(set(command_dirs))
 
 
