@@ -10,6 +10,7 @@ from pewtils.internal import try_once_again
 from pewtils.io import FileHandler
 
 from django.core.exceptions import ImproperlyConfigured
+
 try:
     from django.contrib.admin.utils import NestedObjects
     from django.db import DEFAULT_DB_ALIAS
@@ -27,10 +28,12 @@ def load_app(app_name, path=None, env=None):
     if not env:
         env = {}
     import os, django
+
     for k, v in env.items():
         os.environ[k] = v
     if path:
         import sys
+
         sys.path.insert(0, path)
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "{}.settings".format(app_name))
     django.setup()
@@ -103,9 +106,11 @@ def reset_django_connection_wrapper(app_name):
 def reset_django_connection(app_name=None):
     if not app_name:
         from django.conf import settings
+
         app_name = settings.SITE_NAME
     load_app(app_name)
     from django.db import connection
+
     connection.close()
 
 
@@ -130,7 +135,9 @@ def inspect_delete(items, counts=False):
     return to_delete
 
 
-def filter_field_dict(dict, drop_nulls=True, empty_lists_are_null=False, drop_underscore_joins=True):
+def filter_field_dict(
+    dict, drop_nulls=True, empty_lists_are_null=False, drop_underscore_joins=True
+):
     """
     A utility function that clears out the contents of a dictionary based on boolean toggles.
     :param dict: Dictionary of values to prune
@@ -142,12 +149,16 @@ def filter_field_dict(dict, drop_nulls=True, empty_lists_are_null=False, drop_un
 
     if dict:
         for k in list(dict.keys()):
-            if (drop_underscore_joins and "__" in k) or \
-                    (drop_nulls and is_null(dict[k], empty_lists_are_null=empty_lists_are_null)):
+            if (drop_underscore_joins and "__" in k) or (
+                drop_nulls
+                and is_null(dict[k], empty_lists_are_null=empty_lists_are_null)
+            ):
                 del dict[k]
 
         if "content_object" in list(dict.keys()):
-            dict["content_type"] = ContentType.objects.get_for_model(dict["content_object"])
+            dict["content_type"] = ContentType.objects.get_for_model(
+                dict["content_object"]
+            )
             dict["object_id"] = dict["content_object"].pk
             del dict["content_object"]
 
@@ -169,61 +180,66 @@ def get_fields_with_model(model):
     return [
         (f, f.model if f.model != model else None)
         for f in model._meta.get_fields()
-        if not f.is_relation
-           or f.one_to_one
-           or (f.many_to_one and f.related_model)
+        if not f.is_relation or f.one_to_one or (f.many_to_one and f.related_model)
     ]
 
 
 def get_all_field_names(model):
-    return list(set(chain.from_iterable(
-        (field.name, field.attname) if hasattr(field, 'attname') else (field.name,)
-        for field in model._meta.get_fields()
-        # For complete backwards compatibility, you may want to exclude
-        # GenericForeignKey from the results.
-        if not (field.many_to_one and field.related_model is None)
-    )))
+    return list(
+        set(
+            chain.from_iterable(
+                (field.name, field.attname)
+                if hasattr(field, "attname")
+                else (field.name,)
+                for field in model._meta.get_fields()
+                # For complete backwards compatibility, you may want to exclude
+                # GenericForeignKey from the results.
+                if not (field.many_to_one and field.related_model is None)
+            )
+        )
+    )
 
 
-def consolidate_objects(source=None, target=None, overwrite=False, merge_one_to_ones=False):
+def consolidate_objects(
+    source=None, target=None, overwrite=False, merge_one_to_ones=False
+):
     if source and target and source._meta.model == target._meta.model:
 
         fields = source._meta.get_fields()
         for f in fields:
             if not f.is_relation:
-                if isinstance(getattr(target, f.name), list) and isinstance(getattr(source, f.name), list):
+                if isinstance(getattr(target, f.name), list) and isinstance(
+                    getattr(source, f.name), list
+                ):
                     setattr(
                         target,
                         f.name,
-                        list(set(getattr(source, f.name)).union(set(getattr(target, f.name))))
+                        list(
+                            set(getattr(source, f.name)).union(
+                                set(getattr(target, f.name))
+                            )
+                        ),
                     )
-                elif is_null(getattr(target, f.name), empty_lists_are_null=True) or overwrite:
+                elif (
+                    is_null(getattr(target, f.name), empty_lists_are_null=True)
+                    or overwrite
+                ):
                     val = getattr(source, f.name)
                     if f.unique:
                         setattr(source, f.name, None)
                         source.save()
-                    setattr(
-                        target,
-                        f.name,
-                        val
-                    )
+                    setattr(target, f.name, val)
             elif f.one_to_one or f.many_to_one:
 
                 if hasattr(target, f.name) and (
-                        is_null(getattr(target, f.name), empty_lists_are_null=True) or overwrite):
+                    is_null(getattr(target, f.name), empty_lists_are_null=True)
+                    or overwrite
+                ):
 
                     if f.concrete:
-                        setattr(
-                            target,
-                            f.name,
-                            getattr(source, f.name)
-                        )
+                        setattr(target, f.name, getattr(source, f.name))
                         if f.one_to_one:
-                            setattr(
-                                source,
-                                f.name,
-                                None
-                            )
+                            setattr(source, f.name, None)
                             source.save()
                     else:
 
@@ -236,26 +252,36 @@ def consolidate_objects(source=None, target=None, overwrite=False, merge_one_to_
                 unique_togethers = []
                 for fieldset in f.remote_field.model._meta.unique_together:
                     if type(fieldset) == tuple:
-                        for field in fieldset: unique_togethers.append(field)
+                        for field in fieldset:
+                            unique_togethers.append(field)
                     else:
                         unique_togethers.append(fieldset)
 
-                if (hasattr(f.remote_field, "unique") and f.remote_field.unique) or \
-                        f.remote_field.name in unique_togethers:
+                if (
+                    hasattr(f.remote_field, "unique") and f.remote_field.unique
+                ) or f.remote_field.name in unique_togethers:
                     other_unique_fields = []
                     for other in f.remote_field.model._meta.get_fields():
-                        if other.name != 'id' and \
-                                other.name != f.remote_field.name and \
+                        if (
+                            other.name != "id"
+                            and other.name != f.remote_field.name
+                            and (
                                 (
-                                        (hasattr(other, "unique") and other.unique and not other.one_to_one) or \
-                                        other.name in unique_togethers
-                                ):
+                                    hasattr(other, "unique")
+                                    and other.unique
+                                    and not other.one_to_one
+                                )
+                                or other.name in unique_togethers
+                            )
+                        ):
                             other_unique_fields.append(other.name)
                     target_objs = getattr(target, f.name).all()
                     for t in target_objs:
                         source_objs = getattr(source, f.name).all()
                         for other in other_unique_fields:
-                            source_objs = source_objs.filter(**{other: getattr(t, other)})
+                            source_objs = source_objs.filter(
+                                **{other: getattr(t, other)}
+                            )
                         for s in source_objs:
                             t = consolidate_objects(s, t)
 
@@ -272,7 +298,9 @@ def consolidate_objects(source=None, target=None, overwrite=False, merge_one_to_
             elif f.many_to_many:
 
                 try:
-                    merged_objects = getattr(source, f.name).all() | getattr(target, f.name).all()
+                    merged_objects = (
+                        getattr(source, f.name).all() | getattr(target, f.name).all()
+                    )
                     setattr(target, f.name, merged_objects)
                 except AttributeError:
                     pass
@@ -295,7 +323,6 @@ def consolidate_objects(source=None, target=None, overwrite=False, merge_one_to_
 
 
 class CacheHandler(object):
-
     def __init__(self, path, use_database=False, hash=True, **options):
 
         self.path = path
@@ -329,7 +356,9 @@ class CacheHandler(object):
     def clear(self):
 
         if self.use_database:
-            print("Warning: only keys that have been set by this CacheHandler instance will be cleared")
+            print(
+                "Warning: only keys that have been set by this CacheHandler instance will be cleared"
+            )
             for k in self.cached_keys:
                 cache.set("/".join([self.path, k]), None)
         else:
@@ -340,20 +369,25 @@ class CacheHandler(object):
                     pass
             else:
                 bucket_list = self.file_handler.s3.list(prefix=self.path)
-                result = self.file_handler.s3.delete_keys([key.name for key in bucket_list])
+                result = self.file_handler.s3.delete_keys(
+                    [key.name for key in bucket_list]
+                )
 
 
 def get_app_settings_folders(settings_dir_list_var):
     command_dirs = []
     for appconf in apps.get_app_configs():
         try:
-            settings_module = imp.load_source("{}.settings".format(appconf.name),
-                                              os.path.join(appconf.path, "settings.py"))
+            settings_module = imp.load_source(
+                "{}.settings".format(appconf.name),
+                os.path.join(appconf.path, "settings.py"),
+            )
             dirs = getattr(settings_module, settings_dir_list_var)
         except (AttributeError, IOError):
             dirs = []
         command_dirs.extend(dirs)
     from django.conf import settings
+
     if hasattr(settings, settings_dir_list_var):
         command_dirs.extend(getattr(settings, settings_dir_list_var))
     return list(set(command_dirs))
@@ -368,22 +402,28 @@ def run_partial_postgres_search(model, text, fields, max_results=250, min_rank=0
     :param max_results: top N results you want to return
     :return:
     """
-    text = re.sub(r'[!\'()|&]', ' ', text).strip()
+    text = re.sub(r"[!\'()|&]", " ", text).strip()
     if text:
-        text = re.sub(r'\s+', ' & ', text)
-        text += ':*'
+        text = re.sub(r"\s+", " & ", text)
+        text += ":*"
     query = SearchQuery(text)
     vector = SearchVector(*fields)
-    queryset = model.objects.annotate(rank=SearchRank(vector, query)).distinct().filter(rank__gt=min_rank).order_by(
-        "-rank").distinct()[:max_results]
+    queryset = (
+        model.objects.annotate(rank=SearchRank(vector, query))
+        .distinct()
+        .filter(rank__gt=min_rank)
+        .order_by("-rank")
+        .distinct()[:max_results]
+    )
     sql, sql_params = queryset.query.get_compiler(using=queryset.db).as_sql()
     sql = re.sub("plainto_tsquery", "to_tsquery", sql)
-    sql_params = tuple(["''" if p == '' else p for p in list(sql_params)])
+    sql_params = tuple(["''" if p == "" else p for p in list(sql_params)])
     results = model.objects.raw(sql, sql_params)
     pk_list = [r.pk for r in results]
     preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pk_list)])
     queryset = model.objects.filter(pk__in=pk_list).order_by(preserved)
     return queryset
+
 
 # def extract_site_module_attributes(path, site_name, attribute_name):
 #

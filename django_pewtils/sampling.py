@@ -5,7 +5,6 @@ from pewanalytics.stats.sampling import SampleExtractor
 
 
 class DatabaseSampleExtractor(SampleExtractor):
-
     def __init__(self, model, filter_dict=None, exclude_dict=None, *args, **kwargs):
 
         self.model = model
@@ -18,10 +17,18 @@ class DatabaseSampleExtractor(SampleExtractor):
         print("Extracting {}s".format(self.model._meta.model_name))
         if self.stratify_by:
             if type(self.stratify_by) is not list:
-                stratify_by=[self.stratify_by]
-            qset = self.model.objects.filter(**self.filter_dict).exclude(**self.exclude_dict).values(self.id_col, *stratify_by)
+                stratify_by = [self.stratify_by]
+            qset = (
+                self.model.objects.filter(**self.filter_dict)
+                .exclude(**self.exclude_dict)
+                .values(self.id_col, *stratify_by)
+            )
         else:
-            qset = self.model.objects.filter(**self.filter_dict).exclude(**self.exclude_dict).values(self.id_col)
+            qset = (
+                self.model.objects.filter(**self.filter_dict)
+                .exclude(**self.exclude_dict)
+                .values(self.id_col)
+            )
 
         docs = pandas.DataFrame(list(qset))
 

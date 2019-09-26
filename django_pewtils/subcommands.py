@@ -4,7 +4,11 @@ from optparse import NO_DEFAULT, OptionParser
 from importlib import import_module
 
 from django.conf import settings
-from django.core.management.base import CommandError, BaseCommand, handle_default_options
+from django.core.management.base import (
+    CommandError,
+    BaseCommand,
+    handle_default_options,
+)
 
 
 class SubcommandDispatcher(BaseCommand):
@@ -19,27 +23,29 @@ class SubcommandDispatcher(BaseCommand):
     subcommands = []
     custom_commander = None
 
-    import_template = '{app_name}.management.subcommands.{dispatcher_name}.{module_name}'
+    import_template = (
+        "{app_name}.management.subcommands.{dispatcher_name}.{module_name}"
+    )
 
     def __init__(self):
         self.app_name = settings.SITE_NAME
         super(SubcommandDispatcher, self).__init__()
 
     def print_subcommands(self, prog_name):
-        usage = ['', 'Available subcommands:']
+        usage = ["", "Available subcommands:"]
         for name in sorted(self.subcommands):
-            usage.append('  {0}'.format(name))
-        return '\n'.join(usage)
+            usage.append("  {0}".format(name))
+        return "\n".join(usage)
 
     def usage(self, subcommand):
-        usage = '%prog {0} subcommand [options] [args]'.format(subcommand)
+        usage = "%prog {0} subcommand [options] [args]".format(subcommand)
         if self.help:
-            return '{0}\n\n{1}'.format(usage, self.help)
+            return "{0}\n\n{1}".format(usage, self.help)
         return usage
 
     def print_help(self, prog_name, subcommand):
         super(SubcommandDispatcher, self).print_help(prog_name, subcommand)
-        sys.stdout.write('{0}\n\n'.format(self.print_subcommands(prog_name)))
+        sys.stdout.write("{0}\n\n".format(self.print_subcommands(prog_name)))
 
     def get_subcommand(self, dispatcher, subcommand):
 
@@ -47,19 +53,27 @@ class SubcommandDispatcher(BaseCommand):
             return self.custom_commander(subcommand)
         else:
             try:
-                module = import_module(self.import_template.format(
-                    app_name=self.app_name,
-                    dispatcher_name=dispatcher,
-                    module_name=subcommand)
+                module = import_module(
+                    self.import_template.format(
+                        app_name=self.app_name,
+                        dispatcher_name=dispatcher,
+                        module_name=subcommand,
+                    )
                 )
                 return module.Command()
             except KeyError:
-                raise CommandError('Unknown subcommand: {0} {1}'.format(self.app_name, subcommand))
+                raise CommandError(
+                    "Unknown subcommand: {0} {1}".format(self.app_name, subcommand)
+                )
 
     def run_from_argv(self, argv):
 
         # Set up any environment changes requested (e.g., Python path and Django settings), then run this command.
-        if len(argv) > 2 and not argv[2].startswith('-') and argv[2] in self.subcommands:
+        if (
+            len(argv) > 2
+            and not argv[2].startswith("-")
+            and argv[2] in self.subcommands
+        ):
             dispatcher = argv[1]
             subcommand = argv[2]
             klass = self.get_subcommand(dispatcher, subcommand)
@@ -90,7 +104,7 @@ class SubcommandDispatcher(BaseCommand):
 
     def handle(self, *args, **options):
         if not args or args[0] not in self.subcommands:
-            return self.print_help('./manage.py', self.app_name)
+            return self.print_help("./manage.py", self.app_name)
         subcommand, args = args[0], args[1:]
 
         klass = self.get_subcommand(subcommand)
@@ -107,7 +121,6 @@ class SubcommandDispatcher(BaseCommand):
         defaults.update(options)
 
         return klass.execute(*args, **defaults)
-
 
         # def handle_logger(handle):
         #     def wrapper(self, *args, **options):

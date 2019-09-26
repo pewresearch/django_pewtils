@@ -23,7 +23,7 @@ def _create_object(
     save_nulls=False,
     empty_lists_are_null=True,
     logger=None,
-    command_log=None
+    command_log=None,
 ):
 
     """
@@ -45,9 +45,17 @@ def _create_object(
         # if not save_nulls:  # I (Patrick) removed this since you always want to drop __ filter fields from unique data before creating an object
         # the slight additional overhead of always running filter_field_dict even when save_nulls is True is offset by the benefit of being
         # able to use filter searches in create_or_update (see the mturk_trust_code command for an example, where code__variable is a unique constraint
-        unique_data = filter_field_dict(unique_data, drop_nulls=(not save_nulls), empty_lists_are_null=empty_lists_are_null)
+        unique_data = filter_field_dict(
+            unique_data,
+            drop_nulls=(not save_nulls),
+            empty_lists_are_null=empty_lists_are_null,
+        )
         if update_data:
-            update_data = filter_field_dict(update_data, drop_nulls=(not save_nulls), empty_lists_are_null=empty_lists_are_null)
+            update_data = filter_field_dict(
+                update_data,
+                drop_nulls=(not save_nulls),
+                empty_lists_are_null=empty_lists_are_null,
+            )
         original_unique_data = unique_data
         if update_data:
             for field in list(update_data.keys()):
@@ -58,14 +66,20 @@ def _create_object(
             existing = model.objects.get(pk=existing.pk)
         except Exception as e:
             # try:
-            #warning = "Warning: had to retry the object creation... Django thought there was a duplicate"
-            #print warning
+            # warning = "Warning: had to retry the object creation... Django thought there was a duplicate"
+            # print warning
             # NOTE - this happened once when the database connection cut out; just had to try running it again
             try:
-                existing = get_model(model._meta.model_name).objects.create(**unique_data)
-                existing = get_model(model._meta.model_name).objects.get(pk=existing.pk) # refresh data
+                existing = get_model(model._meta.model_name).objects.create(
+                    **unique_data
+                )
+                existing = get_model(model._meta.model_name).objects.get(
+                    pk=existing.pk
+                )  # refresh data
             except:
-                existing = get_model(model._meta.model_name).objects.filter(**original_unique_data)
+                existing = get_model(model._meta.model_name).objects.filter(
+                    **original_unique_data
+                )
                 if existing.count() == 1:
                     existing = existing[0]
                     for key, value in update_data.items():
@@ -92,7 +106,10 @@ def _create_object(
         # print e
         if logger:
             exc_type, exc_value, exc_traceback = sys.exc_info()
-            logger.info("%s %s %s %s" % (str(exc_type), str(exc_value), str(traceback.format_exc()), warning))
+            logger.info(
+                "%s %s %s %s"
+                % (str(exc_type), str(exc_value), str(traceback.format_exc()), warning)
+            )
         raise
 
     return existing
@@ -133,9 +150,19 @@ def _update_object(
 
     if update_data:
         try:
-            update_data = filter_field_dict(update_data, drop_nulls=(not save_nulls), empty_lists_are_null=empty_lists_are_null)
+            update_data = filter_field_dict(
+                update_data,
+                drop_nulls=(not save_nulls),
+                empty_lists_are_null=empty_lists_are_null,
+            )
             for field in list(update_data.keys()):
-                if field_exists(model, field) and (not only_update_existing_nulls or is_null(getattr(existing, field), empty_lists_are_null=empty_lists_are_null)):
+                if field_exists(model, field) and (
+                    not only_update_existing_nulls
+                    or is_null(
+                        getattr(existing, field),
+                        empty_lists_are_null=empty_lists_are_null,
+                    )
+                ):
                     setattr(existing, field, update_data[field])
             # try:
             existing.save(**save_kwargs)
@@ -150,14 +177,16 @@ def _update_object(
         except Exception:
             if logger:
                 exc_type, exc_value, exc_traceback = sys.exc_info()
-                logger.info("%s %s %s" % (str(exc_type), str(exc_value), str(traceback.format_exc())))
+                logger.info(
+                    "%s %s %s"
+                    % (str(exc_type), str(exc_value), str(traceback.format_exc()))
+                )
             raise
 
     return existing
 
 
 class BasicExtendedManager(models.QuerySet):
-
     def __init__(self, *args, **kwargs):
 
         super(BasicExtendedManager, self).__init__(*args, **kwargs)
@@ -179,8 +208,10 @@ class BasicExtendedManager(models.QuerySet):
         if randomize:
             ids = list(ids)
             random.shuffle(ids)
-        if tqdm_desc: iterator = tqdm(chunk_list(ids, size), desc=tqdm_desc)
-        else: iterator = chunk_list(ids, size)
+        if tqdm_desc:
+            iterator = tqdm(chunk_list(ids, size), desc=tqdm_desc)
+        else:
+            iterator = chunk_list(ids, size)
         for chunk in iterator:
             for obj in self.model.objects.filter(pk__in=chunk):
                 yield obj
@@ -197,16 +228,20 @@ class BasicExtendedManager(models.QuerySet):
     def chunk_update(self, size=100, tqdm_desc="Updating", **to_update):
 
         ids = self.values_list("pk", flat=True)
-        if tqdm_desc:  iterator = tqdm(chunk_list(ids, size), desc=tqdm_desc)
-        else: iterator = chunk_list(ids, size)
+        if tqdm_desc:
+            iterator = tqdm(chunk_list(ids, size), desc=tqdm_desc)
+        else:
+            iterator = chunk_list(ids, size)
         for chunk in iterator:
             self.model.objects.filter(pk__in=chunk).update(**to_update)
 
     def chunk_delete(self, size=100, tqdm_desc="Deleting"):
 
         ids = self.values_list("pk", flat=True)
-        if tqdm_desc:  iterator = tqdm(chunk_list(ids, size), desc=tqdm_desc)
-        else: iterator = chunk_list(ids, size)
+        if tqdm_desc:
+            iterator = tqdm(chunk_list(ids, size), desc=tqdm_desc)
+        else:
+            iterator = chunk_list(ids, size)
         for chunk in iterator:
             self.model.objects.filter(pk__in=chunk).delete()
 
@@ -215,12 +250,12 @@ class BasicExtendedManager(models.QuerySet):
         return inspect_delete(self.all(), counts=counts)
 
     def get_if_exists(
-            self,
-            unique_data,
-            match_any=False,
-            search_nulls=False,
-            empty_lists_are_null=True,
-            logger=None
+        self,
+        unique_data,
+        match_any=False,
+        search_nulls=False,
+        empty_lists_are_null=True,
+        logger=None,
     ):
 
         """
@@ -238,7 +273,12 @@ class BasicExtendedManager(models.QuerySet):
 
         """
 
-        search_data = filter_field_dict(unique_data, drop_nulls=(not search_nulls), empty_lists_are_null=empty_lists_are_null, drop_underscore_joins=False)
+        search_data = filter_field_dict(
+            unique_data,
+            drop_nulls=(not search_nulls),
+            empty_lists_are_null=empty_lists_are_null,
+            drop_underscore_joins=False,
+        )
         if len(list(search_data.keys())) > 0:
             existing = None
             try:
@@ -259,11 +299,19 @@ class BasicExtendedManager(models.QuerySet):
                 existing = None
             except self.model.MultipleObjectsReturned:
                 if logger:
-                    logger.error("%s get_if_exists query on %s returned multiple rows" % (str(search_data), str(self.model)))
+                    logger.error(
+                        "%s get_if_exists query on %s returned multiple rows"
+                        % (str(search_data), str(self.model))
+                    )
                 print("Data passed: %s" % str(unique_data))
                 print("Data searched: %s" % str(search_data))
-                if existing: print("Objects matched: {}".format(existing))
-                else: print("Objects matched: %s" % str(list(self.filter(**search_data).values())))
+                if existing:
+                    print("Objects matched: {}".format(existing))
+                else:
+                    print(
+                        "Objects matched: %s"
+                        % str(list(self.filter(**search_data).values()))
+                    )
                 raise
         else:
             existing = None
@@ -271,19 +319,19 @@ class BasicExtendedManager(models.QuerySet):
         return existing
 
     def create_or_update(
-            self,
-            unique_data,
-            update_data=None,
-            match_any=False,
-            return_object=True,
-            search_nulls=False,
-            save_nulls=False,
-            empty_lists_are_null=True,
-            only_update_existing_nulls=False,
-            logger=None,
-            command_log=None,
-            force_create=False,
-            **save_kwargs
+        self,
+        unique_data,
+        update_data=None,
+        match_any=False,
+        return_object=True,
+        search_nulls=False,
+        save_nulls=False,
+        empty_lists_are_null=True,
+        only_update_existing_nulls=False,
+        logger=None,
+        command_log=None,
+        force_create=False,
+        **save_kwargs
     ):
         """
 
@@ -320,7 +368,7 @@ class BasicExtendedManager(models.QuerySet):
                 match_any=match_any,
                 search_nulls=search_nulls,
                 empty_lists_are_null=empty_lists_are_null,
-                logger=logger
+                logger=logger,
             )
         if not existing:
             try:
@@ -331,7 +379,7 @@ class BasicExtendedManager(models.QuerySet):
                     save_nulls=save_nulls,
                     empty_lists_are_null=empty_lists_are_null,
                     logger=logger,
-                    command_log=command_log
+                    command_log=command_log,
                 )
             except Exception as e:
                 existing = self.get_if_exists(
@@ -339,7 +387,7 @@ class BasicExtendedManager(models.QuerySet):
                     match_any=match_any,
                     search_nulls=search_nulls,
                     empty_lists_are_null=empty_lists_are_null,
-                    logger=logger
+                    logger=logger,
                 )
                 if existing:
                     existing = _update_object(
@@ -379,43 +427,76 @@ class BasicExtendedManager(models.QuerySet):
 
     def get_existing_command_records(self, name_regex, parameters_regex):
 
-        commands = get_model("Command", app_name="django_commander").objects\
-            .filter(name__regex=name_regex)\
+        commands = (
+            get_model("Command", app_name="django_commander")
+            .objects.filter(name__regex=name_regex)
             .filter(parameters__regex=parameters_regex)
+        )
 
         return self.filter(commands__in=commands)
 
-    def get_orphaned_command_records(self, name_regex, parameters_regex, whitelist, whitelist_field="pk"):
+    def get_orphaned_command_records(
+        self, name_regex, parameters_regex, whitelist, whitelist_field="pk"
+    ):
 
-        commands = get_model("Command", app_name="django_commander").objects\
-            .filter(name__regex=name_regex)\
+        commands = (
+            get_model("Command", app_name="django_commander")
+            .objects.filter(name__regex=name_regex)
             .filter(parameters__regex=parameters_regex)
+        )
         command_count = commands.count()
 
-        return self\
-            .annotate(c=Count("commands"))\
-            .filter(c=command_count)\
-            .filter(commands__in=commands)\
+        return (
+            self.annotate(c=Count("commands"))
+            .filter(c=command_count)
+            .filter(commands__in=commands)
             .exclude(**{"%s__in" % whitelist_field: whitelist})
+        )
 
-    def fuzzy_ratios(self, field_names, text, min_ratio=None, allow_partial=False, max_partial_difference=100):
+    def fuzzy_ratios(
+        self,
+        field_names,
+        text,
+        min_ratio=None,
+        allow_partial=False,
+        max_partial_difference=100,
+    ):
 
         results = []
         for row in self.values("pk", *field_names):
             result = row
-            row['fuzzy_ratio'] = get_fuzzy_ratio(" ".join([row[field_name] for field_name in field_names]), text)
+            row["fuzzy_ratio"] = get_fuzzy_ratio(
+                " ".join([row[field_name] for field_name in field_names]), text
+            )
             if allow_partial:
-                partial_ratio = get_fuzzy_partial_ratio(" ".join([row[field_name] for field_name in field_names]), text)
-                substring_variation = abs(result['fuzzy_ratio'] - partial_ratio)
-                row['fuzzy_ratio'] = max([row['fuzzy_ratio'], partial_ratio])
-            if (not min_ratio or row['fuzzy_ratio'] >= min_ratio) and (not allow_partial or substring_variation <= max_partial_difference):
+                partial_ratio = get_fuzzy_partial_ratio(
+                    " ".join([row[field_name] for field_name in field_names]), text
+                )
+                substring_variation = abs(result["fuzzy_ratio"] - partial_ratio)
+                row["fuzzy_ratio"] = max([row["fuzzy_ratio"], partial_ratio])
+            if (not min_ratio or row["fuzzy_ratio"] >= min_ratio) and (
+                not allow_partial or substring_variation <= max_partial_difference
+            ):
                 results.append(result)
 
-        return sorted(results, key=lambda x: x['fuzzy_ratio'], reverse=True)
+        return sorted(results, key=lambda x: x["fuzzy_ratio"], reverse=True)
 
-    def fuzzy_ratio_best_match(self, field_names, text, min_ratio=None, allow_partial=False, max_partial_difference=100):
+    def fuzzy_ratio_best_match(
+        self,
+        field_names,
+        text,
+        min_ratio=None,
+        allow_partial=False,
+        max_partial_difference=100,
+    ):
 
-        results = self.fuzzy_ratios(field_names, text, min_ratio=min_ratio, allow_partial=allow_partial, max_partial_difference=max_partial_difference)
+        results = self.fuzzy_ratios(
+            field_names,
+            text,
+            min_ratio=min_ratio,
+            allow_partial=allow_partial,
+            max_partial_difference=max_partial_difference,
+        )
         if len(results) == 0:
             return None
         else:
@@ -423,24 +504,40 @@ class BasicExtendedManager(models.QuerySet):
 
     def levenshtein_differences(self, field_names, text, max_difference=None):
 
-        try: text = str(text)
-        except (UnicodeEncodeError, UnicodeDecodeError): text = decode_text(text)
+        try:
+            text = str(text)
+        except (UnicodeEncodeError, UnicodeDecodeError):
+            text = decode_text(text)
         if len(field_names) > 1:
             search_field = "CONCAT({0})".format(", ' ', ".join(field_names))
         else:
             search_field = field_names[0]
         search_field = "substring({} from 1 for 255)".format(search_field)
-        query = self\
-            .extra(select={"difference": "levenshtein({0}, %s) / length({0})::float".format(search_field)}, select_params=(text,))\
-            .order_by("difference")
+        query = self.extra(
+            select={
+                "difference": "levenshtein({0}, %s) / length({0})::float".format(
+                    search_field
+                )
+            },
+            select_params=(text,),
+        ).order_by("difference")
         if max_difference:
-            query = query.extra(where=["levenshtein({0}, %s) / length({0})::float <= %s".format(search_field)], params=[text, max_difference])
+            query = query.extra(
+                where=[
+                    "levenshtein({0}, %s) / length({0})::float <= %s".format(
+                        search_field
+                    )
+                ],
+                params=[text, max_difference],
+            )
 
         return query.values("pk", "difference", *field_names)
 
     def levenshtein_difference_best_match(self, field_names, text, max_difference=None):
 
-        results = self.levenshtein_differences(field_names, text, max_difference=max_difference)
+        results = self.levenshtein_differences(
+            field_names, text, max_difference=max_difference
+        )
         if results.count() == 0:
             return None
         else:
@@ -449,20 +546,24 @@ class BasicExtendedManager(models.QuerySet):
     def tfidf_similarities(self, field_names, text, min_similarity=None):
 
         df = pandas.DataFrame(list(self.values("pk", *field_names)))
-        df['search_text'] = vector_concat_text(*[df[f] for f in field_names])
-        h = TextDataFrame(df, 'search_text')
+        df["search_text"] = vector_concat_text(*[df[f] for f in field_names])
+        h = TextDataFrame(df, "search_text")
         similarities = h.search_corpus(text)
         results = []
         for index, row in similarities.iterrows():
-            if not min_similarity or row['search_cosine_similarity'] >= min_similarity:
-                result = self.model.objects.filter(pk=row['pk']).values("pk", *field_names)[0]
-                result['similarity'] = row['search_cosine_similarity']
+            if not min_similarity or row["search_cosine_similarity"] >= min_similarity:
+                result = self.model.objects.filter(pk=row["pk"]).values(
+                    "pk", *field_names
+                )[0]
+                result["similarity"] = row["search_cosine_similarity"]
                 results.append(result)
         return results
 
     def tfidf_similarity_best_match(self, field_names, text, min_similarity=None):
 
-        results = self.tfidf_similarities(field_names, text, min_similarity=min_similarity)
+        results = self.tfidf_similarities(
+            field_names, text, min_similarity=min_similarity
+        )
         if len(results) == 0:
             return None
         else:
@@ -470,24 +571,32 @@ class BasicExtendedManager(models.QuerySet):
 
     def trigram_similarities(self, field_names, text, min_similarity=None):
 
-        try: text = str(text)
-        except (UnicodeEncodeError, UnicodeDecodeError): text = decode_text(text)
+        try:
+            text = str(text)
+        except (UnicodeEncodeError, UnicodeDecodeError):
+            text = decode_text(text)
 
         if len(field_names) > 1:
             search_field = "CONCAT({0})".format(", ' ', ".join(field_names))
         else:
             search_field = field_names[0]
-        query = self\
-            .extra(select={"similarity": "similarity({0}, %s)".format(search_field)}, select_params=(text,))\
-            .order_by("similarity")
+        query = self.extra(
+            select={"similarity": "similarity({0}, %s)".format(search_field)},
+            select_params=(text,),
+        ).order_by("similarity")
         if min_similarity:
-            query = query.extra(where=["similarity({0}, %s) >= %s".format(search_field)], params=[text, min_similarity])
+            query = query.extra(
+                where=["similarity({0}, %s) >= %s".format(search_field)],
+                params=[text, min_similarity],
+            )
 
         return query.values("pk", "similarity", *field_names)
 
     def trigram_similarity_best_match(self, field_names, text, min_similarity=None):
 
-        results = self.trigram_similarities(field_names, text, min_similarity=min_similarity)
+        results = self.trigram_similarities(
+            field_names, text, min_similarity=min_similarity
+        )
         if results.count() == 0:
             return None
         else:
