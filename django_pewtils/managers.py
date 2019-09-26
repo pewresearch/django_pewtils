@@ -10,7 +10,7 @@ from django.db.models import Q, Count
 from django.db import connection, models
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 
-from pewtils import chunk_list, is_null, is_not_null, decode_text, vector_concat
+from pewtils import chunk_list, is_null, is_not_null, decode_text, vector_concat_text
 from pewtils.io import FileHandler
 from django_pewtils import field_exists, filter_field_dict, get_model, inspect_delete
 from pewanalytics.text import TextDataFrame, get_fuzzy_partial_ratio, get_fuzzy_ratio
@@ -449,7 +449,7 @@ class BasicExtendedManager(models.QuerySet):
     def tfidf_similarities(self, field_names, text, min_similarity=None):
 
         df = pandas.DataFrame(list(self.values("pk", *field_names)))
-        df['search_text'] = vector_concat(*[df[f] for f in field_names])
+        df['search_text'] = vector_concat_text(*[df[f] for f in field_names])
         h = TextDataFrame(df, 'search_text')
         similarities = h.search_corpus(text)
         results = []
