@@ -72,7 +72,7 @@ def get_model(name, app_name=None):
                 break
             except ContentType.DoesNotExist:
                 pass
-            except ContentType.MultipleObjectsFound:
+            except ContentType.MultipleObjectsReturned:
                 pass
     if not model:
         print("Couldn't find a model named '{}'".format(name))
