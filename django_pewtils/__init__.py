@@ -40,37 +40,45 @@ def get_model(name, app_name=None):
     """
     Returns a Django model class via a string lookup
     :param name: Name of the model
+    :param app_name: Name of the app
     :return: Django model class
     """
 
-    name = name.lower()
-    query = ContentType.objects.all()
+    model = None
+    names = [
+        name,
+        name.lower(),
+        name.replace("_", "").replace(" ", ""),
+        name.replace("_", "").replace(" ", "").lower(),
+        name.replace("_", " "),
+        name.replace("_", " ").lower(),
+        name.replace(" ", "_"),
+        name.replace(" ", "_").lower(),
+    ]
     if app_name:
-        query = query.filter(app_label=app_name)
-    error = False
-    try:
-        model = query.get(model=name)
-    except:
-        try:
-            reset_django_connection()
-            model = query.get(model=name)
-        except:
-            error = True
-    if error:
-        try:
-            model = query.get(model=name.replace("_", "").replace(" ", ""))
-        except:
+        for name in names:
             try:
-                reset_django_connection()
-                model = query.get(model=name.replace("_", "").replace(" ", ""))
-            except:
-                model = None
-
-    if model:
-        return model.model_class()
+                model = apps.get_model(app_name, name)
+                break
+            except LookupError:
+                pass
     else:
-        print("Couldn't find model '{}'".format(name))
-        return None
+        for name in names:
+            try:
+                model = ContentType.objects.get(model=name).model_class()
+                break
+            except ContentType.DoesNotExist:
+                pass
+            except ContentType.MultipleObjectsFound:
+                pass
+    if not model:
+        print("Couldn't find a model named '{}'".format(name))
+        if not app_name:
+            print(
+                "Try specifying the name of the app; there may be more than one model with this name"
+            )
+    else:
+        return model
 
 
 def django_multiprocessor(app_name):
