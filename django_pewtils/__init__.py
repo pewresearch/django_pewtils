@@ -3,13 +3,14 @@ from builtins import object
 import shutil, re, importlib, pkgutil, os, imp
 
 from itertools import chain
+from contextlib import closing
 from collections import defaultdict
 
 from pewtils import is_null
 from pewtils.internal import try_once_again
 from pewtils.io import FileHandler
 
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, AppRegistryNotReady
 
 try:
     from django.contrib.admin.utils import NestedObjects
@@ -20,7 +21,7 @@ try:
     from django.contrib.contenttypes.models import ContentType
     from django.db.models import Case, When
     from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
-except ImproperlyConfigured:
+except (ImproperlyConfigured, AppRegistryNotReady):
     pass
 
 
@@ -376,16 +377,27 @@ class CacheHandler(object):
 
 def get_app_settings_folders(settings_dir_list_var):
     command_dirs = []
-    for appconf in apps.get_app_configs():
-        try:
-            settings_module = imp.load_source(
-                "{}.settings".format(appconf.name),
-                os.path.join(appconf.path, "settings.py"),
-            )
-            dirs = getattr(settings_module, settings_dir_list_var)
-        except (AttributeError, IOError):
-            dirs = []
-        command_dirs.extend(dirs)
+
+    # In theory, installable Django apps aren't supposed to have settings.py files
+    # So we can auto-detect the root project this way
+
+    try:
+        apps.get_app_configs()
+    except (AppRegistryNotReady, ImproperlyConfigured):
+        if "manage.py" in os.listdir(os.getcwd()):
+            with closing(open("manage.py", "r")) as manage_file:
+                text = manage_file.read()
+            app_names = re.findall(r"[\"\']([^\"\']+)\.settings[\"\']", text)
+            if len(app_names) == 1:
+                import warnings
+
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore", RuntimeWarning)
+                    load_app(app_names[0])
+            apps.get_app_configs()
+        else:
+            raise Exception("Django is not set up")
+
     from django.conf import settings
 
     if hasattr(settings, settings_dir_list_var):
@@ -423,48 +435,3 @@ def run_partial_postgres_search(model, text, fields, max_results=250, min_rank=0
     preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pk_list)])
     queryset = model.objects.filter(pk__in=pk_list).order_by(preserved)
     return queryset
-
-
-# def extract_site_module_attributes(path, site_name, attribute_name):
-#
-#     from django.conf import settings
-#     name_split = path.split(site_name)
-#     name_split = site_name.join(name_split[1:])
-#     name = settings.SITE_NAME + re.sub(r"[/\\]", '.', name_split)
-#     path = [path]
-#     attributes = {}
-#     path = pkgutil.extend_path(path, name)
-#     for importer, modname, ispkg in pkgutil.walk_packages(path=path, prefix=name + '.'):
-#         if not ispkg:
-#             module = importlib.import_module(modname)
-#             if hasattr(module, attribute_name):
-#                 attribute = getattr(module, attribute_name)
-#                 attributes[modname.split(".")[-1]] = attribute
-#
-#     return attributes
-#
-#
-# def extract_attributes_from_folder(folder_path, attribute_name):
-#
-#     attributes = {}
-#     if os.path.exists(folder_path):
-#         #try:
-#         for file in os.listdir(folder_path):
-#             import pdb
-#             pdb.set_trace()
-#             if file.endswith(".py") and not file.startswith("__init__"):
-#                 full_path_to_module = os.path.join(folder_path, file)
-#                 module_dir, module_file = os.path.split(full_path_to_module)
-#                 module_name, module_ext = os.path.splitext(module_file)
-#                 save_cwd = os.getcwd()
-#                 import pdb
-#                 pdb.set_trace()
-#                 os.chdir(module_dir)
-#                 module_obj = __import__(module_name)
-#                 module_obj.__file__ = full_path_to_module
-#                 if hasattr(module_obj, attribute_name):
-#                     attributes[module_name] = getattr(module_obj, attribute_name)
-#                 os.chdir(save_cwd)
-#         #except:
-#         #    raise ImportError
-#     return attributes
