@@ -56,6 +56,7 @@ class ManagerTests(DjangoTestCase):
 
         df = TestModel.objects.all().to_df()
         self.assertTrue(isinstance(df, pd.DataFrame))
+        self.assertEqual(len(df.columns), 7)
         self.assertEqual(len(df), TestModel.objects.all().count())
         df = TestModel.objects.filter(pk=99999).to_df()
         self.assertTrue(isinstance(df, pd.DataFrame))
@@ -129,13 +130,17 @@ class ManagerTests(DjangoTestCase):
         unique_data = {"pk": 1}
         update_data = {"text_field": new_text}
 
+        obj = TestModel.objects.create_or_update({"pk": 99999}, {"text_field": "test"})
+        self.assertEqual(obj.pk, 99999)
+        self.assertEqual(obj.text_field, "test")
+
         obj = TestModel.objects.create_or_update(
             unique_data, update_data=update_data, only_update_existing_nulls=True
         )
-        self.assertFalse(obj.text_field == new_text)
+        self.assertNotEqual(obj.text_field, new_text)
 
         obj = TestModel.objects.create_or_update(unique_data, update_data=update_data)
-        self.assertTrue(obj.text_field == new_text)
+        self.assertEqual(obj.text_field, new_text)
 
         obj = SecondTestModel.objects.create_or_update(
             unique_data, update_data={"text_field": None}
@@ -153,7 +158,7 @@ class ManagerTests(DjangoTestCase):
             only_update_existing_nulls=True,
             search_nulls=True,
         )
-        self.assertTrue(obj.text_field == "woot")
+        self.assertEqual(obj.text_field, "woot")
 
     def test_fuzzy_ratio(self):
 
