@@ -1,14 +1,10 @@
-import sys, datetime, traceback, copy
+import sys
 
-from optparse import NO_DEFAULT, OptionParser
+from optparse import NO_DEFAULT
 from importlib import import_module
 
 from django.conf import settings
-from django.core.management.base import (
-    CommandError,
-    BaseCommand,
-    handle_default_options,
-)
+from django.core.management.base import CommandError, BaseCommand
 
 
 class SubcommandDispatcher(BaseCommand):
@@ -81,27 +77,6 @@ class SubcommandDispatcher(BaseCommand):
         else:
             super(SubcommandDispatcher, self).run_from_argv(argv)
 
-            # if len(argv) > 2 and not argv[2].startswith('-') and argv[2] in self.subcommands:
-            #     subcommand = argv[2]
-            #     klass = self.get_subcommand(subcommand)
-            #     parser = OptionParser(prog=argv[0], usage=klass.usage('{0} {1}'.format(argv[1], subcommand)),
-            #         version=klass.get_version(), option_list=klass.option_list)
-            #     klass.add_arguments(parser)
-            #     options, args = parser.parse_args(argv[3:])
-            #     args = [subcommand] + args
-            # else:
-            #     parser = OptionParser(prog=argv[0], usage="", version=self.get_version(), option_list=self.option_list)
-            #     options, args = parser.parse_args(argv[2:])
-            #
-            # for attr in ["settings", "pythonpath"]:
-            #     if not hasattr(options, attr):
-            #         setattr(options, attr, None)
-            #
-            # handle_default_options(options)
-            # print options.__dict__
-            # print args
-            # self.execute(*args, **options.__dict__)
-
     def handle(self, *args, **options):
         if not args or args[0] not in self.subcommands:
             return self.print_help("./manage.py", self.app_name)
@@ -121,34 +96,3 @@ class SubcommandDispatcher(BaseCommand):
         defaults.update(options)
 
         return klass.execute(*args, **defaults)
-
-        # def handle_logger(handle):
-        #     def wrapper(self, *args, **options):
-        #         #if ENV == "prod":
-        #         save_args = self.__module__.split('.')[-2:] + list(args[1:])
-        #         command = " ".join(save_args)
-        #         opts = dict(options)
-        #         if "settings" in opts: del opts["settings"]
-        #         if "verbosity" in opts: del opts["verbosity"]
-        #         if "pythonpath" in opts: del opts["pythonpath"]
-        #         if "traceback" in opts: del opts["traceback"]
-        #         if "no_color" in opts: del opts["no_color"]
-        #         for opt in opts:
-        #             if opts[opt] not in [True, False]: command += " --%s %s" % (opt, str(opts[opt]))
-        #         for opt in opts:
-        #             if opts[opt] == True: command += " --%s" % opt
-        #         log = CommandLog.objects.create(args=command, options=options)
-        #         try:
-        #             handle(self, *args, **options)
-        #             log.end_time = datetime.datetime.now()
-        #             log.save()
-        #         except Exception as e:
-        #             log.error = {
-        #                 "traceback": traceback.format_exc(),
-        #                 "exception": e
-        #             }
-        #             log.save()
-        #             raise e
-        #         # else:
-        #         #     handle(self, *args, **options)
-        #     return wrapper
