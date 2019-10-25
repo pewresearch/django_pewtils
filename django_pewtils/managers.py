@@ -1,18 +1,16 @@
 from __future__ import print_function
 
 from builtins import str
-import traceback, sys, pandas, os, hashlib, random, psycopg2
+import traceback, sys, pandas, random
 
-from fuzzywuzzy import fuzz
 from tqdm import tqdm
 
-from django.db.models import Q, Count
+from django.db.models import Q
 from django.db import connection, models
 from django.core.exceptions import EmptyResultSet
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 
 from pewtils import chunk_list, is_null, is_not_null, decode_text, vector_concat_text
-from pewtils.io import FileHandler
 from django_pewtils import field_exists, filter_field_dict, get_model, inspect_delete
 from pewanalytics.text import TextDataFrame, get_fuzzy_partial_ratio, get_fuzzy_ratio
 
@@ -28,24 +26,26 @@ def _create_object(
 ):
 
     """
-        :param model:
-        :param unique_data:
-        :param update_data:
-        :param save_nulls:
-        :param empty_lists_are_null:
-        :param logger:
-        :return:
+    This function attempts to create a new object using the provided unique_data and update_data dictionaries.
+    It will automatically skip over fields that don't exist, and will determine whether to skip over null values based
+    on the save_nulls and empty_lists_are_null parameters.
 
-        This function attempts to create a new object using the provided unique_data and update_data dictionaries.
-        It will automatically skip over fields that don't exist, and will determine whether to skip over null values based
-        on the save_nulls and empty_lists_are_null parameters.
+    :param model: The model the object is on
+    :param unique_data: A dictionary of query filtering parameters that must, taken together, be unique to the object
+    being created
+    :param update_data: A dictionary of fields to update once the object is created
+    :param save_nulls: Whether or not to save null values in `update_data`
+    :param empty_lists_are_null: Whether or not empty lists should be considered null
+    :param logger: Optional logging object
+    :return: The created object
     """
 
     warning = ""
     try:
-        # if not save_nulls:  # I (Patrick) removed this since you always want to drop __ filter fields from unique data before creating an object
-        # the slight additional overhead of always running filter_field_dict even when save_nulls is True is offset by the benefit of being
-        # able to use filter searches in create_or_update (see the mturk_trust_code command for an example, where code__variable is a unique constraint
+        # if not save_nulls:  # I (Patrick) removed this since you always want to drop __ filter fields from
+        # unique data before creating an object. the slight additional overhead of always running filter_field_dict
+        # even when save_nulls is True is offset by the benefit of being able to use filter searches in
+        # create_or_update (see the mturk_trust_code command for an example, where code__variable is a unique constraint
         unique_data = filter_field_dict(
             unique_data,
             drop_nulls=(not save_nulls),
@@ -66,9 +66,6 @@ def _create_object(
             existing = model.objects.create(**unique_data)
             existing = model.objects.get(pk=existing.pk)
         except Exception as e:
-            # try:
-            # warning = "Warning: had to retry the object creation... Django thought there was a duplicate"
-            # print warning
             # NOTE - this happened once when the database connection cut out; just had to try running it again
             try:
                 existing = get_model(model._meta.model_name).objects.create(
@@ -89,15 +86,9 @@ def _create_object(
                 else:
                     raise e
             # for some reason, django can have issues when using a custom manager and a custom save function
-            # so, for example, saving Document objects can raise an IntegrityError (it thinks there's a duplicate primary key)
-            # but "refreshing" the manager by reloading the model seems to resolve these issues, in the rare event that it happens
-            # except Exception as e:
-            #     print e
-            #     import pdb
-            #     pdb.set_trace()
-            #     raise
-        # existing = model(**unique_data)
-        # existing.save()
+            # so, for example, saving Document objects can raise an IntegrityError (it thinks there's a duplicate
+            # primary key) but "refreshing" the manager by reloading the model seems to resolve these issues, in the
+            # rare event that it happens
         if logger:
             logger.info("Created new %s %s" % (str(model), str(unique_data)))
         if command_log and hasattr(existing, "command_logs"):
@@ -119,7 +110,6 @@ def _create_object(
 def _update_object(
     model,
     existing,
-    unique_data,
     update_data=None,
     save_nulls=False,
     empty_lists_are_null=True,
@@ -130,23 +120,21 @@ def _update_object(
 ):
 
     """
+    This function updates an existing object in a manner very similar to _create_object.  The "save_nulls" parameter
+    determines whether or not null values should be saved to the existing object.  The "empty_lists_are_null" parameter
+    determines whether or not empty lists should be treated as nulls.  The "only_update_existing_nulls" parameter
+    determines whether or not existing data on the object will be overwritten; if True, then only empty fields
+    will be written, and existing non-null data will be preserved.
 
-        :param model:
-        :param existing:
-        :param unique_data:
-        :param update_data:
-        :param save_nulls:
-        :param empty_lists_are_null:
-        :param only_update_existing_nulls:
-        :param logger:
-        :return:
-
-        This function updates an existing object in a manner very similar to _create_object.  The "save_nulls" parameter
-        determines whether or not null values should be saved to the existing object.  The "empty_lists_are_null" parameter
-        determines whether or not empty lists should be treated as nulls.  The "only_update_existing_nulls" parameter
-        determines whether or not existing data on the object will be overwritten; if True, then only empty fields
-        will be written, and existing non-null data will be preserved.
-
+    :param model: The model the object belongs to
+    :param existing: The existing object
+    :param update_data: A dictionary of fields and values to update the object with
+    :param save_nulls: Whether or not to update the object with null values that exist in `update_data`
+    :param empty_lists_are_null: Whether or not to consider empty lists as being null
+    :param only_update_existing_nulls: If `True`, only update fields on the object that existing in `update_data` if
+    the current value on the object is None
+    :param logger: An optional logging object
+    :return: The updated object
     """
 
     if update_data:
@@ -165,13 +153,7 @@ def _update_object(
                     )
                 ):
                     setattr(existing, field, update_data[field])
-            # try:
             existing.save(**save_kwargs)
-            # except Exception as e:
-            #     if str(type(e)) == "<class 'django_verifications.exceptions.VerifiedFieldLock'>":
-            #         existing.save(resolve_quietly=True)  # in case of a VerifiedFieldLock from django_verifications
-            #     else:
-            #         raise
             if command_log and hasattr(existing, "command_logs"):
                 existing.command_logs.add(command_log)
                 existing.commands.add(command_log.command)
@@ -188,6 +170,15 @@ def _update_object(
 
 
 class BasicExtendedManager(models.QuerySet):
+
+    """
+    An extension of a Django QuerySet with additional helper functions. Can be used as a manager on any model like so:
+    ```python
+    class MyModel(models.Model):
+        objects = BasicExtendedManager().as_manager()
+    ```
+    """
+
     def __init__(self, *args, **kwargs):
 
         super(BasicExtendedManager, self).__init__(*args, **kwargs)
@@ -195,6 +186,12 @@ class BasicExtendedManager(models.QuerySet):
         self.default_function = None
 
     def to_df(self):
+
+        """
+        Returns the QuerySet as a Pandas DataFrame, reading directly from the table in SQL.
+
+        :return: A Pandas DataFrame of the QuerySet objects.
+        """
 
         try:
             query, params = self.query.sql_with_params()
@@ -204,6 +201,17 @@ class BasicExtendedManager(models.QuerySet):
         return pandas.io.sql.read_sql_query(query, connection, params=params)
 
     def chunk(self, size=100, tqdm_desc=None, randomize=False):
+
+        """
+        Helps save memory by iterating over the primary keys of objects in a QuerySet and yielding the results in
+        chunks rather than all at once.
+
+        :param size: The number of objects to load in each chunk. Larger values will be more efficient but require
+        more memory.
+        :param tqdm_desc: Optional description to use in the progress bar while looping over the QuerySet.
+        :param randomize: Whether or not to randomly sort the objects in the QuerySet.
+        :return: An iterable that yields each object in the QuerySet.
+        """
 
         ids = self.values_list("pk", flat=True)
         if randomize:
@@ -219,6 +227,13 @@ class BasicExtendedManager(models.QuerySet):
 
     def sample(self, size):
 
+        """
+        Draws a random sample from a QuerySet.
+
+        :param size: The size of the sample
+        :return: A QuerySet representing the sampled objects
+        """
+
         ids = self.values_list("pk", flat=True)
         ids = list(ids)
         random.shuffle(ids)
@@ -227,6 +242,14 @@ class BasicExtendedManager(models.QuerySet):
         return self.model.objects.filter(pk__in=sample)
 
     def chunk_update(self, size=100, tqdm_desc="Updating", **to_update):
+
+        """
+        Iterates over a QuerySet and applies an update to them in chunks rather than all at once, to save memory.
+
+        :param size: The size of each chunk. Larger chunk sizes will be more efficient but cost more memory.
+        :param tqdm_desc: Optional description for the progress bar
+        :param to_update: A dictionary of fields and values to update them to. Operates like Django's `update` function
+        """
 
         ids = self.values_list("pk", flat=True)
         if tqdm_desc:
@@ -238,6 +261,13 @@ class BasicExtendedManager(models.QuerySet):
 
     def chunk_delete(self, size=100, tqdm_desc="Deleting"):
 
+        """
+        Iterates over a QuerySet and deletes objects in chunks rather than all at once, to save memory.
+
+        :param size: The size of each chunk. Larger chunk sizes will be more efficient but cost more memory.
+        :param tqdm_desc: Optional description for the progress bar
+        """
+
         ids = self.values_list("pk", flat=True)
         if tqdm_desc:
             iterator = tqdm(chunk_list(ids, size), desc=tqdm_desc)
@@ -247,6 +277,14 @@ class BasicExtendedManager(models.QuerySet):
             self.model.objects.filter(pk__in=chunk).delete()
 
     def inspect_delete(self, counts=False):
+
+        """
+        Returns a dictionary of all of the objects that would be deleted were you to call `.delete()` on the QuerySet.
+        Keys are models and values are either the count or a QuerySet of model objects, depending on `count`.
+
+        :param counts: Whether or not to return counts.
+        :return: Dictionary of objects (or counts of objects) to be deleted, by model.
+        """
 
         return inspect_delete(self.all(), counts=counts)
 
@@ -260,18 +298,20 @@ class BasicExtendedManager(models.QuerySet):
     ):
 
         """
+        This function takes a dictionary of key-value pairs that specify one or more fields for a given model, and the
+        value that each field should take, respectively. In effect, this allows you to use dictionaries to apply
+        complex multi-condition queries to fetch particular objects, based on the assumption that the combination of
+        conditions passed via unique_data should refer to one, and only one, object within this model. It will return
+        None if no objects match the conditions specified, or raise a MultipleObjectsReturned error if the query
+        parameters were not unique in their combination and returned more than one object.
 
         :param unique_data: A dictionary of filter values, e.g. Model.objects.get_if_exists({"year_id": 2016})
         :param match_any: If True, returns a match if ANY of the keys in the unique_data dictionary select an object
         :param search_nulls: If False (default), it will ignore unique_data keys with null values
-        :param empty_lists_are_null: If True (default), it will treat empty lists the same as it does null values (otherwise it will treat them like non-nulls)
+        :param empty_lists_are_null: If True (default), it will treat empty lists the same as it does null values
+        (otherwise it will treat them like non-nulls)
         :param logger: Optional logger for recording errors
-        :return:
-
-        This function takes a dictionary of key-value pairs that specify one or more fields for a given model, and the value that each field should take, respectively.
-        In effect, this allows you to use dictionaries to apply complex multi-condition queries to fetch particular objects, based on the assumption that the combination of conditions passed via unique_data should refer to one, and only one, object within this model.
-        It will return None if no objects match the conditions specified, or raise a MultipleObjectsReturned error if the query parameters were not unique in their combination and returned more than one object.
-
+        :return: The object, if it was found successfully
         """
 
         search_data = filter_field_dict(
@@ -335,30 +375,35 @@ class BasicExtendedManager(models.QuerySet):
         **save_kwargs
     ):
         """
-
-        :param unique_data: A dictionary of filter values, e.g. Model.objects.create_or_update({"id_field": id})
-        :param update_data: A dictionary with data with which to update the object (keys that do not exist as fields on the object will be ignored)
-        :param match_any: If True, returns a match if ANY of the keys in the unique_data dictionary select an object
-        :param return_object: If True, the updated object will be returned (otherwise nothing gets returned)
-        :param search_nulls: If False (default), it will ignore unique_data keys with null values
-        :param save_nulls: If True, null values will be saved and will overwrite existing data (default False, which skips over null values)
-        :param empty_lists_are_null: If True (default), it will treat empty lists the same as it does null values (otherwise it will treat them like non-nulls)
-        :param only_update_existing_nulls: If True, the object will only be update currently-null fields with non-null values (values that already exist will not be updated)
-        :param logger: Optional logger for recording errors
-        :param command_log: Optional CommandLog object, which will be added to the selected object's many-to-many command/command_log fields, if it has them
-        :param force_create: If True, this function will assume that the object does not exist and will skip the get_if_exists check
-        :return:
-
-        This function builds off of the get_if_exists function, and allows you to pass a dictionary of unique_data values to:
+        This function builds off of the get_if_exists function, and allows you to pass a dictionary of unique_data
+        values to:
             * Select an object, if it exists
             * If it doesn't exist, combine unique_data and any additional values in update_data, and create a new object
             * If it does exist, update the object with any additional values in update_data
             * Return the object, if return_object=True
 
         This can be used to very flexibly define a unique object, along with additional fields that shouldn't be part
-        of an object's "uniqueness", and then take any and all steps needed to ensure that the object exists and has the
-        properties that you want it to have.
+        of an object's "uniqueness", and then take any and all steps needed to ensure that the object exists and has
+        the properties that you want it to have.
 
+        :param unique_data: A dictionary of filter values, e.g. Model.objects.create_or_update({"id_field": id})
+        :param update_data: A dictionary with data with which to update the object (keys that do not exist as fields on
+        the object will be ignored)
+        :param match_any: If True, returns a match if ANY of the keys in the unique_data dictionary select an object
+        :param return_object: If True, the updated object will be returned (otherwise nothing gets returned)
+        :param search_nulls: If False (default), it will ignore unique_data keys with null values
+        :param save_nulls: If True, null values will be saved and will overwrite existing data (default False, which
+        skips over null values)
+        :param empty_lists_are_null: If True (default), it will treat empty lists the same as it does null values
+        (otherwise it will treat them like non-nulls)
+        :param only_update_existing_nulls: If True, the object will only be update currently-null fields with non-null
+        values (values that already exist will not be updated)
+        :param logger: Optional logger for recording errors
+        :param command_log: Optional `django_commander.CommandLog` object, which will be added to the selected object's
+        many-to-many command/command_log fields, if it has them
+        :param force_create: If True, this function will assume that the object does not exist and will skip the
+        get_if_exists check
+        :return: The created or updated object
         """
 
         if force_create:
@@ -394,7 +439,6 @@ class BasicExtendedManager(models.QuerySet):
                     existing = _update_object(
                         self.model,
                         existing,
-                        unique_data,
                         update_data=update_data,
                         save_nulls=save_nulls,
                         empty_lists_are_null=empty_lists_are_null,
@@ -410,7 +454,6 @@ class BasicExtendedManager(models.QuerySet):
             existing = _update_object(
                 self.model,
                 existing,
-                unique_data,
                 update_data=update_data,
                 save_nulls=save_nulls,
                 empty_lists_are_null=empty_lists_are_null,
