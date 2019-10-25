@@ -534,7 +534,7 @@ def consolidate_objects(
                                 getattr(source, f.name).all()
                                 | getattr(target, f.name).all()
                             )
-                            setattr(target, f.name, merged_objects)
+                            getattr(target, f.name).set(merged_objects)
 
                     if hasattr(source, "history"):
                         # If you have a django-historical-records manager installed on the model, we'll update the
@@ -707,7 +707,10 @@ def _get_unique_relations(source, target, pairs=None, recursion=0):
     if recursion == 0:
         # If we've finally rolled back up to the top level, let's sort all of the pairs we identified in the order
         # in which we identified them, and return a list
-        return sorted([pair for pair, recursion in pairs.items()], key=lambda x: x[1])
+        pairs = sorted(pairs.items(), key=lambda x: x[1], reverse=True)
+        pairs = [p[0] for p in pairs if p[0][0] != source]
+        pairs.append((source, target))
+        return pairs
     else:
         # Otherwise we're still in recursion and we'll keep the pairs in dictionary form
         return pairs
