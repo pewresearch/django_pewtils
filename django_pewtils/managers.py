@@ -8,6 +8,7 @@ from tqdm import tqdm
 
 from django.db.models import Q, Count
 from django.db import connection, models
+from django.core.exceptions import EmptyResultSet
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 
 from pewtils import chunk_list, is_null, is_not_null, decode_text, vector_concat_text
@@ -425,34 +426,6 @@ class BasicExtendedManager(models.QuerySet):
         if return_object:
             return existing
 
-    def get_existing_command_records(self, name_regex, parameters_regex):
-
-        commands = (
-            get_model("Command", app_name="django_commander")
-            .objects.filter(name__regex=name_regex)
-            .filter(parameters__regex=parameters_regex)
-        )
-
-        return self.filter(commands__in=commands)
-
-    def get_orphaned_command_records(
-        self, name_regex, parameters_regex, whitelist, whitelist_field="pk"
-    ):
-
-        commands = (
-            get_model("Command", app_name="django_commander")
-            .objects.filter(name__regex=name_regex)
-            .filter(parameters__regex=parameters_regex)
-        )
-        command_count = commands.count()
-
-        return (
-            self.annotate(c=Count("commands"))
-            .filter(c=command_count)
-            .filter(commands__in=commands)
-            .exclude(**{"%s__in" % whitelist_field: whitelist})
-        )
-
     def fuzzy_ratios(
         self,
         field_names,
@@ -461,6 +434,18 @@ class BasicExtendedManager(models.QuerySet):
         allow_partial=False,
         max_partial_difference=100,
     ):
+        """
+        Given a snippet of text, computes the fuzzy ratios between the text and text that is stored on one or more
+        fields on all of the objects in the QuerySet.
+
+        :param field_names: The names of the text fields to compare
+        :param text: A string of text to compare
+        :param min_ratio: The minimum fuzzy ratio allowed to return results.
+        :param allow_partial: Whether or not to allow partial fuzzy ratios when computing text similarity.
+        :param max_partial_difference: The maximum difference between the absolute and partial ratio that's
+        allowed to return a result.
+        :return: A list of results with the primary keys of the compared objects and their fuzzy ratios
+        """
 
         results = []
         for row in self.values("pk", *field_names):
@@ -490,6 +475,23 @@ class BasicExtendedManager(models.QuerySet):
         max_partial_difference=100,
     ):
 
+        """
+        Returns the object with the greatest fuzzy ratio in the QuerySet. Equivalent to calling:
+        ```python
+        >>> result = my_query_set.fuzzy_ratios(["text_field"], "test")
+        >>> MyModel.objects.get(pk=result[0].pk)
+        ```
+
+        :param field_names: The names of the text fields to compare
+        :param text: A string of text to compare
+        :param min_ratio: The minimum fuzzy ratio allowed to return results.
+        :param allow_partial: Whether or not to allow partial fuzzy ratios when computing text similarity.
+        :param max_partial_difference: The maximum difference between the absolute and partial ratio that's
+        allowed to return a result.
+        :return: A tuple of the object in the QuerySet that has the greatest similarity to the provided text, and
+        its fuzzy ratio
+        """
+
         results = self.fuzzy_ratios(
             field_names,
             text,
@@ -500,9 +502,19 @@ class BasicExtendedManager(models.QuerySet):
         if len(results) == 0:
             return None
         else:
-            return results[0]
+            return (self.get(pk=results[0]["pk"]), results[0]["fuzzy_ratio"])
 
     def levenshtein_differences(self, field_names, text, max_difference=None):
+
+        """
+        Given a set of text fields and some comparison text, computes the Levenshtein differences between the
+        comparison text and the text that's stored in the fields on the objects in the QuerySet.
+
+        :param field_names: The names of the text fields to compare
+        :param text: A string of text to compare
+        :param max_difference: The maximum difference allowed for a result to be returned.
+        :return: A list of results with the primary keys of the compared objects and their Levenshtein differences
+        """
 
         try:
             text = str(text)
@@ -535,15 +547,39 @@ class BasicExtendedManager(models.QuerySet):
 
     def levenshtein_difference_best_match(self, field_names, text, max_difference=None):
 
+        """
+        Returns the object with the smallest Levenshtein difference in the QuerySet. Equivalent to calling:
+        ```python
+        >>> result = my_query_set.levenshtein_differences(["text_field"], "test")
+        >>> MyModel.objects.get(pk=result[0].pk)
+        ```
+
+        :param field_names: The names of the text fields to compare
+        :param text: A string of text to compare
+        :param max_difference: The maximum difference allowed for a result to be returned.
+        :return: A tuple of the object in the QuerySet that has the smallest difference with the provided
+        text and its Levenshtein difference
+        """
+
         results = self.levenshtein_differences(
             field_names, text, max_difference=max_difference
         )
         if results.count() == 0:
             return None
         else:
-            return results[0]
+            return (self.get(pk=results[0]["pk"]), results[0]["difference"])
 
     def tfidf_similarities(self, field_names, text, min_similarity=None):
+
+        """
+        Given one or more text fields, computes the TF-IDF cosine similarities between the objects in the QuerySet and
+        other and returns a list of results with the primary keys of the compared objects and their similarities.
+
+        :param field_names: The names of the text fields to compare
+        :param text: A string of text to compare
+        :param min_similarity: The minimum similarity allowed for a result to be returned.
+        :return: A list of results with the primary keys of the compared objects and their TF-IDF similarities
+        """
 
         df = pandas.DataFrame(list(self.values("pk", *field_names)))
         df["search_text"] = vector_concat_text(*[df[f] for f in field_names])
@@ -561,15 +597,39 @@ class BasicExtendedManager(models.QuerySet):
 
     def tfidf_similarity_best_match(self, field_names, text, min_similarity=None):
 
+        """
+        Returns the object with the highest TF-IDF cosine similarity in the QuerySet. Equivalent to calling:
+        ```python
+        >>> result = my_query_set.tfidf_similarities(["text_field"], "test")
+        >>> MyModel.objects.get(pk=result[0].pk)
+        ```
+
+        :param field_names: The names of the text fields to compare
+        :param text: A string of text to compare
+        :param min_similarity: The minimum similarity allowed for a result to be returned.
+        :return: A tuple of the object in the QuerySet that has the highest similarity with the provided
+        text, and its TF-IDF similarity
+        """
+
         results = self.tfidf_similarities(
             field_names, text, min_similarity=min_similarity
         )
         if len(results) == 0:
             return None
         else:
-            return results[0]
+            return (self.get(pk=results[0]["pk"]), results[0]["similarity"])
 
     def trigram_similarities(self, field_names, text, min_similarity=None):
+
+        """
+        Given one or more text fields, computes the trigram similarities between the objects in the QuerySet and other objects in the
+        table and returns a list of results with the primary keys of the compared objects and their similarities.
+        (Uses Postgres' built-in trigram similarity module)
+
+        :param field_names: The names of the text fields to compare
+        :param min_similarity: The minimum similarity allowed for a result to be returned.
+        :return: A list of results with the primary keys of the compared objects and their trigram similarities
+        """
 
         try:
             text = str(text)
@@ -583,7 +643,7 @@ class BasicExtendedManager(models.QuerySet):
         query = self.extra(
             select={"similarity": "similarity({0}, %s)".format(search_field)},
             select_params=(text,),
-        ).order_by("similarity")
+        ).order_by("-similarity")
         if min_similarity:
             query = query.extra(
                 where=["similarity({0}, %s) >= %s".format(search_field)],
@@ -594,15 +654,38 @@ class BasicExtendedManager(models.QuerySet):
 
     def trigram_similarity_best_match(self, field_names, text, min_similarity=None):
 
+        """
+        Returns the object with the highest trigram similarity in the QuerySet. Equivalent to calling:
+        ```python
+        >>> result = my_query_set.trigram_similarities(["text_field"], "test")
+        >>> MyModel.objects.get(pk=result[0].pk)
+        ```
+
+        :param field_names: The names of the text fields to compare
+        :param text: A string of text to compare
+        :param min_similarity: The minimum similarity allowed for a result to be returned.
+        :return: A tuple of the object in the QuerySet that has the highest similarity with the provided
+        text, and its trigram similarity
+        """
+
         results = self.trigram_similarities(
             field_names, text, min_similarity=min_similarity
         )
         if results.count() == 0:
             return None
         else:
-            return results[0]
+            return (self.get(pk=results[0]["pk"]), results[0]["similarity"])
 
     def postgres_search(self, field_names, text):
+
+        """
+        Runs a Postgres full text search on one or more text fields across a given QuerySet. Returns an
+        ordered QuerySet of results with an additional `rank` attribute on each object that scores the matches.
+
+        :param field_names: The names of the text fields to compare
+        :param text: A string of text to compare
+        :return: An ordered QuerySet of search results
+        """
 
         vector = SearchVector(*field_names)
         query = SearchQuery(text)

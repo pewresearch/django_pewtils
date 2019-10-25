@@ -15,7 +15,7 @@ class SubcommandDispatcher(BaseCommand):
 
     """
     A wrapper for subcommands; looks in the subcommand directory for a folder and file based on the passed parameters.
-    Modified by borrowed from Django Subcommander repository.
+    Modified by borrowed from Django Subcommander repository: https://github.com/erikrose/django-subcommander
     """
 
     help = "A wrapper for subcommands"

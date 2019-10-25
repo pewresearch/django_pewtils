@@ -3,7 +3,12 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-INSTALLED_APPS = ["django.contrib.auth", "django.contrib.contenttypes", "testapp"]
+INSTALLED_APPS = [
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "testapp_installed",
+    "testapp",
+]
 
 TEMPLATES = []
 
@@ -26,3 +31,5 @@ DATABASES = {
         "PORT": "",
     }
 }
+
+TEST_SETTINGS_FOLDERS = ["testapp"]
