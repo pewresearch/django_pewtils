@@ -67,8 +67,10 @@ class BaseTests(DjangoTestCase):
         from django_pewtils import get_model
 
         for name in ["TestModel", "test model", "testmodel", "test_model"]:
-            self.assertIsNotNone(get_model(name, app_name="testapp"))
-            self.assertIsNotNone(get_model(name))
+            model = get_model(name, app_name="testapp")
+            self.assertEqual(model, TestModel)
+            model = get_model(name)
+            self.assertIsNotNone(model, TestModel)
 
     # TODO: find a way to test this; problem is, Django unit tests are transactional so this kills them
     # def test_reset_django_connection(self):
