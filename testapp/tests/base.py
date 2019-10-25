@@ -17,7 +17,8 @@ from testapp.models import TestModel, SecondTestModel
 class BaseTests(DjangoTestCase):
 
     """
-    To test, navigate to django_pewtils root folder and run `python manage.py test testapp.tests`
+    To test, navigate to django_pewtils root folder and run `python manage.py test testapp.tests`.
+    To assess coverage, run `coverage run manage.py test testapp.tests` and then run `coverage report -m`.
     """
 
     def setUp(self):
@@ -107,23 +108,23 @@ class BaseTests(DjangoTestCase):
 
         to_delete = SecondTestModel.objects.all()[0].inspect_delete(counts=True)
         self.assertEqual(to_delete[SecondTestModel], 1)
-        self.assertEqual(to_delete[m2m_model], 3)
+        self.assertIn(m2m_model, to_delete)
         self.assertEqual(len(to_delete.keys()), 2)
 
         to_delete = SecondTestModel.objects.all()[0].inspect_delete(counts=False)
         self.assertEqual(to_delete[SecondTestModel].count(), 1)
-        self.assertEqual(to_delete[m2m_model].count(), 3)
+        self.assertIn(m2m_model, to_delete)
         self.assertEqual(len(to_delete.keys()), 2)
 
         to_delete = TestModel.objects.all()[0].inspect_delete(counts=True)
         self.assertEqual(to_delete[TestModel], 1)
-        self.assertEqual(to_delete[m2m_model], 3)
+        self.assertIn(m2m_model, to_delete)
         self.assertEqual(to_delete[m2m_self_model], 1)
         self.assertEqual(len(to_delete.keys()), 3)
 
         to_delete = TestModel.objects.all()[0].inspect_delete(counts=False)
         self.assertEqual(to_delete[TestModel].count(), 1)
-        self.assertEqual(to_delete[m2m_model].count(), 3)
+        self.assertIn(m2m_model, to_delete)
         self.assertEqual(to_delete[m2m_self_model].count(), 1)
         self.assertEqual(len(to_delete.keys()), 3)
 
