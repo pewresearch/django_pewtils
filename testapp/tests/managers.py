@@ -225,4 +225,9 @@ class ManagerTests(DjangoTestCase):
         self.assertEqual(results[0].rank, 0.285735)
 
     def tearDown(self):
-        pass
+        from django.conf import settings
+        import shutil, os
+
+        cache_path = os.path.join(settings.BASE_DIR, settings.LOCAL_CACHE_ROOT)
+        if os.path.exists(cache_path):
+            shutil.rmtree(cache_path)
