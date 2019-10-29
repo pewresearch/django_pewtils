@@ -807,9 +807,7 @@ class CacheHandler(object):
                     pass
             else:
                 bucket_list = self.file_handler.s3.list(prefix=self.path)
-                result = self.file_handler.s3.delete_keys(
-                    [key.name for key in bucket_list]
-                )
+                self.file_handler.s3.delete_keys([key.name for key in bucket_list])
 
     def clear_key(self, key):
 

@@ -95,7 +95,6 @@ def _create_object(
             existing.command_logs.add(command_log)
             existing.commands.add(command_log.command)
     except Exception as e:
-        # print e
         if logger:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             logger.info(
@@ -448,7 +447,6 @@ class BasicExtendedManager(models.QuerySet):
                         **save_kwargs
                     )
                 else:
-                    # raise Exception("Couldn't create new object, couldn't find existing one: {}".format(e))
                     raise e
         elif update_data:
             existing = _update_object(
