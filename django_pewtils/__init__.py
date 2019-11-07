@@ -54,7 +54,7 @@ def load_app(app_name=None, path=None, env=None):
     be able to find a valid `app_name`.settings module to work.
 
     :param app_name: The name of the Django application (if not provided, will attempt to auto-detect)
-    :param path: Optional path to add to the Python path
+    :param path: Optional path to add to the Python path. Can be a list or string.
     :param env: Optional dictionary of variables to add to `os.environ`
     """
 
@@ -74,7 +74,11 @@ def load_app(app_name=None, path=None, env=None):
     if path:
         import sys
 
-        sys.path.insert(0, path)
+        if isinstance(path, list):
+            for p in path:
+                sys.path.insert(0, p)
+        else:
+            sys.path.insert(0, path)
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "{}.settings".format(app_name))
     django.setup()
 
