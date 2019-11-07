@@ -7,7 +7,6 @@ from contextlib import closing
 from collections import defaultdict
 
 from pewtils import is_null, is_not_null
-from pewtils.internal import try_once_again
 from pewtils.io import FileHandler
 
 from django.core.exceptions import ImproperlyConfigured, AppRegistryNotReady
@@ -764,7 +763,6 @@ class CacheHandler(object):
             }
             self.file_handler.write(key, value, hash_key=self.hash)
 
-    @try_once_again
     def read(self, key):
 
         """
