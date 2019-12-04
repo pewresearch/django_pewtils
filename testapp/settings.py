@@ -2,20 +2,28 @@
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+LOCAL_CACHE_ROOT = "cache"
 
 INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "testapp"
+    "testapp_installed",
+    "testapp",
 ]
 
 TEMPLATES = []
 
+SECRET_KEY = "testing"
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "postgres",
+        "USER": "postgres",
+        "PASSWORD": "",
+        "HOST": "localhost",
+        "PORT": "",
     }
 }
 
-SECRET_KEY = "testing"
+TEST_SETTINGS_FOLDERS = ["testapp"]
