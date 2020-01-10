@@ -11,7 +11,7 @@ from django.conf import settings
 
 from pewtils import is_not_null
 
-from testapp.models import TestModel, SecondTestModel
+from testapp.models import TestModel, SecondTestModel, ThroughTestModel
 
 
 class BaseTests(DjangoTestCase):
@@ -45,6 +45,10 @@ class BaseTests(DjangoTestCase):
                 obj.many_to_many.add(obj2)
             obj.many_to_many_self.add(obj)
             obj.save()
+            if obj.pk % 3 == 0:
+                ThroughTestModel.objects.create(owner=obj.one_to_one, related=obj)
+            elif obj.pk % 2 == 0:
+                ThroughTestModel.objects.create(owner=obj.foreign_key, related=obj)
 
         for obj2 in SecondTestModel.objects.all():
             obj2.foreign_key = TestModel.objects.exclude(pk=obj2.pk).order_by("?")[0]
@@ -89,46 +93,46 @@ class BaseTests(DjangoTestCase):
         to_delete = SecondTestModel.objects.all().inspect_delete(counts=True)
         self.assertEqual(to_delete[SecondTestModel], 50)
         self.assertEqual(to_delete[m2m_model], 150)
-        self.assertEqual(len(to_delete.keys()), 2)
+        self.assertEqual(len(to_delete.keys()), 3)
 
         to_delete = SecondTestModel.objects.all().inspect_delete(counts=False)
         self.assertEqual(to_delete[SecondTestModel].count(), 50)
         self.assertEqual(to_delete[m2m_model].count(), 150)
-        self.assertEqual(len(to_delete.keys()), 2)
+        self.assertEqual(len(to_delete.keys()), 3)
 
         to_delete = TestModel.objects.all().inspect_delete(counts=True)
         self.assertEqual(to_delete[TestModel], 50)
         self.assertEqual(to_delete[m2m_model], 150)
         self.assertEqual(to_delete[m2m_self_model], 50)
-        self.assertEqual(len(to_delete.keys()), 3)
+        self.assertEqual(len(to_delete.keys()), 4)
 
         to_delete = TestModel.objects.all().inspect_delete(counts=False)
         self.assertEqual(to_delete[TestModel].count(), 50)
         self.assertEqual(to_delete[m2m_model].count(), 150)
         self.assertEqual(to_delete[m2m_self_model].count(), 50)
-        self.assertEqual(len(to_delete.keys()), 3)
+        self.assertEqual(len(to_delete.keys()), 4)
 
         to_delete = SecondTestModel.objects.all()[0].inspect_delete(counts=True)
         self.assertEqual(to_delete[SecondTestModel], 1)
         self.assertIn(m2m_model, to_delete)
-        self.assertEqual(len(to_delete.keys()), 2)
+        self.assertEqual(len(to_delete.keys()), 3)
 
         to_delete = SecondTestModel.objects.all()[0].inspect_delete(counts=False)
         self.assertEqual(to_delete[SecondTestModel].count(), 1)
         self.assertIn(m2m_model, to_delete)
-        self.assertEqual(len(to_delete.keys()), 2)
+        self.assertEqual(len(to_delete.keys()), 3)
 
         to_delete = TestModel.objects.all()[0].inspect_delete(counts=True)
         self.assertEqual(to_delete[TestModel], 1)
         self.assertIn(m2m_model, to_delete)
         self.assertEqual(to_delete[m2m_self_model], 1)
-        self.assertEqual(len(to_delete.keys()), 3)
+        self.assertEqual(len(to_delete.keys()), 4)
 
         to_delete = TestModel.objects.all()[0].inspect_delete(counts=False)
         self.assertEqual(to_delete[TestModel].count(), 1)
         self.assertIn(m2m_model, to_delete)
         self.assertEqual(to_delete[m2m_self_model].count(), 1)
-        self.assertEqual(len(to_delete.keys()), 3)
+        self.assertEqual(len(to_delete.keys()), 4)
 
     def test_filter_field_dict(self):
 
@@ -199,7 +203,7 @@ class BaseTests(DjangoTestCase):
         # Reverse relations on SecondTestModel
         self.assertIn("foreign_key_reverse", names)
         self.assertIn("foreign_key_self_reverse", names)
-        self.assertEqual(len(names), 18)
+        self.assertEqual(len(names), 20)
 
         names = get_all_field_names(SecondTestModel)
         # Fields on SecondTestModel
@@ -214,7 +218,7 @@ class BaseTests(DjangoTestCase):
         self.assertIn("foreign_key_reverse", names)
         self.assertIn("one_to_one_reverse", names)
         self.assertIn("many_to_many_reverse", names)
-        self.assertEqual(len(names), 10)
+        self.assertEqual(len(names), 12)
 
     def test_consolidate_objects(self):
 
@@ -319,6 +323,9 @@ class BaseTests(DjangoTestCase):
             source_many_to_many_ids = [
                 related_id_updates.get(s, s) for s in source_many_to_many_ids
             ]
+            source_through_ids = list(
+                source.many_to_many_through_reverse.values_list("pk", flat=True)
+            )
 
             # Get all of the target relations
             related_fk_uniques = list(
@@ -348,6 +355,9 @@ class BaseTests(DjangoTestCase):
             target_many_to_many_ids = [
                 related_id_updates.get(t, t) for t in target_many_to_many_ids
             ]
+            target_through_ids = list(
+                target.many_to_many_through_reverse.values_list("pk", flat=True)
+            )
 
             # And now we deduplicate
             if not clear_related_uniques and not consolidate_related_uniques:
@@ -446,6 +456,14 @@ class BaseTests(DjangoTestCase):
                 )
                 self.assertIn(target.pk, new_target_many_to_many_self_ids)
                 self.assertEqual(len(new_target_many_to_many_self_ids), 1)
+
+                # And the through table relations
+                new_target_through_ids = list(
+                    target.many_to_many_through_reverse.values_list("pk", flat=True)
+                )
+                for pk in set(source_through_ids).union(set(target_through_ids)):
+                    pk = related_id_updates.get(pk, pk)
+                    self.assertIn(pk, new_target_through_ids)
 
                 # All related SecondTestModel objects should have their foreign keys forwarded
                 new_fk_related_ids = list(

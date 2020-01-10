@@ -16,116 +16,58 @@ class Migration(migrations.Migration):
         CreateExtension(name="fuzzystrmatch"),
         TrigramExtension(),
         migrations.CreateModel(
-            name="SecondTestModel",
+            name='SecondTestModel',
             fields=[
-                (
-                    "id",
-                    models.AutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
-                    ),
-                ),
-                ("text_field", models.TextField(null=True)),
-                ("dummy_field", models.CharField(default="test", max_length=10)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('text_field', models.TextField(null=True)),
+                ('dummy_field', models.CharField(default='test', max_length=10)),
             ],
         ),
         migrations.CreateModel(
-            name="TestModel",
+            name='TestModel',
             fields=[
-                (
-                    "id",
-                    models.AutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
-                    ),
-                ),
-                ("text_field", models.TextField(null=True)),
-                (
-                    "array_field",
-                    django.contrib.postgres.fields.ArrayField(
-                        base_field=models.CharField(max_length=150),
-                        default=list,
-                        size=None,
-                    ),
-                ),
-                (
-                    "foreign_key",
-                    models.ForeignKey(
-                        null=True,
-                        on_delete=django.db.models.deletion.SET_NULL,
-                        related_name="foreign_key_reverse",
-                        to="testapp.SecondTestModel",
-                    ),
-                ),
-                (
-                    "foreign_key_self",
-                    models.ForeignKey(
-                        null=True,
-                        on_delete=django.db.models.deletion.SET_NULL,
-                        related_name="foreign_key_self_reverse",
-                        to="testapp.TestModel",
-                    ),
-                ),
-                (
-                    "many_to_many",
-                    models.ManyToManyField(
-                        related_name="many_to_many_reverse",
-                        to="testapp.SecondTestModel",
-                    ),
-                ),
-                (
-                    "many_to_many_self",
-                    models.ManyToManyField(
-                        related_name="many_to_many_self_reverse", to="testapp.TestModel"
-                    ),
-                ),
-                (
-                    "one_to_one",
-                    models.OneToOneField(
-                        null=True,
-                        on_delete=django.db.models.deletion.SET_NULL,
-                        related_name="one_to_one_reverse",
-                        to="testapp.SecondTestModel",
-                    ),
-                ),
-                (
-                    "one_to_one_self",
-                    models.OneToOneField(
-                        null=True,
-                        on_delete=django.db.models.deletion.SET_NULL,
-                        related_name="one_to_one_self_reverse",
-                        to="testapp.TestModel",
-                    ),
-                ),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('text_field', models.TextField(null=True)),
+                ('array_field', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=150), default=list, size=None)),
+                ('foreign_key', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='foreign_key_reverse', to='testapp.SecondTestModel')),
+                ('foreign_key_self', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='foreign_key_self_reverse', to='testapp.TestModel')),
+                ('many_to_many', models.ManyToManyField(related_name='many_to_many_reverse', to='testapp.SecondTestModel')),
+                ('many_to_many_self', models.ManyToManyField(related_name='many_to_many_self_reverse', to='testapp.TestModel')),
+                ('one_to_one', models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='one_to_one_reverse', to='testapp.SecondTestModel')),
+                ('one_to_one_self', models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='one_to_one_self_reverse', to='testapp.TestModel')),
             ],
-            options={"abstract": False},
+            options={
+                'abstract': False,
+            },
+        ),
+        migrations.CreateModel(
+            name='ThroughTestModel',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='many_to_many_through_details', to='testapp.SecondTestModel')),
+                ('related', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='many_to_many_through_details_reverse', to='testapp.TestModel')),
+            ],
+            options={
+                'abstract': False,
+            },
         ),
         migrations.AddField(
-            model_name="secondtestmodel",
-            name="foreign_key",
-            field=models.ForeignKey(
-                null=True,
-                on_delete=django.db.models.deletion.SET_NULL,
-                related_name="foreign_key_reverse",
-                to="testapp.TestModel",
-            ),
+            model_name='secondtestmodel',
+            name='foreign_key',
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='foreign_key_reverse', to='testapp.TestModel'),
         ),
         migrations.AddField(
-            model_name="secondtestmodel",
-            name="foreign_key_unique",
-            field=models.ForeignKey(
-                null=True,
-                on_delete=django.db.models.deletion.SET_NULL,
-                related_name="foreign_key_unique_reverse",
-                to="testapp.TestModel",
-            ),
+            model_name='secondtestmodel',
+            name='foreign_key_unique',
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='foreign_key_unique_reverse', to='testapp.TestModel'),
+        ),
+        migrations.AddField(
+            model_name='secondtestmodel',
+            name='many_to_many_through',
+            field=models.ManyToManyField(related_name='many_to_many_through_reverse', through='testapp.ThroughTestModel', to='testapp.TestModel'),
         ),
         migrations.AlterUniqueTogether(
-            name="secondtestmodel",
-            unique_together={("foreign_key_unique", "dummy_field")},
+            name='secondtestmodel',
+            unique_together={('foreign_key_unique', 'dummy_field')},
         ),
     ]

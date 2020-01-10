@@ -532,12 +532,19 @@ def consolidate_objects(
                                     related_object.save()
 
                         elif f.many_to_many:
-                            # If it's a many-to-many object, we'll set the target's M2M relation to the union
-                            merged_objects = (
-                                getattr(source, f.name).all()
-                                | getattr(target, f.name).all()
-                            )
-                            getattr(target, f.name).set(merged_objects)
+                            if hasattr(f, "through"):
+                                through = f.through
+                            else:
+                                through = f.remote_field.through
+                            if through._meta.auto_created:
+                                # If it's a many-to-many object, we'll set the target's M2M relation to the union
+                                # If there's a custom through table, those foreign key relations will appear as FKs
+                                # And will be updated separately
+                                merged_objects = (
+                                    getattr(source, f.name).all()
+                                    | getattr(target, f.name).all()
+                                )
+                                getattr(target, f.name).set(merged_objects)
 
                     if hasattr(source, "history"):
                         # If you have a django-historical-records manager installed on the model, we'll update the

@@ -62,6 +62,11 @@ class SecondTestModel(BasicExtendedModel):
         on_delete=models.SET_NULL,
     )
     dummy_field = models.CharField(default="test", max_length=10)
+    many_to_many_through = models.ManyToManyField(
+        "testapp.TestModel",
+        related_name="many_to_many_through_reverse",
+        through="testapp.ThroughTestModel",
+    )
 
     class Meta:
         unique_together = ("foreign_key_unique", "dummy_field")
@@ -71,3 +76,17 @@ class SecondTestModel(BasicExtendedModel):
         string = "{}: {}".format(self._meta.model._meta.model_name.title(), self.pk)
 
         return string
+
+
+class ThroughTestModel(BasicExtendedModel):
+
+    owner = models.ForeignKey(
+        "testapp.SecondTestModel",
+        related_name="many_to_many_through_details",
+        on_delete=models.CASCADE,
+    )
+    related = models.ForeignKey(
+        "testapp.TestModel",
+        related_name="many_to_many_through_details_reverse",
+        on_delete=models.CASCADE,
+    )
