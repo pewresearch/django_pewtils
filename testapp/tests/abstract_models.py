@@ -86,7 +86,7 @@ class AbstractModelTests(DjangoTestCase):
         self.assertEqual(results["foreign_key_unique_reverse"], 1)
         self.assertEqual(results["one_to_one_self"], 1)
         self.assertEqual(results["foreign_key_self"], 1)
-        self.assertEqual(len(results.keys()), 11)
+        self.assertEqual(len(results.keys()), 13)
 
         results = TestModel.objects.filter(foreign_key_reverse__isnull=False)[
             0
@@ -102,7 +102,7 @@ class AbstractModelTests(DjangoTestCase):
         self.assertEqual(results["foreign_key_unique_reverse"].count(), 1)
         self.assertEqual(results["one_to_one_self"].count(), 1)
         self.assertEqual(results["foreign_key_self"].count(), 1)
-        self.assertEqual(len(results.keys()), 11)
+        self.assertEqual(len(results.keys()), 13)
 
         obj = SecondTestModel.objects.filter(foreign_key_reverse__isnull=False)[0]
         for related in obj.many_to_many_reverse.all():
@@ -114,7 +114,7 @@ class AbstractModelTests(DjangoTestCase):
         self.assertEqual(results["foreign_key_unique"], 1)
         self.assertEqual(results["many_to_many_reverse"], 0)
         self.assertEqual(results["foreign_key"], 1)
-        self.assertEqual(len(results.keys()), 5)
+        self.assertEqual(len(results.keys()), 7)
 
         results = obj.related_objects(counts=True, nonzero_only=True)
         self.assertGreater(results["foreign_key_reverse"], 0)
@@ -129,7 +129,7 @@ class AbstractModelTests(DjangoTestCase):
         self.assertEqual(results["foreign_key_unique"].count(), 1)
         self.assertEqual(results["many_to_many_reverse"].count(), 0)
         self.assertEqual(results["foreign_key"].count(), 1)
-        self.assertEqual(len(results.keys()), 5)
+        self.assertEqual(len(results.keys()), 7)
 
     def test_fuzzy_ratio(self):
 
