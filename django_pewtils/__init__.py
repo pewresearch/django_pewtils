@@ -745,14 +745,15 @@ class CacheHandler(object):
         if self.use_database:
             self.cached_keys = []
 
-    def write(self, key, value, timeout=5 * 60):
+    def write(self, key, value, timeout=None):
 
         """
         Write a value to the cache.
 
         :param key: The key to use to look up the stored value.
         :param value: The value to save to the cache.
-        :param timeout: Optional timeout for the key to expire. Default is 5 minutes.
+        :param timeout: Optional timeout for the key to expire. Default is 5 minutes for database caching, and None for
+        file-based caching.
         :return:
         """
 
@@ -761,12 +762,15 @@ class CacheHandler(object):
                 key = self.file_handler.get_key_hash(key)
             k = "/".join([self.path, key])
             self.cached_keys.append(k)
+            if not timeout:
+                timeout = 60.0 * 5.0
+                print("Database caching requires a timeout, but none was provided. Setting expiration at 5 minutes.")
             cache.set(k, value, timeout)
         else:
             value = {
                 "value": value,
                 "timeout": datetime.datetime.now()
-                + datetime.timedelta(seconds=timeout),
+                + datetime.timedelta(seconds=timeout) if timeout else None,
             }
             self.file_handler.write(key, value, hash_key=self.hash)
 
@@ -787,7 +791,7 @@ class CacheHandler(object):
         else:
             value = self.file_handler.read(key, hash_key=self.hash)
             if value:
-                if value["timeout"] < datetime.datetime.now():
+                if value["timeout"] and value["timeout"] < datetime.datetime.now():
                     self.clear_key(key)
                     return None
                 else:
