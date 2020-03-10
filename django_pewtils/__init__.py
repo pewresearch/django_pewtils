@@ -772,7 +772,7 @@ class CacheHandler(object):
                 "timeout": datetime.datetime.now()
                 + datetime.timedelta(seconds=timeout) if timeout else None,
             }
-            self.file_handler.write(key, value, hash_key=self.hash)
+            self.file_handler.write(key, value, hash_key=self.hash, format="pkl")
 
     def read(self, key):
 
@@ -789,7 +789,7 @@ class CacheHandler(object):
             k = "/".join([self.path, key])
             return cache.get(k)
         else:
-            value = self.file_handler.read(key, hash_key=self.hash)
+            value = self.file_handler.read(key, hash_key=self.hash, format="pkl")
             if value:
                 if value["timeout"] and value["timeout"] < datetime.datetime.now():
                     self.clear_key(key)
@@ -836,7 +836,7 @@ class CacheHandler(object):
             k = "/".join([self.path, key])
             cache.set(k, None)
         else:
-            self.file_handler.clear_file(key, hash_key=self.hash)
+            self.file_handler.clear_file(key, hash_key=self.hash, format="pkl")
 
 
 def get_app_settings_folders(settings_dir_list_var):
