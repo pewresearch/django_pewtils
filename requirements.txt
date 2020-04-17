@@ -6,7 +6,6 @@ cython>=0.25.2
 django-celery-results
 django<2.0; python_version < '3.0'
 django>=2.2; python_version >= '3.0'
-fake-useragent>=0.1.7
 future
 fuzzywuzzy>=0.15.0
 fuzzywuzzy>=0.15.0
@@ -42,5 +41,6 @@ unicode
 unidecode>=0.4.20
 xlrd>=1.2.0
 xlsxwriter>=1.1.8
+git+ssh://labsdeploy/hellysmile/fake-useragent#egg=fake_usergaent
 git+ssh://labsdeploy/pewresearch/pewtils#egg=pewtils
 git+ssh://labsdeploy/pewresearch/pewtils#egg=pewanalytics
