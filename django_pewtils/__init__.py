@@ -764,13 +764,16 @@ class CacheHandler(object):
             self.cached_keys.append(k)
             if not timeout:
                 timeout = 60.0 * 5.0
-                print("Database caching requires a timeout, but none was provided. Setting expiration at 5 minutes.")
+                print(
+                    "Database caching requires a timeout, but none was provided. Setting expiration at 5 minutes."
+                )
             cache.set(k, value, timeout)
         else:
             value = {
                 "value": value,
-                "timeout": datetime.datetime.now()
-                + datetime.timedelta(seconds=timeout) if timeout else None,
+                "timeout": datetime.datetime.now() + datetime.timedelta(seconds=timeout)
+                if timeout
+                else None,
             }
             self.file_handler.write(key, value, hash_key=self.hash, format="pkl")
 
