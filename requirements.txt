@@ -42,5 +42,5 @@ unidecode>=0.4.20
 xlrd>=1.2.0
 xlsxwriter>=1.1.8
 git+ssh://labsdeploy/hellysmile/fake-useragent#egg=fake_usergaent
-git+ssh://labsdeploy/pewresearch/pewtils#egg=pewtils
-git+ssh://labsdeploy/pewresearch/pewtils#egg=pewanalytics
+git+ssh://labsdeploy/pewresearch/pewtils_dev#egg=pewtils
+git+ssh://labsdeploy/pewresearch/pewanalytics_dev#egg=pewanalytics
