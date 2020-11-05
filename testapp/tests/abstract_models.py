@@ -144,7 +144,8 @@ class AbstractModelTests(DjangoTestCase):
             ["text_field"], min_ratio=10, allow_partial=True, max_partial_difference=80
         )
         self.assertEqual(result[0]["pk"], 5)
-        self.assertEqual(result[0]["fuzzy_ratio"], 46)
+        self.assertGreater(result[0]["fuzzy_ratio"], 45)
+        self.assertGreater(47, result[0]["fuzzy_ratio"])
 
     def test_levenshtein_difference(self):
 

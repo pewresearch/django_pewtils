@@ -628,10 +628,9 @@ class BasicExtendedManager(models.QuerySet):
         similarities = h.search_corpus(text)
         results = []
         for index, row in similarities.iterrows():
+            pk = df.loc[index]["pk"]
             if not min_similarity or row["search_cosine_similarity"] >= min_similarity:
-                result = self.model.objects.filter(pk=row["pk"]).values(
-                    "pk", *field_names
-                )[0]
+                result = self.model.objects.filter(pk=pk).values("pk", *field_names)[0]
                 result["similarity"] = row["search_cosine_similarity"]
                 results.append(result)
         return results
