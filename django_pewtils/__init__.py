@@ -536,7 +536,7 @@ def consolidate_objects(
                                 through = f.through
                             else:
                                 through = f.remote_field.through
-                            if through._meta.auto_created:
+                            if through._meta.auto_created and hasattr(source, f.name) and hasattr(target, f.name):
                                 # If it's a many-to-many object, we'll set the target's M2M relation to the union
                                 # If there's a custom through table, those foreign key relations will appear as FKs
                                 # And will be updated separately
