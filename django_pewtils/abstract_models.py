@@ -52,7 +52,7 @@ class BasicExtendedModel(models.Model):
                         )
                     else:
                         objs[f.name] = None
-                elif f.one_to_many or f.many_to_many:
+                elif (f.one_to_many or f.many_to_many) and hasattr(self, f.name):
                     objs[f.name] = getattr(self, f.name).all()
 
         if nonzero_only:
