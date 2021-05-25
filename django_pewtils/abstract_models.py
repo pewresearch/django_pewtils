@@ -81,7 +81,7 @@ class BasicExtendedModel(models.Model):
             objs = {k: v for k, v in objs.items() if v.count() > 0}
         if counts:
             objs = {k: v.count() if v else 0 for k, v in objs.items()}
-        return objs
+        return dict(objs)
 
     def fuzzy_ratio(
         self, field_names, text, allow_partial=False, max_partial_difference=100
