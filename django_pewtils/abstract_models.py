@@ -18,6 +18,28 @@ class BasicExtendedModel(models.Model):
 
     objects = BasicExtendedManager().as_manager()
 
+    def json(self, exclude_nulls=False, empty_lists_are_null=False):
+
+        """
+        Returns a JSON/dictionary-style representation of the object.
+
+        :param exclude_nulls: Whether or not to exclude fields with null values (default is False)
+        :type exclude_nulls: bool
+        :param empty_lists_are_null: Whether or not to treat empty lists as null (default is False)
+        :type empty_lists_are_null: bool
+        :return: Dictionary representation of the object
+        :rtype: dict
+        """
+
+        record = self._meta.model.objects.filter(pk=self.pk).values()[0]
+        if exclude_nulls:
+            record = {
+                k: v
+                for k, v in record.items()
+                if is_not_null(v, empty_lists_are_null=empty_lists_are_null)
+            }
+        return record
+
     def inspect_delete(self, counts=False):
 
         """

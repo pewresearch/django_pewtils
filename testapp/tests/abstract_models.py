@@ -51,6 +51,33 @@ class AbstractModelTests(DjangoTestCase):
             obj2.foreign_key_unique = TestModel.objects.get(pk=obj2.pk)
             obj2.save()
 
+    def test_json(self):
+
+        obj = TestModel.objects.create(id=99999)
+        result = obj.json()
+
+        self.assertEqual(
+            sorted(obj.json().keys()),
+            [
+                "array_field",
+                "foreign_key_id",
+                "foreign_key_self_id",
+                "id",
+                "one_to_one_id",
+                "one_to_one_self_id",
+                "text_field",
+            ],
+        )
+
+        self.assertEqual(
+            sorted(obj.json(exclude_nulls=True).keys()), ["array_field", "id"]
+        )
+
+        self.assertEqual(
+            sorted(obj.json(exclude_nulls=True, empty_lists_are_null=True).keys()),
+            ["id"],
+        )
+
     def test_inspect_delete(self):
 
         from django_pewtils import get_model
