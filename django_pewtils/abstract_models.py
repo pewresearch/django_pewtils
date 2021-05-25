@@ -29,6 +29,25 @@ class BasicExtendedModel(models.Model):
         :type empty_lists_are_null: bool
         :return: Dictionary representation of the object
         :rtype: dict
+
+        Usage::
+
+            >>> obj.json(exclude_nulls=True)
+            {'id': 64720,
+             'first_name': 'Dwayne',
+             'last_name': 'Johnson',
+             'nickname': 'The Rock',
+             'has_press_release_scraper': False,
+             'bioguide_id': 'J99999',
+             'fec_ids': ['P99999'],
+             'facebook_ids': [],
+             'old_facebook_ids': [],
+             'twitter_ids': [],
+             'old_twitter_ids': [],
+             'instagram_ids': ['1234567890'],
+             'old_instagram_ids': [],
+             'capitol_words_speech_backfill': False}
+
         """
 
         record = self._meta.model.objects.filter(pk=self.pk).values()[0]
@@ -48,6 +67,32 @@ class BasicExtendedModel(models.Model):
 
         :param counts: If `True`, will return counts of the objects to be deleted. Otherwise returns QuerySets
         :return: A dictionary of models/relations (keys) and the counts or QuerySets of objects to be deleted (values)
+
+        Usage::
+
+            >>> bernie.inspect_delete(counts=True)
+            defaultdict(list,
+                        {logos.models.agents.Politician: 1,
+                         logos.models.agents.Politician_commands: 21,
+                         logos.models.agents.Politician_command_logs: 1112,
+                         logos.models.agents.PoliticianPersonalMetric: 47,
+                         logos.models.agents.PoliticianPersonalMetric_commands: 27,
+                         logos.models.agents.PoliticianPersonalMetric_command_logs: 167,
+                         logos.models.media.NewsArticle_relevant_politicians: 96109,
+                         logos.models.media.BallotpediaPage: 1,
+                         logos.models.media.WikipediaPage: 1,
+                         logos.models.media.WikipediaPage_commands: 1,
+                         logos.models.media.WikipediaPage_command_logs: 1,
+                         logos.models.government.CommitteeMembership: 63,
+                         logos.models.government.CommitteeMembership_commands: 63,
+                         logos.models.government.CommitteeMembership_command_logs: 63,
+                         logos.models.government.Caucus_members: 1,
+                         logos.models.government.Bill_cosponsors: 2638,
+                         logos.models.government.Vote_votes_for: 3320,
+                         logos.models.government.Vote_votes_against: 1918,
+                         logos.models.government.Vote_votes_abstained: 343,
+                         logos.models.government.LegislativeHearing_attendees: 1059})
+
         """
 
         return inspect_delete([self], counts=counts)
@@ -61,6 +106,45 @@ class BasicExtendedModel(models.Model):
         :param nonzero_only: If `True`, empty relations will not be included in the dictionary.
         :return: A dictionary of relation fields on the model (keys) and the counts or QuerySets of the related
         objects (values)
+
+        Usage::
+
+            >>> bernie.related_objects(counts=True)
+            {'personal_metrics': 47,
+             'campaigns': 7,
+             'staffers': 0,
+             'relevant_news_articles': 96109,
+             'press_releases': 3326,
+             'ballotpedia_page': 1,
+             'wikipedia_page': 1,
+             'speeches': 2890,
+             'twitter_profiles': 3,
+             'incumbent_elections': 2,
+             'elections_won': 11,
+             'contributions_donated': 0,
+             'contributions_received': 0,
+             'facebook_pages': 2,
+             'terms': 11,
+             'chaired_committees': 0,
+             'ranking_member_committees': 2,
+             'committees': 0,
+             'committee_memberships': 63,
+             'caucuses': 1,
+             'sponsored_bills': 235,
+             'cosponsored_bills': 2638,
+             'votes_for': 3320,
+             'votes_against': 1918,
+             'votes_abstained': 343,
+             'hearings': 1059,
+             'scrape_logs': 3,
+             'webpages': 2193,
+             'current_term': 1,
+             'latest_term': 1,
+             'party': 1,
+             'commands': 21,
+             'command_logs': 1112,
+             'verifications': 0}
+
         """
 
         objs = {}

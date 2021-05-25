@@ -185,10 +185,12 @@ class BasicExtendedManager(models.QuerySet):
 
     """
     An extension of a Django QuerySet with additional helper functions. Can be used as a manager on any model like so:
-    ```python
-    class MyModel(models.Model):
-        objects = BasicExtendedManager().as_manager()
-    ```
+
+    .. code-block:: python
+
+        class MyModel(models.Model):
+            objects = BasicExtendedManager().as_manager()
+
     """
 
     def __init__(self, *args, **kwargs):
@@ -545,10 +547,11 @@ class BasicExtendedManager(models.QuerySet):
 
         """
         Returns the object with the greatest fuzzy ratio in the QuerySet. Equivalent to calling:
-        ```python
-        >>> result = my_query_set.fuzzy_ratios(["text_field"], "test")
-        >>> MyModel.objects.get(pk=result[0].pk)
-        ```
+
+        .. code-block:: python
+
+            >>> result = my_query_set.fuzzy_ratios(["text_field"], "test")
+            >>> MyModel.objects.get(pk=result[0].pk)
 
         :param field_names: The names of the text fields to compare
         :param text: A string of text to compare
@@ -617,10 +620,11 @@ class BasicExtendedManager(models.QuerySet):
 
         """
         Returns the object with the smallest Levenshtein difference in the QuerySet. Equivalent to calling:
-        ```python
-        >>> result = my_query_set.levenshtein_differences(["text_field"], "test")
-        >>> MyModel.objects.get(pk=result[0].pk)
-        ```
+
+        .. code-block:: python
+
+            >>> result = my_query_set.levenshtein_differences(["text_field"], "test")
+            >>> MyModel.objects.get(pk=result[0].pk)
 
         :param field_names: The names of the text fields to compare
         :param text: A string of text to compare
@@ -666,10 +670,11 @@ class BasicExtendedManager(models.QuerySet):
 
         """
         Returns the object with the highest TF-IDF cosine similarity in the QuerySet. Equivalent to calling:
-        ```python
-        >>> result = my_query_set.tfidf_similarities(["text_field"], "test")
-        >>> MyModel.objects.get(pk=result[0].pk)
-        ```
+
+        .. code-block:: python
+
+            >>> result = my_query_set.tfidf_similarities(["text_field"], "test")
+            >>> MyModel.objects.get(pk=result[0].pk)
 
         :param field_names: The names of the text fields to compare
         :param text: A string of text to compare
@@ -723,10 +728,11 @@ class BasicExtendedManager(models.QuerySet):
 
         """
         Returns the object with the highest trigram similarity in the QuerySet. Equivalent to calling:
-        ```python
-        >>> result = my_query_set.trigram_similarities(["text_field"], "test")
-        >>> MyModel.objects.get(pk=result[0].pk)
-        ```
+
+        .. code-block:: python
+
+            >>> result = my_query_set.trigram_similarities(["text_field"], "test")
+            >>> MyModel.objects.get(pk=result[0].pk)
 
         :param field_names: The names of the text fields to compare
         :param text: A string of text to compare

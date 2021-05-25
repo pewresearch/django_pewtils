@@ -82,7 +82,6 @@ django_pewtils requires:
 - Python (>= 2.7)
 - Django (>= 1.10)
 - `Pewtils (our own in-house Python utilities) <https://github.com/pewresearch/pewtils>`_
-- `Django Pewtils (our own in-house Django utilities) <https://github.com/pewresearch/django_pewtils>`_
 
 You'll need to install Pewtils and Django Pewtils in order for Django Verifications to work, but other than that,
 there are no special requirements.

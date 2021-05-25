@@ -1,6 +1,12 @@
 # Django Pewtils
 
-`django_pewtils` is a Python package that provides utility functions for Django.
+`django_pewtils` is a Python package that provides general-purpose Django-related tools that make it easier to 
+interact with data stored in databases using the Django ORM. If you’re using Django to manage a database, Django 
+Pewtils can help you do things that Django can’t do out-of-the-box, like: consolidate duplicate database records with 
+complicated relations that need to be resolved; view all of the relations an object has in the database; inspect all 
+of the objects that will be deleted BEFORE you run a delete query (useful for avoiding unexpected cascades); 
+efficiently loop over extremely large tables; run complex text searches and compute text similarities using efficient 
+built-in database functions.
 
 
 ## Installation 
@@ -18,11 +24,6 @@ Install from source:
 
 Django Pewtils provides a variety of useful functions that help extend the capabilities of Django and that are 
 broadly applicable in any Django application. The following is a selection of highlights worth knowing about:
-    
-####`load_app`
-When running outside of the Django shell (e.g. in a Jupyter notebook), this function makes it easy to 
-initialize your Django application. For best results, you should pass it the name of your application - but it will 
-attempt to detect it on its own.
 
 #### `reset_django_connection`
 Provides an easy way to reset your Django database connection. Useful when multiprocessing.
