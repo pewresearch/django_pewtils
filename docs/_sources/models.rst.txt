@@ -1,8 +1,0 @@
-*************************************
-django_pewtils.models
-*************************************
-
-.. automodule :: django_pewtils.models
-  :autosummary:
-  :autosummary-members:
-  :members:
