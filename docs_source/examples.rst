@@ -2,7 +2,6 @@
 Examples
 *************************************
 
-
 Basic functions
 ===============
 
@@ -15,6 +14,16 @@ Basic functions
     get_model("facebook page")
 
 
+.. parsed-literal::
+
+    logos.models.facebook.FacebookPage
+
+
+.. code:: ipython3
+
+    get_model("facebookpage")
+
+
 
 
 .. parsed-literal::
@@ -25,11 +34,16 @@ Basic functions
 
 .. code:: ipython3
 
-    get_model("facebookpage")
-
-.. code:: ipython3
-
     get_model("Facebook_Page")
+
+
+
+
+.. parsed-literal::
+
+    logos.models.facebook.FacebookPage
+
+
 
 .. code:: ipython3
 
@@ -48,74 +62,19 @@ Basic functions
 
     get_model("document")
 
-.. code:: ipython3
-
-    from django_pewtils import reset_django_connection
-    reset_django_connection(app_name="logos")
-
-.. code:: ipython3
-
-    Politician.objects.values()[0]
-
 
 
 
 .. parsed-literal::
 
-    {'id': 49974,
-     'first_name': 'John',
-     'middle_initial': 'Michael',
-     'last_name': 'Fleig',
-     'nickname': '',
-     'suffix': '',
-     'has_press_release_scraper': False,
-     'religion': None,
-     'gender': None,
-     'birthday': None,
-     'age': None,
-     'image_src': None,
-     'bioguide_id': None,
-     'fec_ids': ['H4FL13119'],
-     'govtrack_id': None,
-     'thomas_id': None,
-     'opensecrets_id': None,
-     'lis_id': None,
-     'icpsr_id': None,
-     'facebook_ids': [],
-     'old_facebook_ids': [],
-     'twitter_ids': [],
-     'old_twitter_ids': [],
-     'instagram_ids': [],
-     'old_instagram_ids': [],
-     'wikipedia_id': None,
-     'valid_wikipedia_id': False,
-     'ballotpedia_id': None,
-     'valid_ballotpedia_id': None,
-     'capitol_words_speech_backfill': False,
-     'education_associates': None,
-     'education_associates_institution': None,
-     'education_bachelors': None,
-     'education_bachelors_institution': None,
-     'education_masters': None,
-     'education_masters_institution': None,
-     'education_phd': None,
-     'education_phd_institution': None,
-     'education_jd': None,
-     'education_jd_institution': None,
-     'education_md': None,
-     'education_md_institution': None,
-     'birthplace': None,
-     'military_service': None,
-     'military_service_years': None,
-     'military_service_branch': None,
-     'profession': None,
-     'bioguide_bio': None,
-     'current_term_id': None,
-     'latest_term_id': None,
-     'party_id': None,
-     'in_office': None}
+    django_learning.models.documents.Document
 
 
+
+.. code:: ipython3
+
+    from django_pewtils import reset_django_connection
+    reset_django_connection(app_name="logos")
 
 .. code:: ipython3
 
@@ -127,92 +86,92 @@ Basic functions
 
 .. parsed-literal::
 
-    ['press_releases',
-     'education_md_institution',
-     'committee_memberships',
-     'campaigns',
-     'nickname',
-     'birthplace',
-     'wikipedia_id',
-     'image_src',
-     'birthday',
-     'old_instagram_ids',
-     'cosponsored_bills',
-     'education_masters_institution',
-     'education_jd_institution',
-     'latest_term',
-     'command_logs',
-     'verifications',
-     'committees',
-     'govtrack_id',
-     'contributions_donated',
-     'education_masters',
-     'bioguide_bio',
-     'bioguide_id',
-     'capitol_words_speech_backfill',
-     'ballotpedia_page',
-     'commands',
-     'last_name',
-     'party_id',
-     'religion',
-     'staffers',
-     'ballotpedia_id',
-     'valid_wikipedia_id',
-     'latest_term_id',
-     'current_term_id',
-     'in_office',
-     'military_service_branch',
-     'webpages',
-     'old_twitter_ids',
-     'id',
-     'votes_for',
-     'twitter_profiles',
-     'education_bachelors',
-     'twitter_ids',
-     'incumbent_elections',
-     'facebook_pages',
-     'sponsored_bills',
-     'instagram_ids',
-     'opensecrets_id',
-     'middle_initial',
-     'profession',
-     'military_service_years',
-     'education_bachelors_institution',
-     'old_facebook_ids',
-     'chaired_committees',
-     'facebook_ids',
-     'gender',
-     'education_associates',
-     'education_jd',
-     'education_md',
-     'terms',
-     'icpsr_id',
-     'lis_id',
-     'contributions_received',
-     'education_phd',
-     'thomas_id',
-     'speeches',
-     'scrape_logs',
-     'suffix',
-     'education_phd_institution',
+    ['education_bachelors',
      'age',
-     'wikipedia_page',
+     'votes_for',
+     'staffers',
+     'education_bachelors_institution',
+     'twitter_profiles',
+     'webpages',
      'votes_against',
-     'current_term',
-     'personal_metrics',
-     'elections_won',
-     'first_name',
-     'caucuses',
+     'military_service_branch',
+     'press_releases',
+     'facebook_pages',
+     'ballotpedia_id',
+     'has_press_release_scraper',
+     'command_logs',
+     'last_name',
+     'education_associates',
+     'education_md_institution',
+     'contributions_donated',
      'ranking_member_committees',
      'military_service',
+     'committees',
+     'elections_won',
+     'current_term_id',
+     'cosponsored_bills',
+     'current_term',
+     'caucuses',
+     'valid_wikipedia_id',
      'fec_ids',
-     'votes_abstained',
-     'has_press_release_scraper',
+     'education_jd_institution',
+     'suffix',
+     'image_src',
+     'latest_term_id',
+     'education_masters_institution',
+     'profession',
+     'education_jd',
+     'military_service_years',
+     'ballotpedia_page',
+     'nickname',
+     'icpsr_id',
+     'chaired_committees',
+     'personal_metrics',
+     'birthday',
+     'old_facebook_ids',
+     'middle_initial',
+     'twitter_ids',
+     'incumbent_elections',
+     'lis_id',
+     'education_associates_institution',
+     'in_office',
+     'id',
+     'campaigns',
+     'wikipedia_id',
+     'instagram_ids',
+     'commands',
      'party',
+     'education_phd',
      'hearings',
+     'wikipedia_page',
+     'old_twitter_ids',
+     'committee_memberships',
+     'party_id',
+     'terms',
+     'gender',
+     'old_instagram_ids',
+     'facebook_ids',
      'valid_ballotpedia_id',
+     'govtrack_id',
+     'sponsored_bills',
+     'speeches',
+     'latest_term',
+     'capitol_words_speech_backfill',
+     'bioguide_bio',
+     'bioguide_id',
+     'education_phd_institution',
+     'education_md',
+     'education_masters',
+     'opensecrets_id',
+     'contributions_received',
+     'scrape_logs',
+     'votes_abstained',
      'relevant_news_articles',
-     'education_associates_institution']
+     'thomas_id',
+     'first_name',
+     'religion',
+     'birthplace',
+     'verifications']
 
 
 
@@ -251,7 +210,7 @@ members of Congress, presidential candidates, and other politicians
 
 .. parsed-literal::
 
-    <PoliticianManager [<Politician: John Michael Fleig>, <Politician: Joseph C Miechowicz>, <Politician: James Edgar Sr Md Lundeen>, <Politician: Daniel Cochcran 'Dc' Morrison>, <Politician: Mary Pallant>, <Politician: Charles Taylor Sutherland>, <Politician: Demetrios S Giannaros>, <Politician: Corinne Nicole Westerfield>, <Politician: Joseph M Kyrillos Jr>, <Politician: Paul Andrew Rundquist>, <Politician: Jim Bussler>, <Politician: Sona Mehring>, <Politician: William G. Barnes>, <Politician: Carol Ann Joyce Larosa>, <Politician: John R. Cox>, <Politician: >, <Politician: Go Vegan Go Vegan>, <Politician: Trish Causey>, <Politician: Christopher Alen Andrade>, <Politician: Jude Anthony Tiscornia>, '...(remaining elements truncated)...']>
+    <PoliticianManager [<Politician: John Michael Fleig>, <Politician: James Berryhill>, <Politician: Joseph C Miechowicz>, <Politician: James Edgar Sr Md Lundeen>, <Politician: Daniel Cochcran 'Dc' Morrison>, <Politician: Mary Pallant>, <Politician: Charles Taylor Sutherland>, <Politician: Demetrios S Giannaros>, <Politician: Corinne Nicole Westerfield>, <Politician: Joseph M Kyrillos Jr>, <Politician: Paul Andrew Rundquist>, <Politician: Jim Bussler>, <Politician: Sona Mehring>, <Politician: William G. Barnes>, <Politician: Carol Ann Joyce Larosa>, <Politician: John R. Cox>, <Politician: >, <Politician: Go Vegan Go Vegan>, <Politician: Trish Causey>, <Politician: Christopher Alen Andrade>, '...(remaining elements truncated)...']>
 
 
 
@@ -287,11 +246,11 @@ query into a Pandas DataFrame. Just watch your memory with big queries!
         .dataframe tbody tr th:only-of-type {
             vertical-align: middle;
         }
-    
+
         .dataframe tbody tr th {
             vertical-align: top;
         }
-    
+
         .dataframe thead th {
             text-align: right;
         }
@@ -350,6 +309,30 @@ query into a Pandas DataFrame. Just watch your memory with big queries!
         </tr>
         <tr>
           <th>1</th>
+          <td>62869</td>
+          <td>James</td>
+          <td></td>
+          <td>Berryhill</td>
+          <td></td>
+          <td></td>
+          <td>False</td>
+          <td>None</td>
+          <td>None</td>
+          <td>NaT</td>
+          <td>...</td>
+          <td>None</td>
+          <td>None</td>
+          <td>NaN</td>
+          <td>None</td>
+          <td>None</td>
+          <td>None</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>None</td>
+        </tr>
+        <tr>
+          <th>2</th>
           <td>49987</td>
           <td>Joseph</td>
           <td>C</td>
@@ -373,7 +356,7 @@ query into a Pandas DataFrame. Just watch your memory with big queries!
           <td>None</td>
         </tr>
         <tr>
-          <th>2</th>
+          <th>3</th>
           <td>50087</td>
           <td>James</td>
           <td>Edgar Sr Md</td>
@@ -397,36 +380,12 @@ query into a Pandas DataFrame. Just watch your memory with big queries!
           <td>None</td>
         </tr>
         <tr>
-          <th>3</th>
+          <th>4</th>
           <td>50108</td>
           <td>Daniel</td>
           <td>Cochcran</td>
           <td>Morrison</td>
           <td>Dc</td>
-          <td></td>
-          <td>False</td>
-          <td>None</td>
-          <td>None</td>
-          <td>NaT</td>
-          <td>...</td>
-          <td>None</td>
-          <td>None</td>
-          <td>NaN</td>
-          <td>None</td>
-          <td>None</td>
-          <td>None</td>
-          <td>NaN</td>
-          <td>NaN</td>
-          <td>NaN</td>
-          <td>None</td>
-        </tr>
-        <tr>
-          <th>4</th>
-          <td>50133</td>
-          <td>Mary</td>
-          <td></td>
-          <td>Pallant</td>
-          <td></td>
           <td></td>
           <td>False</td>
           <td>None</td>
@@ -595,101 +554,6 @@ query into a Pandas DataFrame. Just watch your memory with big queries!
 
 
 
-.. code:: ipython3
-
-    import pandas as pd
-    pd.DataFrame.from_records(Politician.objects.values("first_name", "last_name"))
-
-
-
-
-.. raw:: html
-
-    <div>
-    <style scoped>
-        .dataframe tbody tr th:only-of-type {
-            vertical-align: middle;
-        }
-    
-        .dataframe tbody tr th {
-            vertical-align: top;
-        }
-    
-        .dataframe thead th {
-            text-align: right;
-        }
-    </style>
-    <table border="1" class="dataframe">
-      <thead>
-        <tr style="text-align: right;">
-          <th></th>
-          <th>first_name</th>
-          <th>last_name</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th>0</th>
-          <td>John</td>
-          <td>Fleig</td>
-        </tr>
-        <tr>
-          <th>1</th>
-          <td>Joseph</td>
-          <td>Miechowicz</td>
-        </tr>
-        <tr>
-          <th>2</th>
-          <td>James</td>
-          <td>Lundeen</td>
-        </tr>
-        <tr>
-          <th>3</th>
-          <td>Daniel</td>
-          <td>Morrison</td>
-        </tr>
-        <tr>
-          <th>4</th>
-          <td>Mary</td>
-          <td>Pallant</td>
-        </tr>
-        <tr>
-          <th>...</th>
-          <td>...</td>
-          <td>...</td>
-        </tr>
-        <tr>
-          <th>20668</th>
-          <td>Julio</td>
-          <td>Castaneda</td>
-        </tr>
-        <tr>
-          <th>20669</th>
-          <td>Samir</td>
-          <td>Jammal</td>
-        </tr>
-        <tr>
-          <th>20670</th>
-          <td>Brian</td>
-          <td>Forde</td>
-        </tr>
-        <tr>
-          <th>20671</th>
-          <td>Joshua</td>
-          <td>Mandel</td>
-        </tr>
-        <tr>
-          <th>20672</th>
-          <td>Robert</td>
-          <td>Kennedy</td>
-        </tr>
-      </tbody>
-    </table>
-    <p>20673 rows × 2 columns</p>
-    </div>
-
-
-
 We could also pull a random sample using ``.sample``
 
 .. code:: ipython3
@@ -701,7 +565,7 @@ We could also pull a random sample using ``.sample``
 
 .. parsed-literal::
 
-    <PoliticianManager [<Politician: Randy J. Tate>, <Politician: Guy Nelson Fogle>, <Politician: Thomas M Wicker>, <Politician: William 'Bill' Bryk>, <Politician: Debbie Cook>, <Politician: Mark Christopher Fava>, <Politician: Phil Sudan>, <Politician: Viola Thomas-Hughes>, <Politician: Joshua Brett Kimbrell>, <Politician: Anthony Cristo>]>
+    <PoliticianManager [<Politician: Gene Eugene Green>, <Politician: Michael C Hight>, <Politician: Jason Kander>, <Politician: Steven Edward Mirabella>, <Politician: Harold L Whitfield>, <Politician: Sheirl Lee Fletcher>, <Politician: Joe Manchik>, <Politician: Charles Wayne Dowdy>, <Politician: Nicholas Tutora>, <Politician: Matthew Caroll Hook>]>
 
 
 
@@ -719,11 +583,11 @@ We could also pull a random sample using ``.sample``
         .dataframe tbody tr th:only-of-type {
             vertical-align: middle;
         }
-    
+
         .dataframe tbody tr th {
             vertical-align: top;
         }
-    
+
         .dataframe thead th {
             text-align: right;
         }
@@ -758,34 +622,34 @@ We could also pull a random sample using ``.sample``
       <tbody>
         <tr>
           <th>0</th>
-          <td>249</td>
-          <td>Jerry</td>
+          <td>5804</td>
+          <td>Eric</td>
+          <td>J. J.</td>
+          <td>Massa</td>
           <td></td>
-          <td>Moran</td>
           <td></td>
-          <td></td>
-          <td>True</td>
-          <td>Methodist</td>
-          <td>M</td>
-          <td>1954-05-29</td>
-          <td>...</td>
-          <td>None</td>
           <td>False</td>
           <td>None</td>
+          <td>M</td>
+          <td>1959-09-16</td>
+          <td>...</td>
           <td>None</td>
           <td>None</td>
-          <td>MORAN, Jerry, a Senator and a Representative f...</td>
-          <td>16451.0</td>
-          <td>16451.0</td>
-          <td>83.0</td>
-          <td>True</td>
+          <td>None</td>
+          <td>None</td>
+          <td>None</td>
+          <td>MASSA, Eric J.J., a Representative from New Yo...</td>
+          <td>None</td>
+          <td>9827.0</td>
+          <td>26.0</td>
+          <td>False</td>
         </tr>
         <tr>
           <th>1</th>
-          <td>47753</td>
-          <td>Ronald</td>
-          <td>Keith</td>
-          <td>Hebert</td>
+          <td>45570</td>
+          <td>Peter</td>
+          <td></td>
+          <td>Vivaldi</td>
           <td></td>
           <td></td>
           <td>False</td>
@@ -799,17 +663,17 @@ We could also pull a random sample using ``.sample``
           <td>None</td>
           <td>None</td>
           <td>None</td>
-          <td>NaN</td>
+          <td>None</td>
           <td>NaN</td>
           <td>NaN</td>
           <td>None</td>
         </tr>
         <tr>
           <th>2</th>
-          <td>48150</td>
-          <td>David</td>
-          <td>E</td>
-          <td>Hunsicker</td>
+          <td>47758</td>
+          <td>James</td>
+          <td>A</td>
+          <td>Hayden</td>
           <td></td>
           <td></td>
           <td>False</td>
@@ -823,17 +687,17 @@ We could also pull a random sample using ``.sample``
           <td>None</td>
           <td>None</td>
           <td>None</td>
-          <td>NaN</td>
+          <td>None</td>
           <td>NaN</td>
           <td>NaN</td>
           <td>None</td>
         </tr>
         <tr>
           <th>3</th>
-          <td>51169</td>
-          <td>Ronald</td>
+          <td>51324</td>
+          <td>Clinton</td>
           <td></td>
-          <td>Mitchell</td>
+          <td>Desjarlais</td>
           <td></td>
           <td></td>
           <td>False</td>
@@ -847,17 +711,17 @@ We could also pull a random sample using ``.sample``
           <td>None</td>
           <td>None</td>
           <td>None</td>
-          <td>NaN</td>
+          <td>None</td>
           <td>NaN</td>
           <td>NaN</td>
           <td>None</td>
         </tr>
         <tr>
           <th>4</th>
-          <td>56692</td>
-          <td>Ralph</td>
-          <td></td>
-          <td>Spelbring</td>
+          <td>54965</td>
+          <td>Adam</td>
+          <td>D</td>
+          <td>Shaffer</td>
           <td></td>
           <td></td>
           <td>False</td>
@@ -871,17 +735,17 @@ We could also pull a random sample using ``.sample``
           <td>None</td>
           <td>None</td>
           <td>None</td>
-          <td>NaN</td>
+          <td>None</td>
           <td>NaN</td>
           <td>NaN</td>
           <td>None</td>
         </tr>
         <tr>
           <th>5</th>
-          <td>57118</td>
-          <td>Dank</td>
-          <td>Ass</td>
-          <td>Weed</td>
+          <td>55248</td>
+          <td>Myrtle</td>
+          <td>Charlotte Montomery</td>
+          <td>Carlyle</td>
           <td></td>
           <td></td>
           <td>False</td>
@@ -895,19 +759,19 @@ We could also pull a random sample using ``.sample``
           <td>None</td>
           <td>None</td>
           <td>None</td>
-          <td>NaN</td>
+          <td>None</td>
           <td>NaN</td>
           <td>NaN</td>
           <td>None</td>
         </tr>
         <tr>
           <th>6</th>
-          <td>58622</td>
-          <td>Gene</td>
-          <td>Edward</td>
-          <td>Scott</td>
+          <td>57725</td>
+          <td>Billy</td>
           <td></td>
-          <td>II</td>
+          <td>Falling</td>
+          <td></td>
+          <td></td>
           <td>False</td>
           <td>None</td>
           <td>None</td>
@@ -919,19 +783,19 @@ We could also pull a random sample using ``.sample``
           <td>None</td>
           <td>None</td>
           <td>None</td>
-          <td>NaN</td>
+          <td>None</td>
           <td>NaN</td>
           <td>NaN</td>
           <td>None</td>
         </tr>
         <tr>
           <th>7</th>
-          <td>59094</td>
-          <td>William</td>
-          <td>Cyrus</td>
-          <td>Pollard</td>
+          <td>59130</td>
+          <td>Angie</td>
           <td></td>
-          <td>Jr.</td>
+          <td>Chirino</td>
+          <td></td>
+          <td></td>
           <td>False</td>
           <td>None</td>
           <td>None</td>
@@ -943,17 +807,17 @@ We could also pull a random sample using ``.sample``
           <td>None</td>
           <td>None</td>
           <td>None</td>
-          <td>NaN</td>
+          <td>None</td>
           <td>NaN</td>
           <td>NaN</td>
           <td>None</td>
         </tr>
         <tr>
           <th>8</th>
-          <td>59302</td>
-          <td>Craig</td>
-          <td></td>
-          <td>Cameron</td>
+          <td>61854</td>
+          <td>Wednesday</td>
+          <td>Alexandra</td>
+          <td>Green</td>
           <td></td>
           <td></td>
           <td>False</td>
@@ -967,19 +831,19 @@ We could also pull a random sample using ``.sample``
           <td>None</td>
           <td>None</td>
           <td>None</td>
-          <td>NaN</td>
+          <td>None</td>
           <td>NaN</td>
           <td>NaN</td>
           <td>None</td>
         </tr>
         <tr>
           <th>9</th>
-          <td>62069</td>
-          <td>Raymond</td>
-          <td>Dallas</td>
-          <td>Redmond</td>
+          <td>64080</td>
+          <td>Chris</td>
+          <td>B.</td>
+          <td>Royal</td>
           <td></td>
-          <td>Jr.</td>
+          <td></td>
           <td>False</td>
           <td>None</td>
           <td>None</td>
@@ -991,7 +855,7 @@ We could also pull a random sample using ``.sample``
           <td>None</td>
           <td>None</td>
           <td>None</td>
-          <td>NaN</td>
+          <td>None</td>
           <td>NaN</td>
           <td>NaN</td>
           <td>None</td>
@@ -1010,10 +874,6 @@ each record and do something with it one at a time. To help with this,
 the ``.chunk`` function will efficiently load the full list of primary
 keys in your query and iterate over them in chunks, to keep things
 light.
-
-.. code:: ipython3
-
-    pols = Politician.objects.all()
 
 .. code:: ipython3
 
@@ -1103,27 +963,27 @@ Mr. Rock, it’s going to fail because our first record already exists.
 
     UniqueViolation                           Traceback (most recent call last)
 
-    /opt/conda/lib/python3.8/site-packages/django/db/backends/utils.py in _execute(self, sql, params, *ignored_wrapper_args)
+    ~/.local/lib/python3.7/site-packages/django/db/backends/utils.py in _execute(self, sql, params, *ignored_wrapper_args)
          83             else:
     ---> 84                 return self.cursor.execute(sql, params)
-         85 
+         85
 
 
     UniqueViolation: duplicate key value violates unique constraint "logos_politician_bioguide_id_317c4279_uniq"
     DETAIL:  Key (bioguide_id)=(J99999) already exists.
 
 
-    
+
     The above exception was the direct cause of the following exception:
 
 
     IntegrityError                            Traceback (most recent call last)
 
-    <ipython-input-20-4cfe6540bccd> in <module>
+    <ipython-input-22-4cfe6540bccd> in <module>
     ----> 1 Politician.objects.create(**new_record)
-    
 
-    /opt/conda/lib/python3.8/site-packages/django/db/models/manager.py in manager_method(self, *args, **kwargs)
+
+    ~/.local/lib/python3.7/site-packages/django/db/models/manager.py in manager_method(self, *args, **kwargs)
          83         def create_method(name, method):
          84             def manager_method(self, *args, **kwargs):
     ---> 85                 return getattr(self.get_queryset(), name)(*args, **kwargs)
@@ -1131,55 +991,55 @@ Mr. Rock, it’s going to fail because our first record already exists.
          87             manager_method.__doc__ = method.__doc__
 
 
-    /opt/conda/lib/python3.8/site-packages/django/db/models/query.py in create(self, **kwargs)
+    ~/.local/lib/python3.7/site-packages/django/db/models/query.py in create(self, **kwargs)
         445         obj = self.model(**kwargs)
         446         self._for_write = True
     --> 447         obj.save(force_insert=True, using=self.db)
         448         return obj
-        449 
+        449
 
 
     /apps/prod/logos/src/django_verifications/django_verifications/models.py in save(self, *args, **kwargs)
          90                         )
-         91 
+         91
     ---> 92         super(VerifiedModel, self).save(*args, **kwargs)
-         93 
+         93
          94     def get_verification_metadata(self):
 
 
-    /opt/conda/lib/python3.8/site-packages/django/db/models/base.py in save(self, force_insert, force_update, using, update_fields)
-        751                 update_fields = frozenset(loaded_fields)
-        752 
-    --> 753         self.save_base(using=using, force_insert=force_insert,
-        754                        force_update=force_update, update_fields=update_fields)
+    ~/.local/lib/python3.7/site-packages/django/db/models/base.py in save(self, force_insert, force_update, using, update_fields)
+        752
+        753         self.save_base(using=using, force_insert=force_insert,
+    --> 754                        force_update=force_update, update_fields=update_fields)
         755     save.alters_data = True
+        756
 
 
-    /opt/conda/lib/python3.8/site-packages/django/db/models/base.py in save_base(self, raw, force_insert, force_update, using, update_fields)
-        788             if not raw:
-        789                 parent_inserted = self._save_parents(cls, using, update_fields)
-    --> 790             updated = self._save_table(
+    ~/.local/lib/python3.7/site-packages/django/db/models/base.py in save_base(self, raw, force_insert, force_update, using, update_fields)
+        790             updated = self._save_table(
         791                 raw, cls, force_insert or parent_inserted,
-        792                 force_update, using, update_fields,
+    --> 792                 force_update, using, update_fields,
+        793             )
+        794         # Store the database on which the object was saved
 
 
-    /opt/conda/lib/python3.8/site-packages/django/db/models/base.py in _save_table(self, raw, cls, force_insert, force_update, using, update_fields)
-        893 
+    ~/.local/lib/python3.7/site-packages/django/db/models/base.py in _save_table(self, raw, cls, force_insert, force_update, using, update_fields)
+        893
         894             returning_fields = meta.db_returning_fields
     --> 895             results = self._do_insert(cls._base_manager, using, fields, returning_fields, raw)
         896             if results:
         897                 for value, field in zip(results[0], returning_fields):
 
 
-    /opt/conda/lib/python3.8/site-packages/django/db/models/base.py in _do_insert(self, manager, using, fields, returning_fields, raw)
-        931         return the newly created data for the model.
-        932         """
-    --> 933         return manager._insert(
+    ~/.local/lib/python3.7/site-packages/django/db/models/base.py in _do_insert(self, manager, using, fields, returning_fields, raw)
+        933         return manager._insert(
         934             [self], fields=fields, returning_fields=returning_fields,
-        935             using=using, raw=raw,
+    --> 935             using=using, raw=raw,
+        936         )
+        937
 
 
-    /opt/conda/lib/python3.8/site-packages/django/db/models/manager.py in manager_method(self, *args, **kwargs)
+    ~/.local/lib/python3.7/site-packages/django/db/models/manager.py in manager_method(self, *args, **kwargs)
          83         def create_method(name, method):
          84             def manager_method(self, *args, **kwargs):
     ---> 85                 return getattr(self.get_queryset(), name)(*args, **kwargs)
@@ -1187,7 +1047,7 @@ Mr. Rock, it’s going to fail because our first record already exists.
          87             manager_method.__doc__ = method.__doc__
 
 
-    /opt/conda/lib/python3.8/site-packages/django/db/models/query.py in _insert(self, objs, fields, returning_fields, raw, using, ignore_conflicts)
+    ~/.local/lib/python3.7/site-packages/django/db/models/query.py in _insert(self, objs, fields, returning_fields, raw, using, ignore_conflicts)
        1252         query = sql.InsertQuery(self.model, ignore_conflicts=ignore_conflicts)
        1253         query.insert_values(fields, objs, raw=raw)
     -> 1254         return query.get_compiler(using=using).execute_sql(returning_fields)
@@ -1195,7 +1055,7 @@ Mr. Rock, it’s going to fail because our first record already exists.
        1256     _insert.queryset_only = False
 
 
-    /opt/conda/lib/python3.8/site-packages/django/db/models/sql/compiler.py in execute_sql(self, returning_fields)
+    ~/.local/lib/python3.7/site-packages/django/db/models/sql/compiler.py in execute_sql(self, returning_fields)
        1395         with self.connection.cursor() as cursor:
        1396             for sql, params in self.as_sql():
     -> 1397                 cursor.execute(sql, params)
@@ -1203,51 +1063,51 @@ Mr. Rock, it’s going to fail because our first record already exists.
        1399                 return []
 
 
-    /opt/conda/lib/python3.8/site-packages/django/db/backends/utils.py in execute(self, sql, params)
+    ~/.local/lib/python3.7/site-packages/django/db/backends/utils.py in execute(self, sql, params)
          96     def execute(self, sql, params=None):
          97         with self.debug_sql(sql, params, use_last_executed_query=True):
     ---> 98             return super().execute(sql, params)
-         99 
+         99
         100     def executemany(self, sql, param_list):
 
 
-    /opt/conda/lib/python3.8/site-packages/django/db/backends/utils.py in execute(self, sql, params)
-         64 
+    ~/.local/lib/python3.7/site-packages/django/db/backends/utils.py in execute(self, sql, params)
+         64
          65     def execute(self, sql, params=None):
     ---> 66         return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
-         67 
+         67
          68     def executemany(self, sql, param_list):
 
 
-    /opt/conda/lib/python3.8/site-packages/django/db/backends/utils.py in _execute_with_wrappers(self, sql, params, many, executor)
+    ~/.local/lib/python3.7/site-packages/django/db/backends/utils.py in _execute_with_wrappers(self, sql, params, many, executor)
          73         for wrapper in reversed(self.db.execute_wrappers):
          74             executor = functools.partial(wrapper, executor)
     ---> 75         return executor(sql, params, many, context)
-         76 
+         76
          77     def _execute(self, sql, params, *ignored_wrapper_args):
 
 
-    /opt/conda/lib/python3.8/site-packages/django/db/backends/utils.py in _execute(self, sql, params, *ignored_wrapper_args)
+    ~/.local/lib/python3.7/site-packages/django/db/backends/utils.py in _execute(self, sql, params, *ignored_wrapper_args)
          82                 return self.cursor.execute(sql)
          83             else:
     ---> 84                 return self.cursor.execute(sql, params)
-         85 
+         85
          86     def _executemany(self, sql, param_list, *ignored_wrapper_args):
 
 
-    /opt/conda/lib/python3.8/site-packages/django/db/utils.py in __exit__(self, exc_type, exc_value, traceback)
+    ~/.local/lib/python3.7/site-packages/django/db/utils.py in __exit__(self, exc_type, exc_value, traceback)
          88                 if dj_exc_type not in (DataError, IntegrityError):
          89                     self.wrapper.errors_occurred = True
     ---> 90                 raise dj_exc_value.with_traceback(traceback) from exc_value
-         91 
+         91
          92     def __call__(self, func):
 
 
-    /opt/conda/lib/python3.8/site-packages/django/db/backends/utils.py in _execute(self, sql, params, *ignored_wrapper_args)
+    ~/.local/lib/python3.7/site-packages/django/db/backends/utils.py in _execute(self, sql, params, *ignored_wrapper_args)
          82                 return self.cursor.execute(sql)
          83             else:
     ---> 84                 return self.cursor.execute(sql, params)
-         85 
+         85
          86     def _executemany(self, sql, param_list, *ignored_wrapper_args):
 
 
@@ -1262,18 +1122,18 @@ already exists, we update the existing record instead
 .. code:: ipython3
 
     from django.db import IntegrityError
-    
-    try: 
+
+    try:
         Politician.objects.create(**new_record)
     except IntegrityError:
         pol = Politician.objects.get(bioguide_id=new_record['bioguide_id'])
         for fec_id in new_record["fec_ids"]:
-            if fec_id not in pol.fec_ids: 
+            if fec_id not in pol.fec_ids:
                 pol.fec_ids.append(fec_id)
         if not pol.last_name:
             pol.last_name = new_record['last_name']
         # ... and so on, and then we save the existing record:
-        # pol.save() 
+        # pol.save()
 
 We could even be fancier and skip that IntegrityError check
 
@@ -1281,12 +1141,12 @@ We could even be fancier and skip that IntegrityError check
 
     pol, created = Politician.objects.get_or_create(bioguide_id=new_record['bioguide_id'])
     for fec_id in new_record["fec_ids"]:
-        if fec_id not in pol.fec_ids: 
+        if fec_id not in pol.fec_ids:
             pol.fec_ids.append(fec_id)
     if not pol.last_name:
         pol.last_name = new_record['last_name']
     # ... and so on, and then we save the existing record:
-    # pol.save() 
+    # pol.save()
 
 But this is a royal pain. Often, when we’re trying to harmonize data
 from multiple sources, we’re A) working with overlapping but incomplete
@@ -1319,19 +1179,6 @@ search for existing records across multiple fields?
         match_any=True, search_nulls=False, empty_lists_are_null=True, allow_list_overlaps=False
     )
 
-.. code:: ipython3
-
-    pol
-
-
-
-
-.. parsed-literal::
-
-    <Politician: Dwayne Johnson>
-
-
-
 The ``BasicExtendedModel`` ``.json`` function can fetch a dictionary
 representation of a particular record (the same way ``.values()`` does
 for all of the objects in your query in vanilla Django).
@@ -1345,7 +1192,7 @@ for all of the objects in your query in vanilla Django).
 
 .. parsed-literal::
 
-    {'id': 64720,
+    {'id': 64716,
      'first_name': 'Dwayne',
      'last_name': 'Johnson',
      'has_press_release_scraper': False,
@@ -1383,7 +1230,7 @@ intelligently create or update records all at once?
 
 .. parsed-literal::
 
-    {'id': 64720,
+    {'id': 64716,
      'first_name': 'Dwayne',
      'last_name': 'Johnson',
      'nickname': 'The Rock',
@@ -1475,7 +1322,7 @@ this only works with databases that support array fields, aka Postgres)
 
 .. parsed-literal::
 
-    {'id': 64720,
+    {'id': 64716,
      'first_name': 'Dwayne',
      'last_name': 'Johnson',
      'nickname': 'The Rock',
@@ -1532,7 +1379,7 @@ identifiers from our various data sources.
 
 .. parsed-literal::
 
-    {'id': 64720,
+    {'id': 64716,
      'first_name': 'Dwayne',
      'last_name': 'Johnson',
      'nickname': 'The Rock',
@@ -1559,7 +1406,7 @@ identifiers from our various data sources.
 
 .. parsed-literal::
 
-    {'id': 64723,
+    {'id': 64719,
      'last_name': 'Johnson',
      'nickname': 'Teh Rock',
      'has_press_release_scraper': False,
@@ -1614,7 +1461,7 @@ functions.
 
 .. parsed-literal::
 
-    [{'pk': 64723,
+    [{'pk': 64719,
       'first_name': '',
       'nickname': 'Teh Rock',
       'last_name': 'Johnson',
@@ -1641,7 +1488,7 @@ functions.
 
 .. parsed-literal::
 
-    <PoliticianManager [{'difference': 0.470588235294118, 'pk': 64723, 'first_name': '', 'nickname': 'Teh Rock', 'last_name': 'Johnson'}]>
+    <PoliticianManager [{'difference': 0.470588235294118, 'pk': 64719, 'first_name': '', 'nickname': 'Teh Rock', 'last_name': 'Johnson'}]>
 
 
 
@@ -1654,7 +1501,7 @@ functions.
 
 .. parsed-literal::
 
-    [{'pk': 64723,
+    [{'pk': 64719,
       'first_name': '',
       'nickname': 'Teh Rock',
       'last_name': 'Johnson',
@@ -1671,7 +1518,7 @@ functions.
 
 .. parsed-literal::
 
-    <PoliticianManager [{'similarity': 0.518519, 'pk': 64723, 'first_name': '', 'nickname': 'Teh Rock', 'last_name': 'Johnson'}]>
+    <PoliticianManager [{'similarity': 0.518519, 'pk': 64719, 'first_name': '', 'nickname': 'Teh Rock', 'last_name': 'Johnson'}]>
 
 
 
@@ -1692,7 +1539,7 @@ is the record that we’ll be keeping.
 .. code:: ipython3
 
     from django_pewtils import consolidate_objects
-    
+
     mr_rock = consolidate_objects(
         source=also_mr_rock,
         target=mr_rock,
@@ -1709,20 +1556,20 @@ is the record that we’ll be keeping.
 
 .. parsed-literal::
 
-    {'id': 64720,
+    {'id': 64716,
      'first_name': 'Dwayne',
      'last_name': 'Johnson',
      'nickname': 'The Rock',
      'has_press_release_scraper': False,
      'bioguide_id': 'J99999',
-     'fec_ids': ['P99999', 'S99999'],
+     'fec_ids': ['S99999', 'P99999'],
      'opensecrets_id': '12345',
      'icpsr_id': '12345',
      'facebook_ids': [],
      'old_facebook_ids': [],
      'twitter_ids': [],
      'old_twitter_ids': [],
-     'instagram_ids': ['1234567890', '0987654321'],
+     'instagram_ids': ['0987654321', '1234567890'],
      'old_instagram_ids': [],
      'capitol_words_speech_backfill': False}
 
@@ -1748,7 +1595,7 @@ for matches using those?
 
 .. parsed-literal::
 
-    [{'pk': 64720,
+    [{'pk': 64716,
       'nickname': 'The Rock',
       'last_name': 'Johnson',
       'fuzzy_ratio': 93.75},
@@ -1785,7 +1632,7 @@ for matches using those?
 
 .. parsed-literal::
 
-    <PoliticianManager [{'difference': 0.125, 'pk': 64720, 'nickname': 'The Rock', 'last_name': 'Johnson'}, {'difference': 0.533333333333333, 'pk': 48661, 'nickname': '', 'last_name': 'Mcneal Johnson'}, {'difference': 0.533333333333333, 'pk': 59287, 'nickname': '', 'last_name': 'Roldan-Johnson'}]>
+    <PoliticianManager [{'difference': 0.125, 'pk': 64716, 'nickname': 'The Rock', 'last_name': 'Johnson'}, {'difference': 0.533333333333333, 'pk': 48661, 'nickname': '', 'last_name': 'Mcneal Johnson'}, {'difference': 0.533333333333333, 'pk': 59287, 'nickname': '', 'last_name': 'Roldan-Johnson'}]>
 
 
 
@@ -1811,15 +1658,15 @@ for matches using those?
 
 .. parsed-literal::
 
-    [{'pk': 64720,
+    [{'pk': 64716,
       'nickname': 'The Rock',
       'last_name': 'Johnson',
       'similarity': 0.8116603660917949},
-     {'pk': 50274,
+     {'pk': 55651,
       'nickname': '',
       'last_name': 'Johnson',
       'similarity': 0.5205634156460611},
-     {'pk': 48169,
+     {'pk': 49912,
       'nickname': '',
       'last_name': 'Johnson',
       'similarity': 0.5205634156460611}]
@@ -1843,9 +1690,27 @@ for matches using those?
 
     Politician.objects.trigram_similarities(['nickname', 'last_name'], search_text)[:3]
 
+
+
+
+.. parsed-literal::
+
+    <PoliticianManager [{'similarity': 0.7, 'pk': 64716, 'nickname': 'The Rock', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 55400, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 52587, 'nickname': '', 'last_name': 'Johnson'}]>
+
+
+
 .. code:: ipython3
 
     Politician.objects.trigram_similarity_best_match(['nickname', 'last_name'], search_text)
+
+
+
+
+.. parsed-literal::
+
+    (<Politician: Dwayne 'The Rock' Johnson>, 0.7)
+
+
 
 Some of these searches can take quite a while to run and/or will eat up
 a lot of memory when you’ve got a large table. Postgres also has a
@@ -1861,7 +1726,7 @@ on your database.
 
 .. parsed-literal::
 
-    <PoliticianManager [<Politician: Dwayne 'The Rock' Johnson>, <Politician: John Gerard Nolan>, <Politician: Melvin Valentine Jr>, <Politician: Wrendo Johnson P Godwin>, <Politician: Kelcey Brian Wilson>, <Politician: Keith Robert Sprankle>, <Politician: Colonel Launeil Sanders>, <Politician: Matthew D Pinnavaia>, <Politician: Matthew Jay Borman>, <Politician: Jon Adam Greenspon>, <Politician: Marc Wolin>, <Politician: Ralph Marshall Robinson>, <Politician: Charles Glen Railey>, <Politician: Elizabeth Mason Frothingham>, <Politician: Eduardo Mejias>, <Politician: Dennis M Hanaghan>, <Politician: William Michael Ingram>, <Politician: Howard Louis Moxham>, <Politician: William Jason Burns>, <Politician: Todd Marvin Clayton Jr>, '...(remaining elements truncated)...']>
+    <PoliticianManager [<Politician: Dwayne 'The Rock' Johnson>, <Politician: William C Kortz II>, <Politician: Robert Michael Clark>, <Politician: Abel Maldonado>, <Politician: Doyel Shamley>, <Politician: Jamie Moore>, <Politician: James A Barnett>, <Politician: Thomas Catalano>, <Politician: Abel Gebre Laeke>, <Politician: Andrew Michael Decker>, <Politician: L. Mack Van Allen>, <Politician: Henry W Meers Jr>, <Politician: Darrel Ervin Miller>, <Politician: Robert W. Tucker>, <Politician: Oreta Tufaga-Mapu Crichton>, <Politician: Phat Nguyen>, <Politician: Justin Sung-Sup Kim>, <Politician: Lei Sharsh-Davis>, <Politician: Alan J.K. Yim>, <Politician: Shirlene D. (Shirl) Ostrov>, '...(remaining elements truncated)...']>
 
 
 
@@ -1890,7 +1755,7 @@ invoke them for specific records, too.
 
 .. parsed-literal::
 
-    <PoliticianManager [{'similarity': 0.470588, 'pk': 52587, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 45952, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 46918, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 47003, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 48651, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 49075, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 63555, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 190, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 49386, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 49618, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 49836, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 49912, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 50417, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 53745, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 50703, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 53739, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 51020, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 51025, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 51223, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 51250, 'nickname': '', 'last_name': 'Johnson'}, '...(remaining elements truncated)...']>
+    <PoliticianManager [{'similarity': 0.470588, 'pk': 52587, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 45952, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 46918, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 47003, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 48651, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 49075, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 63555, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 49386, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 49618, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 49836, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 49912, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 50417, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 53745, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 50703, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 53739, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 51020, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 51025, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 51223, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 51250, 'nickname': '', 'last_name': 'Johnson'}, {'similarity': 0.470588, 'pk': 51339, 'nickname': '', 'last_name': 'Johnson'}, '...(remaining elements truncated)...']>
 
 
 
@@ -1937,7 +1802,7 @@ Let’s see what we’ve got on Bernie.
      'ballotpedia_page': <QueryModelManager [<BallotpediaPage: BallotpediaPage object (599)>]>,
      'wikipedia_page': <QueryModelManager [<WikipediaPage: WikipediaPage object (1691)>]>,
      'speeches': <QueryModelManager [<Speech: Speech object (1255897)>, <Speech: Speech object (1255895)>, <Speech: Speech object (1255893)>, <Speech: Speech object (1255891)>, <Speech: Speech object (1255889)>, <Speech: Speech object (1255887)>, <Speech: Speech object (1255883)>, <Speech: Speech object (1255881)>, <Speech: Speech object (1248748)>, <Speech: Speech object (1248742)>, <Speech: Speech object (1248738)>, <Speech: Speech object (1248736)>, <Speech: Speech object (1241197)>, <Speech: Speech object (1238387)>, <Speech: Speech object (1238385)>, <Speech: Speech object (1238383)>, <Speech: Speech object (1238381)>, <Speech: Speech object (1235399)>, <Speech: Speech object (1235396)>, <Speech: Speech object (1235394)>, '...(remaining elements truncated)...']>,
-     'twitter_profiles': <MergedTwitterProfileManager [<TwitterProfile: berniesanders (Bernard 'Bernie' Sanders)>, <TwitterProfile: sensanders (Bernard 'Bernie' Sanders)>, <TwitterProfile: senatorsanders (Bernard 'Bernie' Sanders)>]>,
+     'twitter_profiles': <MergedTwitterProfileManager [<TwitterProfile: sensanders (Bernard 'Bernie' Sanders)>, <TwitterProfile: berniesanders (Bernard 'Bernie' Sanders)>, <TwitterProfile: senatorsanders (Bernard 'Bernie' Sanders)>]>,
      'incumbent_elections': <QueryModelManager [<Election: 2012 race for Senator of Vermont, U.S. Senate (Class 1) (winner Bernard 'Bernie' Sanders)>, <Election: 2004 race for Representative of Vermont, District At-Large (historical), U.S. House of Representatives (winner Bernard 'Bernie' Sanders)>]>,
      'elections_won': <QueryModelManager [<Election: 2018 race for Senator of Vermont, U.S. Senate (Class 1) (winner Bernard 'Bernie' Sanders)>, <Election: 2012 race for Senator of Vermont, U.S. Senate (Class 1) (winner Bernard 'Bernie' Sanders)>, <Election: 2006 race for Senator of Vermont, U.S. Senate (Class 1) (winner Bernard 'Bernie' Sanders)>, <Election: 2004 race for Representative of Vermont, District At-Large (historical), U.S. House of Representatives (winner Bernard 'Bernie' Sanders)>, <Election: 2002 race for Representative of Vermont, District At-Large (historical), U.S. House of Representatives (winner Bernard 'Bernie' Sanders)>, <Election: 2000 race for Representative of Vermont, District At-Large (historical), U.S. House of Representatives (winner Bernard 'Bernie' Sanders)>, <Election: 1998 race for Representative of Vermont, District At-Large (historical), U.S. House of Representatives (winner Bernard 'Bernie' Sanders)>, <Election: 1996 race for Representative of Vermont, District At-Large (historical), U.S. House of Representatives (winner Bernard 'Bernie' Sanders)>, <Election: 1994 race for Representative of Vermont, District At-Large (historical), U.S. House of Representatives (winner Bernard 'Bernie' Sanders)>, <Election: 1992 race for Representative of Vermont, District At-Large (historical), U.S. House of Representatives (winner Bernard 'Bernie' Sanders)>, <Election: 1990 race for Representative of Vermont, District At-Large (historical), U.S. House of Representatives (winner Bernard 'Bernie' Sanders)>]>,
      'contributions_donated': <QueryModelManager []>,
@@ -2007,7 +1872,7 @@ Let’s see what we’ve got on Bernie.
      'latest_term': 1,
      'party': 1,
      'commands': 21,
-     'command_logs': 1112,
+     'command_logs': 1108,
      'verifications': 0}
 
 
@@ -2031,7 +1896,7 @@ can help you make sure you’re not going to do something you’ll regret.
     defaultdict(list,
                 {logos.models.agents.Politician: 1,
                  logos.models.agents.Politician_commands: 21,
-                 logos.models.agents.Politician_command_logs: 1112,
+                 logos.models.agents.Politician_command_logs: 1108,
                  logos.models.agents.PoliticianPersonalMetric: 47,
                  logos.models.agents.PoliticianPersonalMetric_commands: 27,
                  logos.models.agents.PoliticianPersonalMetric_command_logs: 167,
