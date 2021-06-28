@@ -1,0 +1,532 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>django_pewtils.abstract_models &mdash; django_pewtils 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> django_pewtils
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../base.html">Basic functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../abstract_models.html">Abstract models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../managers.html">Managers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">django_pewtils</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>django_pewtils.abstract_models</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for django_pewtils.abstract_models</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="nb">object</span>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="k">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">django.db.models.deletion</span> <span class="k">import</span> <span class="n">Collector</span>
+
+<span class="kn">from</span> <span class="nn">pewtils</span> <span class="k">import</span> <span class="n">is_not_null</span><span class="p">,</span> <span class="n">decode_text</span>
+<span class="kn">from</span> <span class="nn">django_pewtils</span> <span class="k">import</span> <span class="n">get_model</span><span class="p">,</span> <span class="n">inspect_delete</span>
+<span class="kn">from</span> <span class="nn">django_pewtils.managers</span> <span class="k">import</span> <span class="n">BasicExtendedManager</span>
+
+
+<div class="viewcode-block" id="BasicExtendedModel"><a class="viewcode-back" href="../../abstract_models.html#django_pewtils.abstract_models.BasicExtendedModel">[docs]</a><span class="k">class</span> <span class="nc">BasicExtendedModel</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An extended Django abstract model class that provides additional utility functions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+        <span class="n">abstract</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="n">objects</span> <span class="o">=</span> <span class="n">BasicExtendedManager</span><span class="p">()</span><span class="o">.</span><span class="n">as_manager</span><span class="p">()</span>
+
+<div class="viewcode-block" id="BasicExtendedModel.json"><a class="viewcode-back" href="../../abstract_models.html#django_pewtils.abstract_models.BasicExtendedModel.json">[docs]</a>    <span class="k">def</span> <span class="nf">json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclude_nulls</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">empty_lists_are_null</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a JSON/dictionary-style representation of the object.</span>
+
+<span class="sd">        :param exclude_nulls: Whether or not to exclude fields with null values (default is False)</span>
+<span class="sd">        :type exclude_nulls: bool</span>
+<span class="sd">        :param empty_lists_are_null: Whether or not to treat empty lists as null (default is False)</span>
+<span class="sd">        :type empty_lists_are_null: bool</span>
+<span class="sd">        :return: Dictionary representation of the object</span>
+<span class="sd">        :rtype: dict</span>
+
+<span class="sd">        Usage::</span>
+
+<span class="sd">            &gt;&gt;&gt; obj.json(exclude_nulls=True)</span>
+<span class="sd">            {&#39;id&#39;: 64720,</span>
+<span class="sd">             &#39;first_name&#39;: &#39;Dwayne&#39;,</span>
+<span class="sd">             &#39;last_name&#39;: &#39;Johnson&#39;,</span>
+<span class="sd">             &#39;nickname&#39;: &#39;The Rock&#39;,</span>
+<span class="sd">             &#39;has_press_release_scraper&#39;: False,</span>
+<span class="sd">             &#39;bioguide_id&#39;: &#39;J99999&#39;,</span>
+<span class="sd">             &#39;fec_ids&#39;: [&#39;P99999&#39;],</span>
+<span class="sd">             &#39;facebook_ids&#39;: [],</span>
+<span class="sd">             &#39;old_facebook_ids&#39;: [],</span>
+<span class="sd">             &#39;twitter_ids&#39;: [],</span>
+<span class="sd">             &#39;old_twitter_ids&#39;: [],</span>
+<span class="sd">             &#39;instagram_ids&#39;: [&#39;1234567890&#39;],</span>
+<span class="sd">             &#39;old_instagram_ids&#39;: [],</span>
+<span class="sd">             &#39;capitol_words_speech_backfill&#39;: False}</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">exclude_nulls</span><span class="p">:</span>
+            <span class="n">record</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">k</span><span class="p">:</span> <span class="n">v</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">record</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">is_not_null</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">empty_lists_are_null</span><span class="o">=</span><span class="n">empty_lists_are_null</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="k">return</span> <span class="n">record</span></div>
+
+<div class="viewcode-block" id="BasicExtendedModel.inspect_delete"><a class="viewcode-back" href="../../abstract_models.html#django_pewtils.abstract_models.BasicExtendedModel.inspect_delete">[docs]</a>    <span class="k">def</span> <span class="nf">inspect_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">counts</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Can be called on any model object; returns all objects and relations that would be deleted if the</span>
+<span class="sd">        object itself is deleted.</span>
+
+<span class="sd">        :param counts: If `True`, will return counts of the objects to be deleted. Otherwise returns QuerySets</span>
+<span class="sd">        :return: A dictionary of models/relations (keys) and the counts or QuerySets of objects to be deleted (values)</span>
+
+<span class="sd">        Usage::</span>
+
+<span class="sd">            &gt;&gt;&gt; bernie.inspect_delete(counts=True)</span>
+<span class="sd">            defaultdict(list,</span>
+<span class="sd">                        {logos.models.agents.Politician: 1,</span>
+<span class="sd">                         logos.models.agents.Politician_commands: 21,</span>
+<span class="sd">                         logos.models.agents.Politician_command_logs: 1112,</span>
+<span class="sd">                         logos.models.agents.PoliticianPersonalMetric: 47,</span>
+<span class="sd">                         logos.models.agents.PoliticianPersonalMetric_commands: 27,</span>
+<span class="sd">                         logos.models.agents.PoliticianPersonalMetric_command_logs: 167,</span>
+<span class="sd">                         logos.models.media.NewsArticle_relevant_politicians: 96109,</span>
+<span class="sd">                         logos.models.media.BallotpediaPage: 1,</span>
+<span class="sd">                         logos.models.media.WikipediaPage: 1,</span>
+<span class="sd">                         logos.models.media.WikipediaPage_commands: 1,</span>
+<span class="sd">                         logos.models.media.WikipediaPage_command_logs: 1,</span>
+<span class="sd">                         logos.models.government.CommitteeMembership: 63,</span>
+<span class="sd">                         logos.models.government.CommitteeMembership_commands: 63,</span>
+<span class="sd">                         logos.models.government.CommitteeMembership_command_logs: 63,</span>
+<span class="sd">                         logos.models.government.Caucus_members: 1,</span>
+<span class="sd">                         logos.models.government.Bill_cosponsors: 2638,</span>
+<span class="sd">                         logos.models.government.Vote_votes_for: 3320,</span>
+<span class="sd">                         logos.models.government.Vote_votes_against: 1918,</span>
+<span class="sd">                         logos.models.government.Vote_votes_abstained: 343,</span>
+<span class="sd">                         logos.models.government.LegislativeHearing_attendees: 1059})</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">inspect_delete</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="n">counts</span><span class="o">=</span><span class="n">counts</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BasicExtendedModel.related_objects"><a class="viewcode-back" href="../../abstract_models.html#django_pewtils.abstract_models.BasicExtendedModel.related_objects">[docs]</a>    <span class="k">def</span> <span class="nf">related_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">counts</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nonzero_only</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a dictionary of all of the other objects that are related to the object.</span>
+
+<span class="sd">        :param counts: If `True`, will return counts of the related objects. Otherwise returns QuerySets</span>
+<span class="sd">        :param nonzero_only: If `True`, empty relations will not be included in the dictionary.</span>
+<span class="sd">        :return: A dictionary of relation fields on the model (keys) and the counts or QuerySets of the related</span>
+<span class="sd">        objects (values)</span>
+
+<span class="sd">        Usage::</span>
+
+<span class="sd">            &gt;&gt;&gt; bernie.related_objects(counts=True)</span>
+<span class="sd">            {&#39;personal_metrics&#39;: 47,</span>
+<span class="sd">             &#39;campaigns&#39;: 7,</span>
+<span class="sd">             &#39;staffers&#39;: 0,</span>
+<span class="sd">             &#39;relevant_news_articles&#39;: 96109,</span>
+<span class="sd">             &#39;press_releases&#39;: 3326,</span>
+<span class="sd">             &#39;ballotpedia_page&#39;: 1,</span>
+<span class="sd">             &#39;wikipedia_page&#39;: 1,</span>
+<span class="sd">             &#39;speeches&#39;: 2890,</span>
+<span class="sd">             &#39;twitter_profiles&#39;: 3,</span>
+<span class="sd">             &#39;incumbent_elections&#39;: 2,</span>
+<span class="sd">             &#39;elections_won&#39;: 11,</span>
+<span class="sd">             &#39;contributions_donated&#39;: 0,</span>
+<span class="sd">             &#39;contributions_received&#39;: 0,</span>
+<span class="sd">             &#39;facebook_pages&#39;: 2,</span>
+<span class="sd">             &#39;terms&#39;: 11,</span>
+<span class="sd">             &#39;chaired_committees&#39;: 0,</span>
+<span class="sd">             &#39;ranking_member_committees&#39;: 2,</span>
+<span class="sd">             &#39;committees&#39;: 0,</span>
+<span class="sd">             &#39;committee_memberships&#39;: 63,</span>
+<span class="sd">             &#39;caucuses&#39;: 1,</span>
+<span class="sd">             &#39;sponsored_bills&#39;: 235,</span>
+<span class="sd">             &#39;cosponsored_bills&#39;: 2638,</span>
+<span class="sd">             &#39;votes_for&#39;: 3320,</span>
+<span class="sd">             &#39;votes_against&#39;: 1918,</span>
+<span class="sd">             &#39;votes_abstained&#39;: 343,</span>
+<span class="sd">             &#39;hearings&#39;: 1059,</span>
+<span class="sd">             &#39;scrape_logs&#39;: 3,</span>
+<span class="sd">             &#39;webpages&#39;: 2193,</span>
+<span class="sd">             &#39;current_term&#39;: 1,</span>
+<span class="sd">             &#39;latest_term&#39;: 1,</span>
+<span class="sd">             &#39;party&#39;: 1,</span>
+<span class="sd">             &#39;commands&#39;: 21,</span>
+<span class="sd">             &#39;command_logs&#39;: 1112,</span>
+<span class="sd">             &#39;verifications&#39;: 0}</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">objs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_fields</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_relation</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">one_to_one</span> <span class="ow">or</span> <span class="n">f</span><span class="o">.</span><span class="n">many_to_one</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_not_null</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)):</span>
+                        <span class="n">objs</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                        <span class="n">objs</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">objs</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                            <span class="n">pk</span><span class="o">=</span><span class="n">objs</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">pk</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">objs</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">one_to_many</span> <span class="ow">or</span> <span class="n">f</span><span class="o">.</span><span class="n">many_to_many</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+                    <span class="n">objs</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">nonzero_only</span><span class="p">:</span>
+            <span class="n">objs</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">objs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">counts</span><span class="p">:</span>
+            <span class="n">objs</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">objs</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">objs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BasicExtendedModel.fuzzy_ratio"><a class="viewcode-back" href="../../abstract_models.html#django_pewtils.abstract_models.BasicExtendedModel.fuzzy_ratio">[docs]</a>    <span class="k">def</span> <span class="nf">fuzzy_ratio</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">allow_partial</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">max_partial_difference</span><span class="o">=</span><span class="mi">100</span>
+    <span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given a snippet of text, computes the fuzzy ratio between the text and text that is stored on one or more</span>
+<span class="sd">        fields on the object.</span>
+
+<span class="sd">        :param field_names: The names of the fields to compare the text against.</span>
+<span class="sd">        :param text: A string of text to compare</span>
+<span class="sd">        :param allow_partial: Whether or not to allow partial fuzzy ratios when computing text similarity.</span>
+<span class="sd">        :param max_partial_difference: The maximum difference between the absolute and partial ratio that&#39;s</span>
+<span class="sd">        allowed to return a result.</span>
+<span class="sd">        :return: The fuzzy ratio between the object and the comparison text</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model_name</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">fuzzy_ratios</span><span class="p">(</span>
+                <span class="n">field_names</span><span class="p">,</span>
+                <span class="n">text</span><span class="p">,</span>
+                <span class="n">allow_partial</span><span class="o">=</span><span class="n">allow_partial</span><span class="p">,</span>
+                <span class="n">max_partial_difference</span><span class="o">=</span><span class="n">max_partial_difference</span><span class="p">,</span>
+            <span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;fuzzy_ratio&quot;</span><span class="p">]</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BasicExtendedModel.similar_by_fuzzy_ratios"><a class="viewcode-back" href="../../abstract_models.html#django_pewtils.abstract_models.BasicExtendedModel.similar_by_fuzzy_ratios">[docs]</a>    <span class="k">def</span> <span class="nf">similar_by_fuzzy_ratios</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">min_ratio</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">allow_partial</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">max_partial_difference</span><span class="o">=</span><span class="mi">10</span>
+    <span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given one or more text fields, computes the fuzzy ratios between the object and other objects in the</span>
+<span class="sd">        table and returns a list of results with the primary keys of the compared objects and their fuzzy ratios.</span>
+
+<span class="sd">        :param field_names: The names of the text fields to compare</span>
+<span class="sd">        :param min_ratio: The minimum fuzzy ratio allowed to return results.</span>
+<span class="sd">        :param allow_partial: Whether or not to allow partial fuzzy ratios when computing text similarity.</span>
+<span class="sd">        :param max_partial_difference: The maximum difference between the absolute and partial ratio that&#39;s</span>
+<span class="sd">        allowed to return a result.</span>
+<span class="sd">        :return: A list of results with the primary keys of the compared objects and their fuzzy ratios</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">decode_text</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">field_names</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">)]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model_name</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">fuzzy_ratios</span><span class="p">(</span>
+                <span class="n">field_names</span><span class="p">,</span>
+                <span class="n">text</span><span class="p">,</span>
+                <span class="n">min_ratio</span><span class="o">=</span><span class="n">min_ratio</span><span class="p">,</span>
+                <span class="n">allow_partial</span><span class="o">=</span><span class="n">allow_partial</span><span class="p">,</span>
+                <span class="n">max_partial_difference</span><span class="o">=</span><span class="n">max_partial_difference</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BasicExtendedModel.levenshtein_difference"><a class="viewcode-back" href="../../abstract_models.html#django_pewtils.abstract_models.BasicExtendedModel.levenshtein_difference">[docs]</a>    <span class="k">def</span> <span class="nf">levenshtein_difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given a set of text fields and some comparison text, computes the Levenshtein difference between the</span>
+<span class="sd">        comparison text and the text that&#39;s stored in the fields on the object.</span>
+
+<span class="sd">        :param field_names: The names of the text fields to compare</span>
+<span class="sd">        :param text: A string of text to compare</span>
+<span class="sd">        :return: The Levenshtein difference between the provided text and the text on the object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model_name</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">levenshtein_differences</span><span class="p">(</span><span class="n">field_names</span><span class="p">,</span> <span class="n">text</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;difference&quot;</span><span class="p">]</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BasicExtendedModel.similar_by_levenshtein_differences"><a class="viewcode-back" href="../../abstract_models.html#django_pewtils.abstract_models.BasicExtendedModel.similar_by_levenshtein_differences">[docs]</a>    <span class="k">def</span> <span class="nf">similar_by_levenshtein_differences</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">max_difference</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given one or more text fields, computes the Levenshtein differences between the object and other objects in the</span>
+<span class="sd">        table and returns a list of results with the primary keys of the compared objects and their differences.</span>
+
+<span class="sd">        :param field_names: The names of the text fields to compare</span>
+<span class="sd">        :param max_difference: The maximum difference allowed for a result to be returned.</span>
+<span class="sd">        :return: A list of results with the primary keys of the compared objects and their Levenshtein differences</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">decode_text</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">field_names</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">)]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model_name</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">levenshtein_differences</span><span class="p">(</span><span class="n">field_names</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">max_difference</span><span class="o">=</span><span class="n">max_difference</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BasicExtendedModel.tfidf_similarity"><a class="viewcode-back" href="../../abstract_models.html#django_pewtils.abstract_models.BasicExtendedModel.tfidf_similarity">[docs]</a>    <span class="k">def</span> <span class="nf">tfidf_similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given a set of text fields and some comparison text, computes the TF-IDF cosine similarity between the</span>
+<span class="sd">        comparison text and the text that&#39;s stored in the fields on the object.</span>
+
+<span class="sd">        :param field_names: The names of the text fields to compare</span>
+<span class="sd">        :param text: A string of text to compare</span>
+<span class="sd">        :return: The TF-IDF similarity between the provided text and the text on the object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model_name</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">tfidf_similarities</span><span class="p">(</span><span class="n">field_names</span><span class="p">,</span> <span class="n">text</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;similarity&quot;</span><span class="p">]</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BasicExtendedModel.similar_by_tfidf_similarity"><a class="viewcode-back" href="../../abstract_models.html#django_pewtils.abstract_models.BasicExtendedModel.similar_by_tfidf_similarity">[docs]</a>    <span class="k">def</span> <span class="nf">similar_by_tfidf_similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">min_similarity</span><span class="o">=</span><span class="mf">0.9</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given one or more text fields, computes the TF-IDF cosine similarities between the object and other objects in</span>
+<span class="sd">        the table and returns a list of results with the primary keys of the compared objects and their similarities.</span>
+
+<span class="sd">        :param field_names: The names of the text fields to compare</span>
+<span class="sd">        :param min_similarity: The minimum similarity allowed for a result to be returned.</span>
+<span class="sd">        :return: A list of results with the primary keys of the compared objects and their TF-IDF similarities</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">decode_text</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">field_names</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">)]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model_name</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">tfidf_similarities</span><span class="p">(</span><span class="n">field_names</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">min_similarity</span><span class="o">=</span><span class="n">min_similarity</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BasicExtendedModel.trigram_similarity"><a class="viewcode-back" href="../../abstract_models.html#django_pewtils.abstract_models.BasicExtendedModel.trigram_similarity">[docs]</a>    <span class="k">def</span> <span class="nf">trigram_similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given a set of text fields and some comparison text, computes the trigram similarity between the</span>
+<span class="sd">        comparison text and the text that&#39;s stored in the fields on the object. (Uses Postgres&#39; built-in</span>
+<span class="sd">        trigram similarity module)</span>
+
+<span class="sd">        :param field_names: The names of the text fields to compare</span>
+<span class="sd">        :param text: A string of text to compare</span>
+<span class="sd">        :return: The trigram similarity between the provided text and the text on the object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model_name</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">trigram_similarities</span><span class="p">(</span><span class="n">field_names</span><span class="p">,</span> <span class="n">text</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;similarity&quot;</span><span class="p">]</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BasicExtendedModel.similar_by_trigram_similarity"><a class="viewcode-back" href="../../abstract_models.html#django_pewtils.abstract_models.BasicExtendedModel.similar_by_trigram_similarity">[docs]</a>    <span class="k">def</span> <span class="nf">similar_by_trigram_similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">min_similarity</span><span class="o">=</span><span class="mf">0.9</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given one or more text fields, computes the trigram similarities between the object and other objects in the</span>
+<span class="sd">        table and returns a list of results with the primary keys of the compared objects and their similarities.</span>
+<span class="sd">        (Uses Postgres&#39; built-in trigram similarity module)</span>
+
+<span class="sd">        :param field_names: The names of the text fields to compare</span>
+<span class="sd">        :param min_similarity: The minimum similarity allowed for a result to be returned.</span>
+<span class="sd">        :return: A list of results with the primary keys of the compared objects and their trigram similarities</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">decode_text</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">field_names</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">)]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model_name</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">trigram_similarities</span><span class="p">(</span><span class="n">field_names</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">min_similarity</span><span class="o">=</span><span class="n">min_similarity</span><span class="p">)</span>
+        <span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Pew Research Center
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

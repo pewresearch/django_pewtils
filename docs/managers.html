@@ -1,0 +1,625 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>django_pewtils.managers &mdash; django_pewtils 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="django_pewtils.abstract_models" href="abstract_models.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> django_pewtils
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="base.html">Basic functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="abstract_models.html">Abstract models</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Managers</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">django_pewtils</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>django_pewtils.managers</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/managers.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-django_pewtils.managers">
+<span id="django-pewtils-managers"></span><h1>django_pewtils.managers<a class="headerlink" href="#module-django_pewtils.managers" title="Permalink to this headline">¶</a></h1>
+<p><strong>Classes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#django_pewtils.managers.BasicExtendedManager" title="django_pewtils.managers.BasicExtendedManager"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BasicExtendedManager</span></code></a>(*args, **kwargs)</p></td>
+<td><p>An extension of a Django QuerySet with additional helper functions.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="django_pewtils.managers.BasicExtendedManager">
+<em class="property">class </em><code class="sig-name descname">BasicExtendedManager</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/managers.html#BasicExtendedManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.managers.BasicExtendedManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>An extension of a Django QuerySet with additional helper functions. Can be used as a manager on any model like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">objects</span> <span class="o">=</span> <span class="n">BasicExtendedManager</span><span class="p">()</span><span class="o">.</span><span class="n">as_manager</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Methods</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#django_pewtils.managers.BasicExtendedManager.chunk" title="django_pewtils.managers.BasicExtendedManager.chunk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">chunk</span></code></a>([size, tqdm_desc, randomize])</p></td>
+<td><p>Helps save memory by iterating over the primary keys of objects in a QuerySet and yielding the results in chunks rather than all at once.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#django_pewtils.managers.BasicExtendedManager.chunk_delete" title="django_pewtils.managers.BasicExtendedManager.chunk_delete"><code class="xref py py-obj docutils literal notranslate"><span class="pre">chunk_delete</span></code></a>([size, tqdm_desc])</p></td>
+<td><p>Iterates over a QuerySet and deletes objects in chunks rather than all at once, to save memory.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#django_pewtils.managers.BasicExtendedManager.chunk_update" title="django_pewtils.managers.BasicExtendedManager.chunk_update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">chunk_update</span></code></a>([size, tqdm_desc])</p></td>
+<td><p>Iterates over a QuerySet and applies an update to them in chunks rather than all at once, to save memory.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#django_pewtils.managers.BasicExtendedManager.create_or_update" title="django_pewtils.managers.BasicExtendedManager.create_or_update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_or_update</span></code></a>(unique_data[, update_data, …])</p></td>
+<td><p>This function builds off of the get_if_exists function, and allows you to pass a dictionary of unique_data</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#django_pewtils.managers.BasicExtendedManager.fuzzy_ratio_best_match" title="django_pewtils.managers.BasicExtendedManager.fuzzy_ratio_best_match"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fuzzy_ratio_best_match</span></code></a>(field_names, text[, …])</p></td>
+<td><p>Returns the object with the greatest fuzzy ratio in the QuerySet.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#django_pewtils.managers.BasicExtendedManager.fuzzy_ratios" title="django_pewtils.managers.BasicExtendedManager.fuzzy_ratios"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fuzzy_ratios</span></code></a>(field_names, text[, min_ratio, …])</p></td>
+<td><p>Given a snippet of text, computes the fuzzy ratios between the text and text that is stored on one or more fields on all of the objects in the QuerySet.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#django_pewtils.managers.BasicExtendedManager.get_if_exists" title="django_pewtils.managers.BasicExtendedManager.get_if_exists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_if_exists</span></code></a>(unique_data[, match_any, …])</p></td>
+<td><p>This function takes a dictionary of key-value pairs that specify one or more fields for a given model, and the value that each field should take, respectively.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#django_pewtils.managers.BasicExtendedManager.inspect_delete" title="django_pewtils.managers.BasicExtendedManager.inspect_delete"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inspect_delete</span></code></a>([counts])</p></td>
+<td><p>Returns a dictionary of all of the objects that would be deleted were you to call <cite>.delete()</cite> on the QuerySet.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#django_pewtils.managers.BasicExtendedManager.levenshtein_difference_best_match" title="django_pewtils.managers.BasicExtendedManager.levenshtein_difference_best_match"><code class="xref py py-obj docutils literal notranslate"><span class="pre">levenshtein_difference_best_match</span></code></a>(…[, …])</p></td>
+<td><p>Returns the object with the smallest Levenshtein difference in the QuerySet.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#django_pewtils.managers.BasicExtendedManager.levenshtein_differences" title="django_pewtils.managers.BasicExtendedManager.levenshtein_differences"><code class="xref py py-obj docutils literal notranslate"><span class="pre">levenshtein_differences</span></code></a>(field_names, text[, …])</p></td>
+<td><p>Given a set of text fields and some comparison text, computes the Levenshtein differences between the comparison text and the text that’s stored in the fields on the objects in the QuerySet.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#django_pewtils.managers.BasicExtendedManager.postgres_search" title="django_pewtils.managers.BasicExtendedManager.postgres_search"><code class="xref py py-obj docutils literal notranslate"><span class="pre">postgres_search</span></code></a>(field_names, text)</p></td>
+<td><p>Runs a Postgres full text search on one or more text fields across a given QuerySet.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#django_pewtils.managers.BasicExtendedManager.sample" title="django_pewtils.managers.BasicExtendedManager.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a>(size)</p></td>
+<td><p>Draws a random sample from a QuerySet.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#django_pewtils.managers.BasicExtendedManager.tfidf_similarities" title="django_pewtils.managers.BasicExtendedManager.tfidf_similarities"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tfidf_similarities</span></code></a>(field_names, text[, …])</p></td>
+<td><p>Given one or more text fields, computes the TF-IDF cosine similarities between the objects in the QuerySet and other and returns a list of results with the primary keys of the compared objects and their similarities.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#django_pewtils.managers.BasicExtendedManager.tfidf_similarity_best_match" title="django_pewtils.managers.BasicExtendedManager.tfidf_similarity_best_match"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tfidf_similarity_best_match</span></code></a>(field_names, text)</p></td>
+<td><p>Returns the object with the highest TF-IDF cosine similarity in the QuerySet.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#django_pewtils.managers.BasicExtendedManager.to_df" title="django_pewtils.managers.BasicExtendedManager.to_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_df</span></code></a>()</p></td>
+<td><p>Returns the QuerySet as a Pandas DataFrame, reading directly from the table in SQL.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#django_pewtils.managers.BasicExtendedManager.trigram_similarities" title="django_pewtils.managers.BasicExtendedManager.trigram_similarities"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trigram_similarities</span></code></a>(field_names, text[, …])</p></td>
+<td><p>Given one or more text fields, computes the trigram similarities between the objects in the QuerySet and other objects in the table and returns a list of results with the primary keys of the compared objects and their similarities.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#django_pewtils.managers.BasicExtendedManager.trigram_similarity_best_match" title="django_pewtils.managers.BasicExtendedManager.trigram_similarity_best_match"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trigram_similarity_best_match</span></code></a>(field_names, text)</p></td>
+<td><p>Returns the object with the highest trigram similarity in the QuerySet.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="django_pewtils.managers.BasicExtendedManager.to_df">
+<code class="sig-name descname">to_df</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/managers.html#BasicExtendedManager.to_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.managers.BasicExtendedManager.to_df" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the QuerySet as a Pandas DataFrame, reading directly from the table in SQL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A Pandas DataFrame of the QuerySet objects.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.managers.BasicExtendedManager.chunk">
+<code class="sig-name descname">chunk</code><span class="sig-paren">(</span><em class="sig-param">size=100</em>, <em class="sig-param">tqdm_desc=None</em>, <em class="sig-param">randomize=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/managers.html#BasicExtendedManager.chunk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.managers.BasicExtendedManager.chunk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helps save memory by iterating over the primary keys of objects in a QuerySet and yielding the results in
+chunks rather than all at once.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>size</strong> – The number of objects to load in each chunk. Larger values will be more efficient but require</p>
+</dd>
+</dl>
+<p>more memory.
+:param tqdm_desc: Optional description to use in the progress bar while looping over the QuerySet.
+:param randomize: Whether or not to randomly sort the objects in the QuerySet.
+:return: An iterable that yields each object in the QuerySet.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.managers.BasicExtendedManager.sample">
+<code class="sig-name descname">sample</code><span class="sig-paren">(</span><em class="sig-param">size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/managers.html#BasicExtendedManager.sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.managers.BasicExtendedManager.sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws a random sample from a QuerySet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>size</strong> – The size of the sample</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A QuerySet representing the sampled objects</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.managers.BasicExtendedManager.chunk_update">
+<code class="sig-name descname">chunk_update</code><span class="sig-paren">(</span><em class="sig-param">size=100</em>, <em class="sig-param">tqdm_desc='Updating'</em>, <em class="sig-param">**to_update</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/managers.html#BasicExtendedManager.chunk_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.managers.BasicExtendedManager.chunk_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterates over a QuerySet and applies an update to them in chunks rather than all at once, to save memory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size</strong> – The size of each chunk. Larger chunk sizes will be more efficient but cost more memory.</p></li>
+<li><p><strong>tqdm_desc</strong> – Optional description for the progress bar</p></li>
+<li><p><strong>to_update</strong> – A dictionary of fields and values to update them to. Operates like Django’s <cite>update</cite> function</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.managers.BasicExtendedManager.chunk_delete">
+<code class="sig-name descname">chunk_delete</code><span class="sig-paren">(</span><em class="sig-param">size=100</em>, <em class="sig-param">tqdm_desc='Deleting'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/managers.html#BasicExtendedManager.chunk_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.managers.BasicExtendedManager.chunk_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterates over a QuerySet and deletes objects in chunks rather than all at once, to save memory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size</strong> – The size of each chunk. Larger chunk sizes will be more efficient but cost more memory.</p></li>
+<li><p><strong>tqdm_desc</strong> – Optional description for the progress bar</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.managers.BasicExtendedManager.inspect_delete">
+<code class="sig-name descname">inspect_delete</code><span class="sig-paren">(</span><em class="sig-param">counts=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/managers.html#BasicExtendedManager.inspect_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.managers.BasicExtendedManager.inspect_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary of all of the objects that would be deleted were you to call <cite>.delete()</cite> on the QuerySet.
+Keys are models and values are either the count or a QuerySet of model objects, depending on <cite>count</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>counts</strong> – Whether or not to return counts.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dictionary of objects (or counts of objects) to be deleted, by model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.managers.BasicExtendedManager.get_if_exists">
+<code class="sig-name descname">get_if_exists</code><span class="sig-paren">(</span><em class="sig-param">unique_data</em>, <em class="sig-param">match_any=False</em>, <em class="sig-param">search_nulls=False</em>, <em class="sig-param">empty_lists_are_null=True</em>, <em class="sig-param">allow_list_overlaps=False</em>, <em class="sig-param">logger=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/managers.html#BasicExtendedManager.get_if_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.managers.BasicExtendedManager.get_if_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function takes a dictionary of key-value pairs that specify one or more fields for a given model, and the
+value that each field should take, respectively. In effect, this allows you to use dictionaries to apply
+complex multi-condition queries to fetch particular objects, based on the assumption that the combination of
+conditions passed via unique_data should refer to one, and only one, object within this model. It will return
+None if no objects match the conditions specified, or raise a MultipleObjectsReturned error if the query
+parameters were not unique in their combination and returned more than one object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>unique_data</strong> – A dictionary of filter values, e.g. Model.objects.get_if_exists({“year_id”: 2016})</p></li>
+<li><p><strong>match_any</strong> – If True, returns a match if ANY of the keys in the unique_data dictionary select an object</p></li>
+<li><p><strong>search_nulls</strong> – If False (default), it will ignore unique_data keys with null values</p></li>
+<li><p><strong>empty_lists_are_null</strong> – If True (default), it will treat empty lists the same as it does null values</p></li>
+</ul>
+</dd>
+</dl>
+<p>(otherwise it will treat them like non-nulls)
+:param logger: Optional logger for recording errors
+:return: The object, if it was found successfully</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.managers.BasicExtendedManager.create_or_update">
+<code class="sig-name descname">create_or_update</code><span class="sig-paren">(</span><em class="sig-param">unique_data</em>, <em class="sig-param">update_data=None</em>, <em class="sig-param">match_any=False</em>, <em class="sig-param">return_object=True</em>, <em class="sig-param">search_nulls=False</em>, <em class="sig-param">save_nulls=False</em>, <em class="sig-param">empty_lists_are_null=True</em>, <em class="sig-param">only_update_existing_nulls=False</em>, <em class="sig-param">allow_list_overlaps=False</em>, <em class="sig-param">logger=None</em>, <em class="sig-param">command_log=None</em>, <em class="sig-param">force_create=False</em>, <em class="sig-param">**save_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/managers.html#BasicExtendedManager.create_or_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.managers.BasicExtendedManager.create_or_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function builds off of the get_if_exists function, and allows you to pass a dictionary of unique_data
+values to:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Select an object, if it exists</p></li>
+<li><p>If it doesn’t exist, combine unique_data and any additional values in update_data, and create a new object</p></li>
+<li><p>If it does exist, update the object with any additional values in update_data</p></li>
+<li><p>Return the object, if return_object=True</p></li>
+</ul>
+</div></blockquote>
+<p>This can be used to very flexibly define a unique object, along with additional fields that shouldn’t be part
+of an object’s “uniqueness”, and then take any and all steps needed to ensure that the object exists and has
+the properties that you want it to have.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>unique_data</strong> – A dictionary of filter values, e.g. Model.objects.create_or_update({“id_field”: id})</p></li>
+<li><p><strong>update_data</strong> – A dictionary with data with which to update the object (keys that do not exist as fields on</p></li>
+</ul>
+</dd>
+</dl>
+<p>the object will be ignored)
+:param match_any: If True, returns a match if ANY of the keys in the unique_data dictionary select an object
+:param return_object: If True, the updated object will be returned (otherwise nothing gets returned)
+:param search_nulls: If False (default), it will ignore unique_data keys with null values
+:param save_nulls: If True, null values will be saved and will overwrite existing data (default False, which
+skips over null values)
+:param empty_lists_are_null: If True (default), it will treat empty lists the same as it does null values
+(otherwise it will treat them like non-nulls)
+:param only_update_existing_nulls: If True, the object will only be update currently-null fields with non-null
+values (values that already exist will not be updated)
+:param logger: Optional logger for recording errors
+:param command_log: Optional <cite>django_commander.CommandLog</cite> object, which will be added to the selected object’s
+many-to-many command/command_log fields, if it has them
+:param force_create: If True, this function will assume that the object does not exist and will skip the
+get_if_exists check
+:return: The created or updated object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.managers.BasicExtendedManager.fuzzy_ratios">
+<code class="sig-name descname">fuzzy_ratios</code><span class="sig-paren">(</span><em class="sig-param">field_names</em>, <em class="sig-param">text</em>, <em class="sig-param">min_ratio=None</em>, <em class="sig-param">allow_partial=False</em>, <em class="sig-param">max_partial_difference=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/managers.html#BasicExtendedManager.fuzzy_ratios"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.managers.BasicExtendedManager.fuzzy_ratios" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a snippet of text, computes the fuzzy ratios between the text and text that is stored on one or more
+fields on all of the objects in the QuerySet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_names</strong> – The names of the text fields to compare</p></li>
+<li><p><strong>text</strong> – A string of text to compare</p></li>
+<li><p><strong>min_ratio</strong> – The minimum fuzzy ratio allowed to return results.</p></li>
+<li><p><strong>allow_partial</strong> – Whether or not to allow partial fuzzy ratios when computing text similarity.</p></li>
+<li><p><strong>max_partial_difference</strong> – The maximum difference between the absolute and partial ratio that’s</p></li>
+</ul>
+</dd>
+</dl>
+<p>allowed to return a result.
+:return: A list of results with the primary keys of the compared objects and their fuzzy ratios</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.managers.BasicExtendedManager.fuzzy_ratio_best_match">
+<code class="sig-name descname">fuzzy_ratio_best_match</code><span class="sig-paren">(</span><em class="sig-param">field_names</em>, <em class="sig-param">text</em>, <em class="sig-param">min_ratio=None</em>, <em class="sig-param">allow_partial=False</em>, <em class="sig-param">max_partial_difference=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/managers.html#BasicExtendedManager.fuzzy_ratio_best_match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.managers.BasicExtendedManager.fuzzy_ratio_best_match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the object with the greatest fuzzy ratio in the QuerySet. Equivalent to calling:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">my_query_set</span><span class="o">.</span><span class="n">fuzzy_ratios</span><span class="p">([</span><span class="s2">&quot;text_field&quot;</span><span class="p">],</span> <span class="s2">&quot;test&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">MyModel</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_names</strong> – The names of the text fields to compare</p></li>
+<li><p><strong>text</strong> – A string of text to compare</p></li>
+<li><p><strong>min_ratio</strong> – The minimum fuzzy ratio allowed to return results.</p></li>
+<li><p><strong>allow_partial</strong> – Whether or not to allow partial fuzzy ratios when computing text similarity.</p></li>
+<li><p><strong>max_partial_difference</strong> – The maximum difference between the absolute and partial ratio that’s</p></li>
+</ul>
+</dd>
+</dl>
+<p>allowed to return a result.
+:return: A tuple of the object in the QuerySet that has the greatest similarity to the provided text, and
+its fuzzy ratio</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.managers.BasicExtendedManager.levenshtein_differences">
+<code class="sig-name descname">levenshtein_differences</code><span class="sig-paren">(</span><em class="sig-param">field_names</em>, <em class="sig-param">text</em>, <em class="sig-param">max_difference=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/managers.html#BasicExtendedManager.levenshtein_differences"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.managers.BasicExtendedManager.levenshtein_differences" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a set of text fields and some comparison text, computes the Levenshtein differences between the
+comparison text and the text that’s stored in the fields on the objects in the QuerySet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_names</strong> – The names of the text fields to compare</p></li>
+<li><p><strong>text</strong> – A string of text to compare</p></li>
+<li><p><strong>max_difference</strong> – The maximum difference allowed for a result to be returned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of results with the primary keys of the compared objects and their Levenshtein differences</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.managers.BasicExtendedManager.levenshtein_difference_best_match">
+<code class="sig-name descname">levenshtein_difference_best_match</code><span class="sig-paren">(</span><em class="sig-param">field_names</em>, <em class="sig-param">text</em>, <em class="sig-param">max_difference=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/managers.html#BasicExtendedManager.levenshtein_difference_best_match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.managers.BasicExtendedManager.levenshtein_difference_best_match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the object with the smallest Levenshtein difference in the QuerySet. Equivalent to calling:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">my_query_set</span><span class="o">.</span><span class="n">levenshtein_differences</span><span class="p">([</span><span class="s2">&quot;text_field&quot;</span><span class="p">],</span> <span class="s2">&quot;test&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">MyModel</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_names</strong> – The names of the text fields to compare</p></li>
+<li><p><strong>text</strong> – A string of text to compare</p></li>
+<li><p><strong>max_difference</strong> – The maximum difference allowed for a result to be returned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A tuple of the object in the QuerySet that has the smallest difference with the provided</p>
+</dd>
+</dl>
+<p>text and its Levenshtein difference</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.managers.BasicExtendedManager.tfidf_similarities">
+<code class="sig-name descname">tfidf_similarities</code><span class="sig-paren">(</span><em class="sig-param">field_names</em>, <em class="sig-param">text</em>, <em class="sig-param">min_similarity=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/managers.html#BasicExtendedManager.tfidf_similarities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.managers.BasicExtendedManager.tfidf_similarities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given one or more text fields, computes the TF-IDF cosine similarities between the objects in the QuerySet and
+other and returns a list of results with the primary keys of the compared objects and their similarities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_names</strong> – The names of the text fields to compare</p></li>
+<li><p><strong>text</strong> – A string of text to compare</p></li>
+<li><p><strong>min_similarity</strong> – The minimum similarity allowed for a result to be returned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of results with the primary keys of the compared objects and their TF-IDF similarities</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.managers.BasicExtendedManager.tfidf_similarity_best_match">
+<code class="sig-name descname">tfidf_similarity_best_match</code><span class="sig-paren">(</span><em class="sig-param">field_names</em>, <em class="sig-param">text</em>, <em class="sig-param">min_similarity=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/managers.html#BasicExtendedManager.tfidf_similarity_best_match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.managers.BasicExtendedManager.tfidf_similarity_best_match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the object with the highest TF-IDF cosine similarity in the QuerySet. Equivalent to calling:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">my_query_set</span><span class="o">.</span><span class="n">tfidf_similarities</span><span class="p">([</span><span class="s2">&quot;text_field&quot;</span><span class="p">],</span> <span class="s2">&quot;test&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">MyModel</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_names</strong> – The names of the text fields to compare</p></li>
+<li><p><strong>text</strong> – A string of text to compare</p></li>
+<li><p><strong>min_similarity</strong> – The minimum similarity allowed for a result to be returned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A tuple of the object in the QuerySet that has the highest similarity with the provided</p>
+</dd>
+</dl>
+<p>text, and its TF-IDF similarity</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.managers.BasicExtendedManager.trigram_similarities">
+<code class="sig-name descname">trigram_similarities</code><span class="sig-paren">(</span><em class="sig-param">field_names</em>, <em class="sig-param">text</em>, <em class="sig-param">min_similarity=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/managers.html#BasicExtendedManager.trigram_similarities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.managers.BasicExtendedManager.trigram_similarities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given one or more text fields, computes the trigram similarities between the objects in the QuerySet and other objects in the
+table and returns a list of results with the primary keys of the compared objects and their similarities.
+(Uses Postgres’ built-in trigram similarity module)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_names</strong> – The names of the text fields to compare</p></li>
+<li><p><strong>min_similarity</strong> – The minimum similarity allowed for a result to be returned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of results with the primary keys of the compared objects and their trigram similarities</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.managers.BasicExtendedManager.trigram_similarity_best_match">
+<code class="sig-name descname">trigram_similarity_best_match</code><span class="sig-paren">(</span><em class="sig-param">field_names</em>, <em class="sig-param">text</em>, <em class="sig-param">min_similarity=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/managers.html#BasicExtendedManager.trigram_similarity_best_match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.managers.BasicExtendedManager.trigram_similarity_best_match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the object with the highest trigram similarity in the QuerySet. Equivalent to calling:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">my_query_set</span><span class="o">.</span><span class="n">trigram_similarities</span><span class="p">([</span><span class="s2">&quot;text_field&quot;</span><span class="p">],</span> <span class="s2">&quot;test&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">MyModel</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_names</strong> – The names of the text fields to compare</p></li>
+<li><p><strong>text</strong> – A string of text to compare</p></li>
+<li><p><strong>min_similarity</strong> – The minimum similarity allowed for a result to be returned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A tuple of the object in the QuerySet that has the highest similarity with the provided</p>
+</dd>
+</dl>
+<p>text, and its trigram similarity</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.managers.BasicExtendedManager.postgres_search">
+<code class="sig-name descname">postgres_search</code><span class="sig-paren">(</span><em class="sig-param">field_names</em>, <em class="sig-param">text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/managers.html#BasicExtendedManager.postgres_search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.managers.BasicExtendedManager.postgres_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs a Postgres full text search on one or more text fields across a given QuerySet. Returns an
+ordered QuerySet of results with an additional <cite>rank</cite> attribute on each object that scores the matches.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_names</strong> – The names of the text fields to compare</p></li>
+<li><p><strong>text</strong> – A string of text to compare</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An ordered QuerySet of search results</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="abstract_models.html" class="btn btn-neutral float-left" title="django_pewtils.abstract_models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Pew Research Center
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,549 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>django_pewtils.abstract_models &mdash; django_pewtils 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="django_pewtils.managers" href="managers.html" />
+    <link rel="prev" title="Basic functions" href="base.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> django_pewtils
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="base.html">Basic functions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Abstract models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="managers.html">Managers</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">django_pewtils</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>django_pewtils.abstract_models</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/abstract_models.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-django_pewtils.abstract_models">
+<span id="django-pewtils-abstract-models"></span><h1>django_pewtils.abstract_models<a class="headerlink" href="#module-django_pewtils.abstract_models" title="Permalink to this headline">¶</a></h1>
+<p><strong>Classes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#django_pewtils.abstract_models.BasicExtendedModel" title="django_pewtils.abstract_models.BasicExtendedModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BasicExtendedModel</span></code></a>(*args, **kwargs)</p></td>
+<td><p>An extended Django abstract model class that provides additional utility functions.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="django_pewtils.abstract_models.BasicExtendedModel">
+<em class="property">class </em><code class="sig-name descname">BasicExtendedModel</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/abstract_models.html#BasicExtendedModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.abstract_models.BasicExtendedModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>An extended Django abstract model class that provides additional utility functions.</p>
+<p><strong>Methods</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#django_pewtils.abstract_models.BasicExtendedModel.fuzzy_ratio" title="django_pewtils.abstract_models.BasicExtendedModel.fuzzy_ratio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fuzzy_ratio</span></code></a>(field_names, text[, …])</p></td>
+<td><p>Given a snippet of text, computes the fuzzy ratio between the text and text that is stored on one or more fields on the object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#django_pewtils.abstract_models.BasicExtendedModel.inspect_delete" title="django_pewtils.abstract_models.BasicExtendedModel.inspect_delete"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inspect_delete</span></code></a>([counts])</p></td>
+<td><p>Can be called on any model object; returns all objects and relations that would be deleted if the object itself is deleted.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#django_pewtils.abstract_models.BasicExtendedModel.json" title="django_pewtils.abstract_models.BasicExtendedModel.json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">json</span></code></a>([exclude_nulls, empty_lists_are_null])</p></td>
+<td><p>Returns a JSON/dictionary-style representation of the object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#django_pewtils.abstract_models.BasicExtendedModel.levenshtein_difference" title="django_pewtils.abstract_models.BasicExtendedModel.levenshtein_difference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">levenshtein_difference</span></code></a>(field_names, text)</p></td>
+<td><p>Given a set of text fields and some comparison text, computes the Levenshtein difference between the comparison text and the text that’s stored in the fields on the object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#django_pewtils.abstract_models.BasicExtendedModel.related_objects" title="django_pewtils.abstract_models.BasicExtendedModel.related_objects"><code class="xref py py-obj docutils literal notranslate"><span class="pre">related_objects</span></code></a>([counts, nonzero_only])</p></td>
+<td><p>Returns a dictionary of all of the other objects that are related to the object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#django_pewtils.abstract_models.BasicExtendedModel.similar_by_fuzzy_ratios" title="django_pewtils.abstract_models.BasicExtendedModel.similar_by_fuzzy_ratios"><code class="xref py py-obj docutils literal notranslate"><span class="pre">similar_by_fuzzy_ratios</span></code></a>(field_names[, …])</p></td>
+<td><p>Given one or more text fields, computes the fuzzy ratios between the object and other objects in the table and returns a list of results with the primary keys of the compared objects and their fuzzy ratios.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#django_pewtils.abstract_models.BasicExtendedModel.similar_by_levenshtein_differences" title="django_pewtils.abstract_models.BasicExtendedModel.similar_by_levenshtein_differences"><code class="xref py py-obj docutils literal notranslate"><span class="pre">similar_by_levenshtein_differences</span></code></a>(field_names)</p></td>
+<td><p>Given one or more text fields, computes the Levenshtein differences between the object and other objects in the table and returns a list of results with the primary keys of the compared objects and their differences.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#django_pewtils.abstract_models.BasicExtendedModel.similar_by_tfidf_similarity" title="django_pewtils.abstract_models.BasicExtendedModel.similar_by_tfidf_similarity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">similar_by_tfidf_similarity</span></code></a>(field_names[, …])</p></td>
+<td><p>Given one or more text fields, computes the TF-IDF cosine similarities between the object and other objects in the table and returns a list of results with the primary keys of the compared objects and their similarities.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#django_pewtils.abstract_models.BasicExtendedModel.similar_by_trigram_similarity" title="django_pewtils.abstract_models.BasicExtendedModel.similar_by_trigram_similarity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">similar_by_trigram_similarity</span></code></a>(field_names[, …])</p></td>
+<td><p>Given one or more text fields, computes the trigram similarities between the object and other objects in the table and returns a list of results with the primary keys of the compared objects and their similarities.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#django_pewtils.abstract_models.BasicExtendedModel.tfidf_similarity" title="django_pewtils.abstract_models.BasicExtendedModel.tfidf_similarity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tfidf_similarity</span></code></a>(field_names, text)</p></td>
+<td><p>Given a set of text fields and some comparison text, computes the TF-IDF cosine similarity between the comparison text and the text that’s stored in the fields on the object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#django_pewtils.abstract_models.BasicExtendedModel.trigram_similarity" title="django_pewtils.abstract_models.BasicExtendedModel.trigram_similarity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trigram_similarity</span></code></a>(field_names, text)</p></td>
+<td><p>Given a set of text fields and some comparison text, computes the trigram similarity between the comparison text and the text that’s stored in the fields on the object.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="django_pewtils.abstract_models.BasicExtendedModel.json">
+<code class="sig-name descname">json</code><span class="sig-paren">(</span><em class="sig-param">exclude_nulls=False</em>, <em class="sig-param">empty_lists_are_null=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/abstract_models.html#BasicExtendedModel.json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.abstract_models.BasicExtendedModel.json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a JSON/dictionary-style representation of the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exclude_nulls</strong> (<em>bool</em>) – Whether or not to exclude fields with null values (default is False)</p></li>
+<li><p><strong>empty_lists_are_null</strong> (<em>bool</em>) – Whether or not to treat empty lists as null (default is False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dictionary representation of the object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p>Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="n">exclude_nulls</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">{&#39;id&#39;: 64720,</span>
+<span class="go"> &#39;first_name&#39;: &#39;Dwayne&#39;,</span>
+<span class="go"> &#39;last_name&#39;: &#39;Johnson&#39;,</span>
+<span class="go"> &#39;nickname&#39;: &#39;The Rock&#39;,</span>
+<span class="go"> &#39;has_press_release_scraper&#39;: False,</span>
+<span class="go"> &#39;bioguide_id&#39;: &#39;J99999&#39;,</span>
+<span class="go"> &#39;fec_ids&#39;: [&#39;P99999&#39;],</span>
+<span class="go"> &#39;facebook_ids&#39;: [],</span>
+<span class="go"> &#39;old_facebook_ids&#39;: [],</span>
+<span class="go"> &#39;twitter_ids&#39;: [],</span>
+<span class="go"> &#39;old_twitter_ids&#39;: [],</span>
+<span class="go"> &#39;instagram_ids&#39;: [&#39;1234567890&#39;],</span>
+<span class="go"> &#39;old_instagram_ids&#39;: [],</span>
+<span class="go"> &#39;capitol_words_speech_backfill&#39;: False}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.abstract_models.BasicExtendedModel.inspect_delete">
+<code class="sig-name descname">inspect_delete</code><span class="sig-paren">(</span><em class="sig-param">counts=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/abstract_models.html#BasicExtendedModel.inspect_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.abstract_models.BasicExtendedModel.inspect_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Can be called on any model object; returns all objects and relations that would be deleted if the
+object itself is deleted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>counts</strong> – If <cite>True</cite>, will return counts of the objects to be deleted. Otherwise returns QuerySets</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary of models/relations (keys) and the counts or QuerySets of objects to be deleted (values)</p>
+</dd>
+</dl>
+<p>Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bernie</span><span class="o">.</span><span class="n">inspect_delete</span><span class="p">(</span><span class="n">counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">defaultdict(list,</span>
+<span class="go">            {logos.models.agents.Politician: 1,</span>
+<span class="go">             logos.models.agents.Politician_commands: 21,</span>
+<span class="go">             logos.models.agents.Politician_command_logs: 1112,</span>
+<span class="go">             logos.models.agents.PoliticianPersonalMetric: 47,</span>
+<span class="go">             logos.models.agents.PoliticianPersonalMetric_commands: 27,</span>
+<span class="go">             logos.models.agents.PoliticianPersonalMetric_command_logs: 167,</span>
+<span class="go">             logos.models.media.NewsArticle_relevant_politicians: 96109,</span>
+<span class="go">             logos.models.media.BallotpediaPage: 1,</span>
+<span class="go">             logos.models.media.WikipediaPage: 1,</span>
+<span class="go">             logos.models.media.WikipediaPage_commands: 1,</span>
+<span class="go">             logos.models.media.WikipediaPage_command_logs: 1,</span>
+<span class="go">             logos.models.government.CommitteeMembership: 63,</span>
+<span class="go">             logos.models.government.CommitteeMembership_commands: 63,</span>
+<span class="go">             logos.models.government.CommitteeMembership_command_logs: 63,</span>
+<span class="go">             logos.models.government.Caucus_members: 1,</span>
+<span class="go">             logos.models.government.Bill_cosponsors: 2638,</span>
+<span class="go">             logos.models.government.Vote_votes_for: 3320,</span>
+<span class="go">             logos.models.government.Vote_votes_against: 1918,</span>
+<span class="go">             logos.models.government.Vote_votes_abstained: 343,</span>
+<span class="go">             logos.models.government.LegislativeHearing_attendees: 1059})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.abstract_models.BasicExtendedModel.related_objects">
+<code class="sig-name descname">related_objects</code><span class="sig-paren">(</span><em class="sig-param">counts=False</em>, <em class="sig-param">nonzero_only=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/abstract_models.html#BasicExtendedModel.related_objects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.abstract_models.BasicExtendedModel.related_objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary of all of the other objects that are related to the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>counts</strong> – If <cite>True</cite>, will return counts of the related objects. Otherwise returns QuerySets</p></li>
+<li><p><strong>nonzero_only</strong> – If <cite>True</cite>, empty relations will not be included in the dictionary.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary of relation fields on the model (keys) and the counts or QuerySets of the related</p>
+</dd>
+</dl>
+<p>objects (values)</p>
+<p>Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bernie</span><span class="o">.</span><span class="n">related_objects</span><span class="p">(</span><span class="n">counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">{&#39;personal_metrics&#39;: 47,</span>
+<span class="go"> &#39;campaigns&#39;: 7,</span>
+<span class="go"> &#39;staffers&#39;: 0,</span>
+<span class="go"> &#39;relevant_news_articles&#39;: 96109,</span>
+<span class="go"> &#39;press_releases&#39;: 3326,</span>
+<span class="go"> &#39;ballotpedia_page&#39;: 1,</span>
+<span class="go"> &#39;wikipedia_page&#39;: 1,</span>
+<span class="go"> &#39;speeches&#39;: 2890,</span>
+<span class="go"> &#39;twitter_profiles&#39;: 3,</span>
+<span class="go"> &#39;incumbent_elections&#39;: 2,</span>
+<span class="go"> &#39;elections_won&#39;: 11,</span>
+<span class="go"> &#39;contributions_donated&#39;: 0,</span>
+<span class="go"> &#39;contributions_received&#39;: 0,</span>
+<span class="go"> &#39;facebook_pages&#39;: 2,</span>
+<span class="go"> &#39;terms&#39;: 11,</span>
+<span class="go"> &#39;chaired_committees&#39;: 0,</span>
+<span class="go"> &#39;ranking_member_committees&#39;: 2,</span>
+<span class="go"> &#39;committees&#39;: 0,</span>
+<span class="go"> &#39;committee_memberships&#39;: 63,</span>
+<span class="go"> &#39;caucuses&#39;: 1,</span>
+<span class="go"> &#39;sponsored_bills&#39;: 235,</span>
+<span class="go"> &#39;cosponsored_bills&#39;: 2638,</span>
+<span class="go"> &#39;votes_for&#39;: 3320,</span>
+<span class="go"> &#39;votes_against&#39;: 1918,</span>
+<span class="go"> &#39;votes_abstained&#39;: 343,</span>
+<span class="go"> &#39;hearings&#39;: 1059,</span>
+<span class="go"> &#39;scrape_logs&#39;: 3,</span>
+<span class="go"> &#39;webpages&#39;: 2193,</span>
+<span class="go"> &#39;current_term&#39;: 1,</span>
+<span class="go"> &#39;latest_term&#39;: 1,</span>
+<span class="go"> &#39;party&#39;: 1,</span>
+<span class="go"> &#39;commands&#39;: 21,</span>
+<span class="go"> &#39;command_logs&#39;: 1112,</span>
+<span class="go"> &#39;verifications&#39;: 0}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.abstract_models.BasicExtendedModel.fuzzy_ratio">
+<code class="sig-name descname">fuzzy_ratio</code><span class="sig-paren">(</span><em class="sig-param">field_names</em>, <em class="sig-param">text</em>, <em class="sig-param">allow_partial=False</em>, <em class="sig-param">max_partial_difference=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/abstract_models.html#BasicExtendedModel.fuzzy_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.abstract_models.BasicExtendedModel.fuzzy_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a snippet of text, computes the fuzzy ratio between the text and text that is stored on one or more
+fields on the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_names</strong> – The names of the fields to compare the text against.</p></li>
+<li><p><strong>text</strong> – A string of text to compare</p></li>
+<li><p><strong>allow_partial</strong> – Whether or not to allow partial fuzzy ratios when computing text similarity.</p></li>
+<li><p><strong>max_partial_difference</strong> – The maximum difference between the absolute and partial ratio that’s</p></li>
+</ul>
+</dd>
+</dl>
+<p>allowed to return a result.
+:return: The fuzzy ratio between the object and the comparison text</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.abstract_models.BasicExtendedModel.similar_by_fuzzy_ratios">
+<code class="sig-name descname">similar_by_fuzzy_ratios</code><span class="sig-paren">(</span><em class="sig-param">field_names</em>, <em class="sig-param">min_ratio=90</em>, <em class="sig-param">allow_partial=False</em>, <em class="sig-param">max_partial_difference=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/abstract_models.html#BasicExtendedModel.similar_by_fuzzy_ratios"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.abstract_models.BasicExtendedModel.similar_by_fuzzy_ratios" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given one or more text fields, computes the fuzzy ratios between the object and other objects in the
+table and returns a list of results with the primary keys of the compared objects and their fuzzy ratios.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_names</strong> – The names of the text fields to compare</p></li>
+<li><p><strong>min_ratio</strong> – The minimum fuzzy ratio allowed to return results.</p></li>
+<li><p><strong>allow_partial</strong> – Whether or not to allow partial fuzzy ratios when computing text similarity.</p></li>
+<li><p><strong>max_partial_difference</strong> – The maximum difference between the absolute and partial ratio that’s</p></li>
+</ul>
+</dd>
+</dl>
+<p>allowed to return a result.
+:return: A list of results with the primary keys of the compared objects and their fuzzy ratios</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.abstract_models.BasicExtendedModel.levenshtein_difference">
+<code class="sig-name descname">levenshtein_difference</code><span class="sig-paren">(</span><em class="sig-param">field_names</em>, <em class="sig-param">text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/abstract_models.html#BasicExtendedModel.levenshtein_difference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.abstract_models.BasicExtendedModel.levenshtein_difference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a set of text fields and some comparison text, computes the Levenshtein difference between the
+comparison text and the text that’s stored in the fields on the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_names</strong> – The names of the text fields to compare</p></li>
+<li><p><strong>text</strong> – A string of text to compare</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The Levenshtein difference between the provided text and the text on the object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.abstract_models.BasicExtendedModel.similar_by_levenshtein_differences">
+<code class="sig-name descname">similar_by_levenshtein_differences</code><span class="sig-paren">(</span><em class="sig-param">field_names</em>, <em class="sig-param">max_difference=0.2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/abstract_models.html#BasicExtendedModel.similar_by_levenshtein_differences"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.abstract_models.BasicExtendedModel.similar_by_levenshtein_differences" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given one or more text fields, computes the Levenshtein differences between the object and other objects in the
+table and returns a list of results with the primary keys of the compared objects and their differences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_names</strong> – The names of the text fields to compare</p></li>
+<li><p><strong>max_difference</strong> – The maximum difference allowed for a result to be returned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of results with the primary keys of the compared objects and their Levenshtein differences</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.abstract_models.BasicExtendedModel.tfidf_similarity">
+<code class="sig-name descname">tfidf_similarity</code><span class="sig-paren">(</span><em class="sig-param">field_names</em>, <em class="sig-param">text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/abstract_models.html#BasicExtendedModel.tfidf_similarity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.abstract_models.BasicExtendedModel.tfidf_similarity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a set of text fields and some comparison text, computes the TF-IDF cosine similarity between the
+comparison text and the text that’s stored in the fields on the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_names</strong> – The names of the text fields to compare</p></li>
+<li><p><strong>text</strong> – A string of text to compare</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The TF-IDF similarity between the provided text and the text on the object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.abstract_models.BasicExtendedModel.similar_by_tfidf_similarity">
+<code class="sig-name descname">similar_by_tfidf_similarity</code><span class="sig-paren">(</span><em class="sig-param">field_names</em>, <em class="sig-param">min_similarity=0.9</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/abstract_models.html#BasicExtendedModel.similar_by_tfidf_similarity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.abstract_models.BasicExtendedModel.similar_by_tfidf_similarity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given one or more text fields, computes the TF-IDF cosine similarities between the object and other objects in
+the table and returns a list of results with the primary keys of the compared objects and their similarities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_names</strong> – The names of the text fields to compare</p></li>
+<li><p><strong>min_similarity</strong> – The minimum similarity allowed for a result to be returned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of results with the primary keys of the compared objects and their TF-IDF similarities</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.abstract_models.BasicExtendedModel.trigram_similarity">
+<code class="sig-name descname">trigram_similarity</code><span class="sig-paren">(</span><em class="sig-param">field_names</em>, <em class="sig-param">text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/abstract_models.html#BasicExtendedModel.trigram_similarity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.abstract_models.BasicExtendedModel.trigram_similarity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a set of text fields and some comparison text, computes the trigram similarity between the
+comparison text and the text that’s stored in the fields on the object. (Uses Postgres’ built-in
+trigram similarity module)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_names</strong> – The names of the text fields to compare</p></li>
+<li><p><strong>text</strong> – A string of text to compare</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The trigram similarity between the provided text and the text on the object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_pewtils.abstract_models.BasicExtendedModel.similar_by_trigram_similarity">
+<code class="sig-name descname">similar_by_trigram_similarity</code><span class="sig-paren">(</span><em class="sig-param">field_names</em>, <em class="sig-param">min_similarity=0.9</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/django_pewtils/abstract_models.html#BasicExtendedModel.similar_by_trigram_similarity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_pewtils.abstract_models.BasicExtendedModel.similar_by_trigram_similarity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given one or more text fields, computes the trigram similarities between the object and other objects in the
+table and returns a list of results with the primary keys of the compared objects and their similarities.
+(Uses Postgres’ built-in trigram similarity module)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_names</strong> – The names of the text fields to compare</p></li>
+<li><p><strong>min_similarity</strong> – The minimum similarity allowed for a result to be returned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of results with the primary keys of the compared objects and their trigram similarities</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="managers.html" class="btn btn-neutral float-right" title="django_pewtils.managers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="base.html" class="btn btn-neutral float-left" title="Basic functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Pew Research Center
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
