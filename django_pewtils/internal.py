@@ -1,13 +1,14 @@
 def set_up_django_project(project_name, project_path, env_file=None):
 
     """
+    Sets up a Django project and optionally loads in environment variables from a .env file.
 
-    FOLDER_WITH_SERMONATOR = "/apps/prod/sermonator"
     Usage::
+        PROJECT_FOLDER = os.path.abspath(os.curdir)
         set_up_django_project(
-            "sermonator",
-            FOLDER_WITH_SERMONATOR,
-            env_file="{}/sermonator/deploy/prod/secrets.env".format(FOLDER_WITH_SERMONATOR)
+            "my_project_name",
+            PROJECT_FOLDER,
+            env_file="my_env_file.env"
         )
     
     :param project_name:
