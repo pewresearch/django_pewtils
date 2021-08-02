@@ -5,7 +5,7 @@ on:
     paths:
       - .github/workflows/build-main.yaml
       - Makefile
-      - django-pewtils/**
+      - django_pewtils/**
       - requirements.txt
       - setup.py
       - tests/**
