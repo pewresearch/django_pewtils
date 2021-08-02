@@ -21,7 +21,7 @@ with open("requirements.txt") as reqs:
 
 setup(
     name="django_pewtils",
-    version='0.1.2',
+    version='0.1.3.dev0',
     description="miscellaneous utilities",
     long_description=README,  # 'http://labs.pewresearch.tech/docs/libs/django_pewtils',
     url="https://github.com/pewresearch/django_pewtils",
