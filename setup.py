@@ -2,11 +2,6 @@ import os
 from setuptools import setup, find_packages
 
 
-with open(
-    os.path.join(os.path.dirname(__file__), "django_pewtils", "VERSION"), "rb"
-) as version_file:
-    __version__ = str(version_file.read()).strip()
-
 with open(os.path.join(os.path.dirname(__file__), "README.md"), "rb") as readme:
     README = str(readme.read())
 
@@ -26,7 +21,7 @@ with open("requirements.txt") as reqs:
 
 setup(
     name="django_pewtils",
-    version=__version__,
+    version='0.1.1',
     description="miscellaneous utilities",
     long_description=README,  # 'http://labs.pewresearch.tech/docs/libs/django_pewtils',
     url="https://github.com/pewresearch/django_pewtils",
