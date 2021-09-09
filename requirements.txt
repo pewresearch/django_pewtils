@@ -1,4 +1,4 @@
 pandas>=0.25.3
 tqdm>=4.41.1
 Django>=3.1,<3.2
-pewtils==0.0.1
+pewtils>=1.0.8
