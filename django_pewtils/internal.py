@@ -10,7 +10,7 @@ def set_up_django_project(project_name, project_path, env_file=None):
             PROJECT_FOLDER,
             env_file="my_env_file.env"
         )
-    
+
     :param project_name:
     :param project_path:
     :param env_file:

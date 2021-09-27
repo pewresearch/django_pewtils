@@ -26,13 +26,19 @@ setup(
     include_package_data=True,
     classifiers=[
         # https://pypi.python.org/pypi?%3Aaction=list_classifiers
+        #        'Development Status :: 1 - Planning',
+        #        'Development Status :: 2 - Pre-Alpha',
+        #        'Development Status :: 3 - Alpha',
+        #        'Development Status :: 4 - Beta',
         "Development Status :: 5 - Production/Stable",
         #        'Development Status :: 6 - Mature',
         #        'Development Status :: 7 - Inactive'
+        "Intended Audience :: Science/Research",
+        "Operating System :: OS Independent",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
-        "Intended Audience :: Science/Research",
+        "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Utilities",
     ],
