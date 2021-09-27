@@ -18,9 +18,8 @@ def set_up_django_project(project_name, project_path, env_file=None):
     """
 
     import django
-    import os, sys
-    import numpy as np
-    from contextlib import closing
+    import os
+    import sys
     from dotenv import load_dotenv
     from pathlib import Path
 

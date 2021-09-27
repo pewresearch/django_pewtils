@@ -1,6 +1,11 @@
 from __future__ import print_function
 from builtins import object
-import shutil, re, importlib, pkgutil, os, imp, datetime, warnings
+
+import shutil
+import re
+import os
+import datetime
+import warnings
 
 from itertools import chain
 from contextlib import closing
@@ -70,7 +75,8 @@ def load_app(app_name=None, path=None, env=None):
 
     if not env:
         env = {}
-    import os, django
+    import os
+    import django
 
     for k, v in env.items():
         os.environ[k] = v

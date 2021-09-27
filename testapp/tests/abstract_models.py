@@ -1,9 +1,5 @@
 from __future__ import print_function
-import unittest
-import copy
 import pandas as pd
-import itertools
-import time
 import os
 
 from django.test import TestCase as DjangoTestCase
@@ -57,7 +53,7 @@ class AbstractModelTests(DjangoTestCase):
         result = obj.json()
 
         self.assertEqual(
-            sorted(obj.json().keys()),
+            sorted(result.keys()),
             [
                 "array_field",
                 "foreign_key_id",
@@ -209,7 +205,8 @@ class AbstractModelTests(DjangoTestCase):
 
     def tearDown(self):
         from django.conf import settings
-        import shutil, os
+        import shutil
+        import os
 
         cache_path = os.path.join(settings.BASE_DIR, settings.LOCAL_CACHE_ROOT)
         if os.path.exists(cache_path):
