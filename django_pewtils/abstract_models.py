@@ -1,6 +1,5 @@
 from builtins import object
 from django.db import models
-from django.db.models.deletion import Collector
 
 from pewtils import is_not_null, decode_text
 from django_pewtils import get_model, inspect_delete

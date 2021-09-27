@@ -1,3 +1,3 @@
-from .base import *
-from .abstract_models import *
-from .managers import *
+from .base import BaseTests
+from .abstract_models import AbstractModelTests
+from .managers import ManagerTests

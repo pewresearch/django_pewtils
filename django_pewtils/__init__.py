@@ -3,9 +3,7 @@ from builtins import object
 
 import shutil
 import re
-import importlib
 import os
-import imp
 import datetime
 import warnings
 
@@ -77,7 +75,8 @@ def load_app(app_name=None, path=None, env=None):
 
     if not env:
         env = {}
-    import os, django
+    import os
+    import django
 
     for k, v in env.items():
         os.environ[k] = v

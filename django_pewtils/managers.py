@@ -1,7 +1,10 @@
 from __future__ import print_function
 
 from builtins import str
-import traceback, sys, pandas, random
+import traceback
+import sys
+import pandas
+import random
 
 from tqdm import tqdm
 
@@ -10,7 +13,7 @@ from django.db import connection, models
 from django.core.exceptions import EmptyResultSet
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 
-from pewtils import chunk_list, is_null, is_not_null, decode_text, vector_concat_text
+from pewtils import chunk_list, is_null, decode_text, vector_concat_text
 from django_pewtils import field_exists, filter_field_dict, get_model, inspect_delete
 from pewanalytics.text import TextDataFrame, get_fuzzy_partial_ratio, get_fuzzy_ratio
 
@@ -95,7 +98,7 @@ def _create_object(
         if command_log and hasattr(existing, "command_logs"):
             existing.command_logs.add(command_log)
             existing.commands.add(command_log.command)
-    except Exception as e:
+    except:
         if logger:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             logger.info(
