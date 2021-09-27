@@ -57,7 +57,7 @@ class AbstractModelTests(DjangoTestCase):
         result = obj.json()
 
         self.assertEqual(
-            sorted(obj.json().keys()),
+            sorted(result.keys()),
             [
                 "array_field",
                 "foreign_key_id",

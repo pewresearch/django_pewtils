@@ -1,6 +1,13 @@
 from __future__ import print_function
 from builtins import object
-import shutil, re, importlib, pkgutil, os, imp, datetime, warnings
+
+import shutil
+import re
+import importlib
+import os
+import imp
+import datetime
+import warnings
 
 from itertools import chain
 from contextlib import closing
