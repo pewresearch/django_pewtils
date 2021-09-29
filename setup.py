@@ -39,7 +39,7 @@ setup(
         #        'Development Status :: 7 - Inactive'
         "Intended Audience :: Education",
         "Intended Audience :: Developers",
-        "Intended Audiience :: Information Technology",
+        "Intended Audience :: Information Technology",
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
         "Operating System :: OS Independent",
