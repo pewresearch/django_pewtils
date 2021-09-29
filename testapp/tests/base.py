@@ -1,5 +1,4 @@
 from __future__ import print_function
-import unittest
 import copy
 import pandas as pd
 import itertools
