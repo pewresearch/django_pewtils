@@ -1,9 +1,5 @@
 from __future__ import print_function
-import unittest
-import copy
 import pandas as pd
-import itertools
-import time
 import os
 
 from django.test import TestCase as DjangoTestCase
@@ -50,6 +46,33 @@ class AbstractModelTests(DjangoTestCase):
             obj2.foreign_key = TestModel.objects.exclude(pk=obj2.pk).order_by("?")[0]
             obj2.foreign_key_unique = TestModel.objects.get(pk=obj2.pk)
             obj2.save()
+
+    def test_json(self):
+
+        obj = TestModel.objects.create(id=99999)
+        result = obj.json()
+
+        self.assertEqual(
+            sorted(result.keys()),
+            [
+                "array_field",
+                "foreign_key_id",
+                "foreign_key_self_id",
+                "id",
+                "one_to_one_id",
+                "one_to_one_self_id",
+                "text_field",
+            ],
+        )
+
+        self.assertEqual(
+            sorted(obj.json(exclude_nulls=True).keys()), ["array_field", "id"]
+        )
+
+        self.assertEqual(
+            sorted(obj.json(exclude_nulls=True, empty_lists_are_null=True).keys()),
+            ["id"],
+        )
 
     def test_inspect_delete(self):
 
@@ -182,7 +205,8 @@ class AbstractModelTests(DjangoTestCase):
 
     def tearDown(self):
         from django.conf import settings
-        import shutil, os
+        import shutil
+        import os
 
         cache_path = os.path.join(settings.BASE_DIR, settings.LOCAL_CACHE_ROOT)
         if os.path.exists(cache_path):

@@ -1,5 +1,4 @@
 from __future__ import print_function
-import unittest
 import copy
 import pandas as pd
 import itertools
@@ -577,7 +576,8 @@ class BaseTests(DjangoTestCase):
 
     def tearDown(self):
         from django.conf import settings
-        import shutil, os
+        import shutil
+        import os
 
         cache_path = os.path.join(settings.BASE_DIR, settings.LOCAL_CACHE_ROOT)
         if os.path.exists(cache_path):

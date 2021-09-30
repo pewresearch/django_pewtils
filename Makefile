@@ -1,3 +1,11 @@
+# Minimal makefile for Sphinx documentation
+
+# You can set these variables from the command line.
+SPHINXOPTS	=
+SPHINXBUILD = sphinx-build
+SOURCEDIR   = docs_source
+BUILDDIR    = _build
+
 BRANCH := $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 
 # by default, we'll bump the "build" part of the version, for non-releases
@@ -11,19 +19,9 @@ ifeq (,$(findstring dev,$(VERSION)))
     endif
 endif
 
-
-# Minimal makefile for Sphinx documentation
-
-SPHINXOPTS	=
-SPHINXBUILD = sphinx-build
-SOURCEDIR   = docs_source
-BUILDDIR	= _build
-
 # Put it first so that "make" without argument is like "make help".
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-
-.PHONY: help Makefile
 
 docs:
 	-rm -rf _build/
@@ -35,10 +33,10 @@ python_lint_errors:
 	flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=.git,__pycache__,build,dist
 
 python_lint_quality:
-	flake8 . --exit-zero --statistics --count --show-source --max-line-length=127 --ignore=E201,E202,E221,E251,E501,E722 --exclude=.git,__pycache__,build,dist
+	flake8 . --exit-zero --statistics --count --show-source --max-line-length=127 --ignore=E201,E202,E221,E251,E501,E722,W503,W504 --exclude=.git,__pycache__,build,dist
 
 github_lint_flake8:
-	flake8 . --max-line-length 127 --ignore=E201,E202,E221,E251,E501,E722 --exclude=.git,__pycache__,build,dist | reviewdog -reporter=github-pr-check -f=flake8
+	flake8 . --max-line-length 127 --ignore=E201,E202,E221,E251,E501,E722,W503,W504 --exclude=.git,__pycache__,build,dist | reviewdog -reporter=github-pr-check -f=flake8
 
 python_test:
 	python3 -m unittest tests
@@ -64,6 +62,8 @@ release:
 	git pull origin $(BRANCH)
 	bumpversion --commit --tag release
 	git push origin $(BRANCH) --follow-tags
+
+.PHONY: help Makefile
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).

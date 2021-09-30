@@ -1,6 +1,11 @@
 from __future__ import print_function
 from builtins import object
-import shutil, re, importlib, pkgutil, os, imp, datetime, warnings
+
+import shutil
+import re
+import os
+import datetime
+import warnings
 
 from itertools import chain
 from contextlib import closing
@@ -31,6 +36,7 @@ def detect_primary_app():
     Attempts to detect the primary app by looking for `manage.py` and `settings.py`
 
     :return: The name of the primary app, if found
+    :rtype: str
     """
 
     app_name = None
@@ -53,8 +59,11 @@ def load_app(app_name=None, path=None, env=None):
     be able to find a valid `app_name`.settings module to work.
 
     :param app_name: The name of the Django application (if not provided, will attempt to auto-detect)
+    :type app_name: str
     :param path: Optional path to add to the Python path. Can be a list or string.
+    :type path: str or list
     :param env: Optional dictionary of variables to add to `os.environ`
+    :type env: dict
     """
 
     if not app_name:
@@ -66,7 +75,8 @@ def load_app(app_name=None, path=None, env=None):
 
     if not env:
         env = {}
-    import os, django
+    import os
+    import django
 
     for k, v in env.items():
         os.environ[k] = v
@@ -91,8 +101,18 @@ def get_model(name, app_name=None):
     anything. You can provide an optional `app_name` to this function to deal with ambiguous cases.
 
     :param name: Name of the model
+    :type name: str
     :param app_name: Name of the app
+    :type app_name: str
     :return: Django model class
+
+    Usage::
+
+        from django_pewtils import get_model
+
+        >> get_model("contenttype")
+        django.contrib.contenttypes.models.ContentType
+
     """
 
     model = None
@@ -138,6 +158,7 @@ def reset_django_connection(app_name=None):
     search for it in `settings.SITE_NAME`.
 
     :param app_name: The name of the application to reload/reset (if not provided, will attempt to auto-detect)
+    :type app_name: str
     """
 
     if not app_name:
@@ -182,6 +203,33 @@ def inspect_delete(items, counts=False):
     :param items: A Django QuerySet
     :param counts: Whether to return QuerySets or counts
     :return: A dictionary representing the objects in various tables that would be deleted
+
+    Usage::
+
+        >>> inspect_delete(Politician.objects.filter(bioguide_id="S000033"), counts=True)
+        defaultdict(list,
+                    {logos.models.agents.Politician: 1,
+                     logos.models.agents.Politician_commands: 21,
+                     logos.models.agents.Politician_command_logs: 1112,
+                     logos.models.agents.PoliticianPersonalMetric: 47,
+                     logos.models.agents.PoliticianPersonalMetric_commands: 27,
+                     logos.models.agents.PoliticianPersonalMetric_command_logs: 167,
+                     logos.models.media.NewsArticle_relevant_politicians: 96109,
+                     logos.models.media.BallotpediaPage: 1,
+                     logos.models.media.WikipediaPage: 1,
+                     logos.models.media.WikipediaPage_commands: 1,
+                     logos.models.media.WikipediaPage_command_logs: 1,
+                     logos.models.government.CommitteeMembership: 63,
+                     logos.models.government.CommitteeMembership_commands: 63,
+                     logos.models.government.CommitteeMembership_command_logs: 63,
+                     logos.models.government.Caucus_members: 1,
+                     logos.models.government.Bill_cosponsors: 2638,
+                     logos.models.government.Vote_votes_for: 3320,
+                     logos.models.government.Vote_votes_against: 1918,
+                     logos.models.government.Vote_votes_abstained: 343,
+                     logos.models.government.LegislativeHearing_attendees: 1059})
+
+
     """
 
     collector = NestedObjects(using=DEFAULT_DB_ALIAS)
@@ -256,6 +304,15 @@ def get_all_field_names(model):
 
     :param model: A Django model class
     :return: List of field names
+
+    Usage::
+
+        from django_pewtils import get_all_field_names
+
+        >>> get_all_field_names(Politician)
+        ['id', 'first_name', 'nickname', 'last_name', 'fec_ids', 'bioguide_id', 'icpsr_ids', 'instagram_ids']
+
+
     """
 
     return list(
@@ -349,6 +406,18 @@ def consolidate_objects(
     must be collapsed, then an error will be raised.) If dependent relations exist and this is not set to `True`, then
     an error will be raised.
     :return: The remaining target object
+
+    Usage::
+
+        from django_pewtils import consolidate_objects
+
+        consolidate_objects(
+            source=duplicate_obj,
+            target=obj,
+            overwrite=False,  # False means that we'll prefer preserving the target's existing values if we encounter conflicts
+            consolidate_related_uniques=False  # Unless we set this to True, the function will raise an error if there are conflicting relationships that can't be merged
+        )
+
     """
 
     if not source or not target:
@@ -536,7 +605,11 @@ def consolidate_objects(
                                 through = f.through
                             else:
                                 through = f.remote_field.through
-                            if through._meta.auto_created and hasattr(source, f.name) and hasattr(target, f.name):
+                            if (
+                                through._meta.auto_created
+                                and hasattr(source, f.name)
+                                and hasattr(target, f.name)
+                            ):
                                 # If it's a many-to-many object, we'll set the target's M2M relation to the union
                                 # If there's a custom through table, those foreign key relations will appear as FKs
                                 # And will be updated separately
@@ -889,11 +962,7 @@ def run_partial_postgres_search(model, text, fields, max_results=250, min_rank=0
 
     """
     Assuming that you have Postgres' Trigram Extension installed, this function will allow you to run a full text
-    search on one or more text fields. For example:
-
-    ```python
-    >>> run_partial_postgres_search(TestModel, text, ("text_field1", "text_field2"),
-    ````
+    search on one or more text fields.
 
     This function allows for the use of trailing wildcards (`*`) but otherwise will only find exact matches. If
     multiple tokens are passed (separated by spaces) then it will consider these terms bound by an `AND` boolean
@@ -905,6 +974,14 @@ def run_partial_postgres_search(model, text, fields, max_results=250, min_rank=0
     :param max_results: Top N results you want to return
     :param min_rank: The minimum SearchRank value that results must have to be returned.
     :return: A QuerySet of results.
+
+    Usage::
+
+        from django_pewtils import run_partial_postgres_search
+
+        >>> run_partial_postgres_search(Politician, "Dwayne Rock Johnson", ("first_name", "nickname", "last_name"))
+        <PoliticianManager [<Politician: Dwayne 'The Rock' Johnson>, '...(remaining elements truncated)...']>
+
     """
 
     text = re.sub(r"[!\'()|&]", " ", text).strip()

@@ -1,9 +1,5 @@
 from __future__ import print_function
-import unittest
-import copy
 import pandas as pd
-import itertools
-import time
 import os
 
 from django.test import TestCase as DjangoTestCase
@@ -124,6 +120,20 @@ class ManagerTests(DjangoTestCase):
         )
         self.assertIsNotNone(obj)
 
+        obj = TestModel.objects.get_if_exists({"pk": 1})
+        obj.array_field = ["12345"]
+        obj.save()
+
+        obj = TestModel.objects.get_if_exists(
+            {"array_field": ["12345", "67890"]}, allow_list_overlaps=False
+        )
+        self.assertIsNone(obj)
+
+        obj = TestModel.objects.get_if_exists(
+            {"array_field": ["12345", "67890"]}, allow_list_overlaps=True
+        )
+        self.assertIsNotNone(obj)
+
     def test_create_or_update(self):
 
         new_text = "testing one two three"
@@ -159,6 +169,63 @@ class ManagerTests(DjangoTestCase):
             search_nulls=True,
         )
         self.assertEqual(obj.text_field, "woot")
+
+        new_record = {"pk": 1, "array_field": ["12345"], "text_field": "one"}
+        obj = TestModel.objects.create_or_update(
+            {"pk": new_record["pk"], "array_field": new_record["array_field"]},
+            update_data=new_record,
+            match_any=True,
+            search_nulls=False,
+            empty_lists_are_null=True,
+            save_nulls=False,
+            only_update_existing_nulls=False,
+            return_object=True,
+        )
+        self.assertEqual(obj.array_field, ["12345"])
+        self.assertEqual(obj.text_field, "one")
+
+        new_record = {"pk": 1, "text_field": None}
+        obj = TestModel.objects.create_or_update(
+            {"pk": new_record["pk"]},
+            update_data=new_record,
+            match_any=True,
+            search_nulls=False,
+            empty_lists_are_null=True,
+            save_nulls=False,
+            only_update_existing_nulls=False,
+            return_object=True,
+        )
+        self.assertEqual(obj.array_field, ["12345"])
+        self.assertEqual(obj.text_field, "one")
+
+        new_record = {"array_field": ["12345", "67890"]}
+        obj = TestModel.objects.create_or_update(
+            {"array_field": new_record["array_field"]},
+            update_data=new_record,
+            match_any=True,
+            search_nulls=False,
+            empty_lists_are_null=True,
+            save_nulls=False,
+            only_update_existing_nulls=False,
+            allow_list_overlaps=True,
+            return_object=True,
+        )
+        self.assertEqual(obj.array_field, ["12345", "67890"])
+
+        new_record = {"pk": 1, "text_field": None, "array_field": ["12345", "abcde"]}
+        obj = TestModel.objects.create_or_update(
+            {"pk": new_record["pk"], "array_field": new_record["array_field"]},
+            update_data=new_record,
+            match_any=True,
+            search_nulls=False,
+            empty_lists_are_null=True,
+            save_nulls=False,
+            only_update_existing_nulls=False,
+            allow_list_overlaps=True,
+            return_object=True,
+        )
+        self.assertEqual(obj.array_field, ["12345", "67890", "abcde"])
+        self.assertEqual(obj.text_field, "one")
 
     def test_fuzzy_ratio(self):
 
@@ -226,7 +293,8 @@ class ManagerTests(DjangoTestCase):
 
     def tearDown(self):
         from django.conf import settings
-        import shutil, os
+        import shutil
+        import os
 
         cache_path = os.path.join(settings.BASE_DIR, settings.LOCAL_CACHE_ROOT)
         if os.path.exists(cache_path):
