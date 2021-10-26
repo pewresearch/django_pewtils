@@ -7,44 +7,47 @@ with open(os.path.join(os.path.dirname(__file__), "README.md"), "rb") as readme:
 
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
+install_requires = []
 with open("requirements.txt") as reqs:
-    install_requires = [
-        line
-        for line in reqs.read().split("\n")
-        if line and not line.startswith(("--", "git+ssh"))
-    ]
-    dependency_links = [
-        line
-        for line in reqs.read().split("\n")
-        if line and line.startswith(("--", "git+ssh"))
-    ]
+    for line in reqs.read().split("\n"):
+        if line and not line.startswith(("#", "--", "git+ssh")):
+            install_requires.append(line)
 
 setup(
     name="django_pewtils",
-    version='0.1.4.dev0',
+    version="0.1.4.dev1",
     description="miscellaneous utilities",
     long_description=README,  # 'http://labs.pewresearch.tech/docs/libs/django_pewtils',
     url="https://github.com/pewresearch/django_pewtils",
     author="Pew Research Center",
     author_email="admin@pewresearch.tech",
     install_requires=install_requires,
-    dependency_links=dependency_links,
     packages=find_packages(exclude=["contrib", "docs", "tests"]),
     include_package_data=True,
+    keywords="",
+    license="GPLv2+",
     classifiers=[
+        "Framework :: Django",
+        "Environment :: Web Environment",
         # https://pypi.python.org/pypi?%3Aaction=list_classifiers
         #        'Development Status :: 1 - Planning',
         #        'Development Status :: 2 - Pre-Alpha',
-        "Development Status :: 3 - Alpha",
+        #        'Development Status :: 3 - Alpha',
         #        'Development Status :: 4 - Beta',
-        #        'Development Status :: 5 - Production/Stable',
+        "Development Status :: 5 - Production/Stable",
         #        'Development Status :: 6 - Mature',
         #        'Development Status :: 7 - Inactive'
+        "Intended Audience :: Education",
+        "Intended Audience :: Developers",
+        "Intended Audience :: Information Technology",
         "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
-        "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 2.7",
+        "Topic :: Utilities",
     ],
-    keywords="pew pew pew",
-    license="MIT",
 )

@@ -1,7 +1,10 @@
 from __future__ import print_function
 
 from builtins import str
-import traceback, sys, pandas, random
+import traceback
+import sys
+import pandas
+import random
 
 from tqdm import tqdm
 
@@ -10,7 +13,7 @@ from django.db import connection, models
 from django.core.exceptions import EmptyResultSet
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 
-from pewtils import chunk_list, is_null, is_not_null, decode_text, vector_concat_text
+from pewtils import chunk_list, is_null, decode_text, vector_concat_text
 from django_pewtils import field_exists, filter_field_dict, get_model, inspect_delete
 from pewanalytics.text import TextDataFrame, get_fuzzy_partial_ratio, get_fuzzy_ratio
 
@@ -21,6 +24,7 @@ def _create_object(
     update_data=None,
     save_nulls=False,
     empty_lists_are_null=True,
+    allow_list_overlaps=False,
     logger=None,
     command_log=None,
 ):
@@ -94,7 +98,7 @@ def _create_object(
         if command_log and hasattr(existing, "command_logs"):
             existing.command_logs.add(command_log)
             existing.commands.add(command_log.command)
-    except Exception as e:
+    except:
         if logger:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             logger.info(
@@ -113,6 +117,7 @@ def _update_object(
     save_nulls=False,
     empty_lists_are_null=True,
     only_update_existing_nulls=False,
+    allow_list_overlaps=False,
     logger=None,
     command_log=None,
     **save_kwargs
@@ -132,6 +137,7 @@ def _update_object(
     :param empty_lists_are_null: Whether or not to consider empty lists as being null
     :param only_update_existing_nulls: If `True`, only update fields on the object that existing in `update_data` if
     the current value on the object is None
+    :param allow_list_overlaps:
     :param logger: An optional logging object
     :return: The updated object
     """
@@ -151,7 +157,17 @@ def _update_object(
                         empty_lists_are_null=empty_lists_are_null,
                     )
                 ):
-                    setattr(existing, field, update_data[field])
+                    if (
+                        isinstance(getattr(existing, field), list)
+                        and allow_list_overlaps
+                    ):
+                        vals = list(getattr(existing, field))
+                        for val in update_data[field]:
+                            if val not in vals:
+                                vals.append(val)
+                        setattr(existing, field, vals)
+                    else:
+                        setattr(existing, field, update_data[field])
             existing.save(**save_kwargs)
             if command_log and hasattr(existing, "command_logs"):
                 existing.command_logs.add(command_log)
@@ -172,10 +188,12 @@ class BasicExtendedManager(models.QuerySet):
 
     """
     An extension of a Django QuerySet with additional helper functions. Can be used as a manager on any model like so:
-    ```python
-    class MyModel(models.Model):
-        objects = BasicExtendedManager().as_manager()
-    ```
+
+    .. code-block:: python
+
+        class MyModel(models.Model):
+            objects = BasicExtendedManager().as_manager()
+
     """
 
     def __init__(self, *args, **kwargs):
@@ -293,6 +311,7 @@ class BasicExtendedManager(models.QuerySet):
         match_any=False,
         search_nulls=False,
         empty_lists_are_null=True,
+        allow_list_overlaps=False,
         logger=None,
     ):
 
@@ -320,6 +339,13 @@ class BasicExtendedManager(models.QuerySet):
             drop_underscore_joins=False,
         )
         if len(list(search_data.keys())) > 0:
+
+            if allow_list_overlaps:
+                for k in list(search_data.keys()):
+                    if isinstance(search_data[k], list):
+                        search_data["{}__overlap".format(k)] = search_data[k]
+                        del search_data[k]
+
             existing = None
             try:
                 if match_any:
@@ -368,6 +394,7 @@ class BasicExtendedManager(models.QuerySet):
         save_nulls=False,
         empty_lists_are_null=True,
         only_update_existing_nulls=False,
+        allow_list_overlaps=False,
         logger=None,
         command_log=None,
         force_create=False,
@@ -413,6 +440,7 @@ class BasicExtendedManager(models.QuerySet):
                 match_any=match_any,
                 search_nulls=search_nulls,
                 empty_lists_are_null=empty_lists_are_null,
+                allow_list_overlaps=allow_list_overlaps,
                 logger=logger,
             )
         if not existing:
@@ -423,6 +451,7 @@ class BasicExtendedManager(models.QuerySet):
                     update_data=update_data,
                     save_nulls=save_nulls,
                     empty_lists_are_null=empty_lists_are_null,
+                    allow_list_overlaps=allow_list_overlaps,
                     logger=logger,
                     command_log=command_log,
                 )
@@ -432,6 +461,7 @@ class BasicExtendedManager(models.QuerySet):
                     match_any=match_any,
                     search_nulls=search_nulls,
                     empty_lists_are_null=empty_lists_are_null,
+                    allow_list_overlaps=allow_list_overlaps,
                     logger=logger,
                 )
                 if existing:
@@ -442,6 +472,7 @@ class BasicExtendedManager(models.QuerySet):
                         save_nulls=save_nulls,
                         empty_lists_are_null=empty_lists_are_null,
                         only_update_existing_nulls=only_update_existing_nulls,
+                        allow_list_overlaps=allow_list_overlaps,
                         logger=logger,
                         command_log=command_log,
                         **save_kwargs
@@ -456,6 +487,7 @@ class BasicExtendedManager(models.QuerySet):
                 save_nulls=save_nulls,
                 empty_lists_are_null=empty_lists_are_null,
                 only_update_existing_nulls=only_update_existing_nulls,
+                allow_list_overlaps=allow_list_overlaps,
                 logger=logger,
                 command_log=command_log,
                 **save_kwargs
@@ -518,10 +550,11 @@ class BasicExtendedManager(models.QuerySet):
 
         """
         Returns the object with the greatest fuzzy ratio in the QuerySet. Equivalent to calling:
-        ```python
-        >>> result = my_query_set.fuzzy_ratios(["text_field"], "test")
-        >>> MyModel.objects.get(pk=result[0].pk)
-        ```
+
+        .. code-block:: python
+
+            >>> result = my_query_set.fuzzy_ratios(["text_field"], "test")
+            >>> MyModel.objects.get(pk=result[0].pk)
 
         :param field_names: The names of the text fields to compare
         :param text: A string of text to compare
@@ -590,10 +623,11 @@ class BasicExtendedManager(models.QuerySet):
 
         """
         Returns the object with the smallest Levenshtein difference in the QuerySet. Equivalent to calling:
-        ```python
-        >>> result = my_query_set.levenshtein_differences(["text_field"], "test")
-        >>> MyModel.objects.get(pk=result[0].pk)
-        ```
+
+        .. code-block:: python
+
+            >>> result = my_query_set.levenshtein_differences(["text_field"], "test")
+            >>> MyModel.objects.get(pk=result[0].pk)
 
         :param field_names: The names of the text fields to compare
         :param text: A string of text to compare
@@ -639,10 +673,11 @@ class BasicExtendedManager(models.QuerySet):
 
         """
         Returns the object with the highest TF-IDF cosine similarity in the QuerySet. Equivalent to calling:
-        ```python
-        >>> result = my_query_set.tfidf_similarities(["text_field"], "test")
-        >>> MyModel.objects.get(pk=result[0].pk)
-        ```
+
+        .. code-block:: python
+
+            >>> result = my_query_set.tfidf_similarities(["text_field"], "test")
+            >>> MyModel.objects.get(pk=result[0].pk)
 
         :param field_names: The names of the text fields to compare
         :param text: A string of text to compare
@@ -696,10 +731,11 @@ class BasicExtendedManager(models.QuerySet):
 
         """
         Returns the object with the highest trigram similarity in the QuerySet. Equivalent to calling:
-        ```python
-        >>> result = my_query_set.trigram_similarities(["text_field"], "test")
-        >>> MyModel.objects.get(pk=result[0].pk)
-        ```
+
+        .. code-block:: python
+
+            >>> result = my_query_set.trigram_similarities(["text_field"], "test")
+            >>> MyModel.objects.get(pk=result[0].pk)
 
         :param field_names: The names of the text fields to compare
         :param text: A string of text to compare
