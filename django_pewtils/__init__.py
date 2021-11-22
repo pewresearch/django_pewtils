@@ -474,20 +474,24 @@ def consolidate_objects(
                             if f.one_to_one or f.many_to_one:
                                 # If the values aren't the same and they don't both point to objects that are
                                 # themselves getting merged, then we don't know what to do here and we're going to yell.
-                                if getattr(source, f.name) != getattr(
-                                    target, f.name
-                                ) and (
-                                    (
-                                        getattr(source, f.name)
-                                        not in [p[0] for p in pairs]
-                                        and getattr(source, f.name)
-                                        not in [p[1] for p in pairs]
-                                    )
-                                    or (
-                                        getattr(target, f.name)
-                                        not in [p[0] for p in pairs]
-                                        and getattr(target, f.name)
-                                        not in [p[1] for p in pairs]
+                                if (
+                                    hasattr(source, f.name)
+                                    and hasattr(target, f.name)
+                                    and getattr(source, f.name)
+                                    != getattr(target, f.name)
+                                    and (
+                                        (
+                                            getattr(source, f.name)
+                                            not in [p[0] for p in pairs]
+                                            and getattr(source, f.name)
+                                            not in [p[1] for p in pairs]
+                                        )
+                                        or (
+                                            getattr(target, f.name)
+                                            not in [p[0] for p in pairs]
+                                            and getattr(target, f.name)
+                                            not in [p[1] for p in pairs]
+                                        )
                                     )
                                 ):
                                     raise AmbiguousConsolidationError(
