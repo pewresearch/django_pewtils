@@ -213,7 +213,7 @@ class BasicExtendedManager(models.QuerySet):
 
         return pandas.io.sql.read_sql_query(query, connection, params=params)
 
-    def chunk(self, size=100, tqdm_desc=None, randomize=False):
+    def chunk(self, size=100, tqdm_desc=None, randomize=False, disable=os.environ.get("DISABLE_TQDM", False)):
 
         """
         Helps save memory by iterating over the primary keys of objects in a QuerySet and yielding the results in
@@ -254,7 +254,7 @@ class BasicExtendedManager(models.QuerySet):
 
         return self.model.objects.filter(pk__in=sample)
 
-    def chunk_update(self, size=100, tqdm_desc="Updating", **to_update):
+    def chunk_update(self, size=100, tqdm_desc="Updating", disable=os.environ.get("DISABLE_TQDM", False), **to_update):
 
         """
         Iterates over a QuerySet and applies an update to them in chunks rather than all at once, to save memory.
