@@ -17,4 +17,3 @@ built-in database functions.
    Basic functions <base>
    Abstract models <abstract_models>
    Managers <managers>
-   Examples <examples>
