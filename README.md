@@ -91,8 +91,7 @@ and making text comparison. These include:
 
 ## Acknowledgements
 
-Pew Research Center is a subsidiary of The Pew Charitable Trusts, its primary funder. This report is a collaborative effort based on the input and analysis of [a number of individuals and experts at Pew Research Center](link here).
-
+Pew Research Center is a subsidiary of The Pew Charitable Trusts, its primary funder. 
 
 ## Use Policy 
 
